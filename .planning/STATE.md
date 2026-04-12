@@ -1,25 +1,39 @@
-# STATE — v1.1
+# STATE — v2.0
 
-## Current Phase
-Phase 2 (in progress)
+## Current Position
+
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-13 — Milestone v2.0 started
 
 ## Progress
-- Phases completed: 1/4
-- Last updated: 2026-04-12
+- Phases completed: 0
+- Last updated: 2026-04-13
 
-## Completed
+## Accumulated Context
 
-### Phase 1 ✅ (2026-04-12)
-- sync.ts schedulePush(): debounce 400ms → 2000ms（读取 settings.syncDebounceMs）
-- sync.ts: lastPushAt 时间戳 + 30s 最小间隔保护
-- sync.ts push(): 移除 Notice，背景推送完全静默
-- types.ts: 新增 syncDebounceMs / syncMinIntervalMs 配置字段
-- settings.ts: 设置页新增同步频率配置区
+### From v1.1
+- Obsidian sync debounce 优化完成（400ms → 2000ms+）
+- Obsidian UI 升级完成（Command Palette, 任务详情面板）
+- Web 实时同步降频完成（指数退避 + visibilitychange 暂停）
+- 错误处理与代码质量完成（JWT 自动刷新, 导出错误统一）
+
+### v2.0 诊断输入
+- 报告 A（架构/工程视角）：20 个问题（P0×3, P1×4, P2×5, P3×5, 架构隐患×3）
+- 报告 B（产品/认知视角）：11 个问题（认知负担×3, 交互不一致×3, 功能缺口×3, 战略×2）
+- 去重后 25 个独立问题，全部纳入 v2.0 范围
+- 优化方案已完成：11 阶段 / 14 周 / 51 dev-days
+
+### 关键设计决策
+- 双日期模型（dueAt + deadlineAt）是产品灵魂，强化而非弱化
+- Focus 保留 5 组区分（逾期/今日计划/今日截止/即将/收件箱）
+- 个人体验优先，协作/分享后移
+- Field-level merge（非 CRDT），架构就绪后落地
 
 ## Blockers/Concerns
 None
 
 ## Decisions Log
-- 2026-04-12: Sync debounce 需从 400ms 升至 2000ms+，最小间隔 30 秒
-- 2026-04-12: Obsidian UI 升级参照 web/src/components/ 现有组件
-- 2026-04-12: Web 端实时同步需退避机制 + 页面隐藏时暂停
+- 2026-04-13: Milestone v2.0 started — 交互体验全面优化
+- 2026-04-13: 冲突策略 = field-level merge, 渐进式拆分, 个人体验优先
