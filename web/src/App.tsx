@@ -589,7 +589,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     if (remoteState.filters) setFilters(remoteState.filters)
   }
 
-  const { syncStatus, lastSyncedAt, forceSync } = useRealtimeSync({
+  const { syncStatus, lastSyncedAt, forceSync, pauseSync, resumeSync } = useRealtimeSync({
     userId: user?.id ?? null,
     onRemoteUpdate: handleRemoteUpdate,
   })
@@ -611,6 +611,19 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     window.addEventListener('online', handleOnline)
     return () => window.removeEventListener('online', handleOnline)
   }, [user?.id])
+
+  // Tab 可见性变化时暂停 / 恢复 Realtime 订阅，节省服务端连接
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        pauseSync()
+      } else {
+        resumeSync()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [pauseSync, resumeSync])
 
   // 云同步不可用时将当前快照加入队列，确保后续仍可补同步
   useEffect(() => {

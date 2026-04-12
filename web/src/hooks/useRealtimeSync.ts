@@ -7,6 +7,8 @@
  * 3. 订阅 Supabase Realtime postgres_changes，实现推送驱动同步
  * 4. 定时轮询（90s）作为 Realtime 不可用时的降级备份
  * 5. 暴露同步状态（idle / syncing / synced / offline / error）
+ * 6. 指数退避重连（初始 1s，最大 60s，factor 2）
+ * 7. 页面隐藏时暂停订阅，重新可见时恢复（节省服务端连接）
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RealtimeChannel, RealtimePostgresUpdatePayload } from '@supabase/supabase-js'
@@ -29,9 +31,17 @@ interface UseRealtimeSyncReturn {
   lastSyncedAt: Date | null
   /** 手动触发一次全量拉取（用于冲突恢复） */
   forceSync: () => Promise<void>
+  /** Tab 隐藏时暂停 Realtime 订阅，降低服务端连接压力 */
+  pauseSync: () => void
+  /** Tab 重新可见时恢复订阅并立即执行 forceSync */
+  resumeSync: () => void
 }
 
 const POLL_INTERVAL_MS = 90_000
+/** 指数退避重连参数 */
+const RECONNECT_INITIAL_MS = 1_000
+const RECONNECT_MAX_MS = 60_000
+const RECONNECT_FACTOR = 2
 
 export const useRealtimeSync = ({
   userId,
@@ -42,6 +52,15 @@ export const useRealtimeSync = ({
   const deviceId = useRef(getDeviceId())
   const onRemoteUpdateRef = useRef(onRemoteUpdate)
   onRemoteUpdateRef.current = onRemoteUpdate
+
+  // ── Reconnect / pause state ────────────────────────────────────────────────
+  const channelRef = useRef<RealtimeChannel | null>(null)
+  const reconnectAttemptRef = useRef(0)
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  /** true: 手动暂停中（Tab 隐藏），不触发自动重连 */
+  const pausedRef = useRef(false)
+  /** true: useEffect 已 cleanup，不再创建新连接 */
+  const destroyedRef = useRef(false)
 
   const forceSync = useCallback(async () => {
     if (!supabase || !userId) {
@@ -84,27 +103,19 @@ export const useRealtimeSync = ({
     }
   }, [userId])
 
-  useEffect(() => {
-    // supabase 实例在 isSupabaseEnabled() 为 true 时保证非 null，
-    // 用局部变量承接以满足 TypeScript 的 narrowing
-    if (!isSupabaseEnabled() || !supabase || !userId) {
-      setSyncStatus('idle')
+  // ── Channel setup with backoff subscribe callback ──────────────────────────
+  const setupChannel = useCallback(() => {
+    if (!isSupabaseEnabled() || !supabase || !userId || pausedRef.current || destroyedRef.current) {
       return
     }
+    const client = supabase
 
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      setSyncStatus('offline')
-      return
+    // Remove stale channel before creating a new one
+    if (channelRef.current) {
+      void client.removeChannel(channelRef.current)
+      channelRef.current = null
     }
 
-    const client = supabase // 局部引用，供 cleanup 闭包安全使用
-
-    // 初始全量拉取
-    void forceSync()
-
-    // ── Supabase Realtime 订阅（推送驱动，主路径）──────────────────────
-    // 仅监听 UPDATE 事件（INSERT 由首次 forceSync 覆盖）。
-    // filter 限定当前 user_id，避免接收无关行的通知。
     const channel: RealtimeChannel = client
       .channel('workspace-sync')
       .on<WorkspaceStateRow>(
@@ -115,30 +126,116 @@ export const useRealtimeSync = ({
           table: 'workspace_states',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: RealtimePostgresUpdatePayload<WorkspaceStateRow>) => {
           const row = payload.new
           // 忽略本设备自身写入触发的通知，防止回环
           if (row.device_id === deviceId.current) return
-          // last-write-wins：直接将远端最新行传给上层 merge 逻辑（复用现有策略）
           onRemoteUpdateRef.current(row.state_json as Partial<PersistedState>)
           setLastSyncedAt(new Date())
           setSyncStatus('synced')
         },
       )
-      .subscribe()
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          // 连接成功，重置退避计数
+          reconnectAttemptRef.current = 0
+          if (reconnectTimerRef.current) {
+            clearTimeout(reconnectTimerRef.current)
+            reconnectTimerRef.current = null
+          }
+          return
+        }
 
-    // ── 90s 轮询（降级备份：Realtime 断连时保障同步）────────────────────
+        if (
+          (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') &&
+          !pausedRef.current &&
+          !destroyedRef.current
+        ) {
+          // 已有定时器挂起则跳过（避免重复调度）
+          if (reconnectTimerRef.current) return
+
+          const attempt = reconnectAttemptRef.current
+          const delay = Math.min(
+            RECONNECT_INITIAL_MS * Math.pow(RECONNECT_FACTOR, attempt),
+            RECONNECT_MAX_MS,
+          )
+          reconnectAttemptRef.current += 1
+          console.debug(`[RealtimeSync] 重连 attempt=${attempt + 1} delay=${delay}ms status=${status}`)
+
+          reconnectTimerRef.current = setTimeout(() => {
+            reconnectTimerRef.current = null
+            setupChannel()
+          }, delay)
+        }
+      })
+
+    channelRef.current = channel
+  }, [userId])
+
+  // ── Public pause / resume ──────────────────────────────────────────────────
+  const pauseSync = useCallback(() => {
+    pausedRef.current = true
+    // 取消待定的重连计时
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current)
+      reconnectTimerRef.current = null
+    }
+    // 断开当前 Realtime 连接
+    if (channelRef.current && supabase) {
+      void supabase.removeChannel(channelRef.current)
+      channelRef.current = null
+    }
+  }, [])
+
+  const resumeSync = useCallback(() => {
+    if (!pausedRef.current) return
+    pausedRef.current = false
+    reconnectAttemptRef.current = 0
+    // 重建连接并立即拉取
+    setupChannel()
+    void forceSync()
+  }, [setupChannel, forceSync])
+
+  useEffect(() => {
+    destroyedRef.current = false
+    pausedRef.current = false
+
+    if (!isSupabaseEnabled() || !supabase || !userId) {
+      setSyncStatus('idle')
+      return
+    }
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      setSyncStatus('offline')
+      return
+    }
+
+    // 初始全量拉取
+    void forceSync()
+
+    // ── Supabase Realtime 订阅（推送驱动，主路径）────────────────────────
+    setupChannel()
+
+    // ── 90s 轮询（降级备份：Realtime 断连时保障同步）──────────────────────
     const timer = window.setInterval(() => {
-      if (navigator.onLine) {
+      if (navigator.onLine && !pausedRef.current) {
         void forceSync()
       }
     }, POLL_INTERVAL_MS)
 
     return () => {
+      destroyedRef.current = true
       window.clearInterval(timer)
-      void client.removeChannel(channel)
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current)
+        reconnectTimerRef.current = null
+      }
+      if (channelRef.current && supabase) {
+        void supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
     }
-  }, [userId, forceSync])
+  }, [userId, forceSync, setupChannel])
 
   useEffect(() => {
     const handleOnline = () => {
@@ -157,5 +254,5 @@ export const useRealtimeSync = ({
     }
   }, [forceSync])
 
-  return { syncStatus, lastSyncedAt, forceSync }
+  return { syncStatus, lastSyncedAt, forceSync, pauseSync, resumeSync }
 }
