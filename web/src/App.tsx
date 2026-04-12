@@ -1484,6 +1484,8 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   // ---- 移动端快速创建 (逻辑已内联到 MobileQuickCreateSheet) ----
 
   // ---- 移动端自定义 confirm/prompt（Phase 1.5 使用）----
+  /** Mobile confirm dialog — ONLY for destructive operations (delete list/folder).
+   *  Task completion uses mobileToggleComplete + Undo Toast (UX-01). */
   const mobileConfirm = (message: string): Promise<boolean> => {
     if (!isPhoneViewport) return Promise.resolve(window.confirm(message))
     return new Promise<boolean>((resolve) => {
