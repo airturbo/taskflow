@@ -19,6 +19,7 @@ import { TagManagementDialog } from './TagManagementDialog';
 import { ProjectionSummary, type ProjectionFilter } from './ProjectionSummary';
 import { ReminderPanel, type FiredReminder } from './ReminderPanel';
 import { ShortcutHelpDialog } from './ShortcutHelpDialog';
+import { ObsidianCommandPalette } from './ObsidianCommandPalette';
 
 type ViewMode = 'list' | 'kanban' | 'matrix' | 'calendar' | 'timeline';
 type TaskFilter = 'all' | 'open' | 'done';
@@ -282,6 +283,9 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
   // Shortcut help dialog
   const [shortcutHelpOpen, setShortcutHelpOpen] = useState(false);
 
+  // Command palette (Cmd+K)
+  const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
+
   // Search debounce (140ms)
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -336,10 +340,10 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
         return;
       }
 
-      // Cmd/Ctrl + K — focus search
+      // Cmd/Ctrl + K — open command palette
       if (meta && e.key === 'k') {
         e.preventDefault();
-        searchRef.current?.focus();
+        setCmdPaletteOpen(true);
         return;
       }
 
@@ -363,7 +367,9 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
 
       // Escape — close detail panel / deselect
       if (e.key === 'Escape') {
-        if (shortcutHelpOpen) {
+        if (cmdPaletteOpen) {
+          setCmdPaletteOpen(false);
+        } else if (shortcutHelpOpen) {
           setShortcutHelpOpen(false);
         } else if (inlineCreate?.visible) {
           setInlineCreate(null);
@@ -378,7 +384,7 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
 
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [inlineCreate, tagMgmtOpen, selectedTaskId, shortcutHelpOpen]);
+  }, [inlineCreate, tagMgmtOpen, selectedTaskId, shortcutHelpOpen, cmdPaletteOpen]);
 
   // #1 只显示任务中实际在使用的标签
   const usedTagIds = useMemo(() => {
@@ -922,6 +928,11 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
           </div>
           <div className="tw-topbar__actions">
             <button
+              className="tw-btn-sm tw-cmd-trigger"
+              onClick={() => setCmdPaletteOpen(true)}
+              title="命令面板 (Cmd+K)"
+            >⌘K</button>
+            <button
               className={`tw-btn-sm ${viewMode === 'list' ? 'is-active' : ''}`}
               onClick={() => setViewMode('list')}
             >列表</button>
@@ -1224,6 +1235,23 @@ export function TodoWorkspaceApp(props: TodoWorkspaceAppProps) {
       {shortcutHelpOpen && (
         <ShortcutHelpDialog onClose={() => setShortcutHelpOpen(false)} />
       )}
+
+      {/* Command Palette (Cmd+K) */}
+      <ObsidianCommandPalette
+        open={cmdPaletteOpen}
+        onClose={() => setCmdPaletteOpen(false)}
+        tasks={tasks}
+        lists={lists}
+        tags={tags}
+        onSelectTask={(id) => {
+          setSelectedTaskId(id);
+          setCmdPaletteOpen(false);
+        }}
+        onSelectList={(id) => {
+          handleSelect('list', id);
+          setCmdPaletteOpen(false);
+        }}
+      />
 
       {/* Toast with optional undo / jump (Task #3) */}
       {toastMessage && (

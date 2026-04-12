@@ -3362,3 +3362,190 @@
   font-size: 13px;
   color: var(--text-muted);
 }
+
+/* ─── Command Palette (Cmd+K) ─── */
+.tw-cmd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+
+.tw-cmd-panel {
+  width: min(600px, 90vw);
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: tw-cmd-appear 0.12s ease;
+}
+
+@keyframes tw-cmd-appear {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tw-cmd-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.tw-cmd-icon {
+  font-size: 16px;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.tw-cmd-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-normal);
+  font-size: 15px;
+  outline: none;
+  caret-color: var(--text-accent);
+}
+
+.tw-cmd-input::placeholder {
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.tw-cmd-clear {
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.tw-cmd-clear:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.tw-cmd-list {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.tw-cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.08s;
+}
+
+.tw-cmd-item.is-active,
+.tw-cmd-item:hover {
+  background: var(--background-modifier-hover);
+}
+
+.tw-cmd-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tw-cmd-title {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tw-cmd-title--done {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+
+.tw-cmd-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tw-cmd-list-badge {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tw-cmd-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--background-secondary);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.tw-cmd-count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tw-cmd-kind {
+  font-size: 10px;
+  color: var(--text-faint);
+  background: var(--background-secondary);
+  border-radius: 3px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+
+.tw-cmd-empty {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.tw-cmd-footer {
+  padding: 8px 16px;
+  border-top: 1px solid var(--background-modifier-border);
+  font-size: 11px;
+  color: var(--text-faint);
+  display: flex;
+  gap: 12px;
+}
+
+.tw-cmd-footer kbd {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+/* Cmd+K trigger button in topbar */
+.tw-cmd-trigger {
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  opacity: 0.75;
+}
+
+.tw-cmd-trigger:hover {
+  opacity: 1;
+}
