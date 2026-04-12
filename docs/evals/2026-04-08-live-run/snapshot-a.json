@@ -1,0 +1,71 @@
+{
+  "label": "独立版影子基线",
+  "original_project_root": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/shadow/codebuddy-agent-team-baseline/.agent-team",
+  "sandbox_project_root": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-a-workspace/project-a",
+  "healthcheck": {
+    "project_root": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-a-workspace/project-a",
+    "roles_count": 11,
+    "artifacts_count": 0,
+    "workflows_count": 0,
+    "role_sessions_count": 0,
+    "handoffs_count": 0,
+    "current_state": "intake",
+    "baseline_tag": null,
+    "state_store": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-a-workspace/project-a/state/project-state.v1.json",
+    "locks_dir": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-a-workspace/project-a/.agent-team-locks",
+    "default_execution_mode": "single",
+    "env_file": {
+      "path": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-a-workspace/project-a/.env",
+      "exists": false,
+      "loaded_keys": []
+    }
+  },
+  "project_state": {
+    "current_state": "intake",
+    "available_transitions": [
+      "readonly_query",
+      "change_request_received",
+      "scoped"
+    ],
+    "baseline_tag": null,
+    "semantic_aliases": {}
+  },
+  "alias_query": {
+    "artifact_type": "EXPERIENCE_REVIEW",
+    "stage": "experience_review",
+    "status": "approved",
+    "count": 0,
+    "sample": []
+  },
+  "artifact_projection": {
+    "exists": true,
+    "registry": {
+      "artifact_count": 0,
+      "artifact_types": [],
+      "owner_roles": [],
+      "stages": [],
+      "latest_by_artifact_id": []
+    },
+    "baseline": {},
+    "semantic_aliases": {
+      "states": {
+        "ux_review": [
+          "experience_review"
+        ]
+      },
+      "artifact_types": {
+        "UX_REVIEW_REPORT": [
+          "EXPERIENCE_REVIEW"
+        ],
+        "UX_ISSUE_LOG": [
+          "EXPERIENCE_REWORK_NOTE"
+        ],
+        "EXPERIENCE_ACCEPTANCE_NOTE": [
+          "EXPERIENCE_SIGN_OFF"
+        ]
+      }
+    }
+  },
+  "auto_structure_score": 9,
+  "source_mode": "workbuddy-truth-layer-fallback(skip-roles:ParserError)"
+}

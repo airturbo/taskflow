@@ -1,0 +1,39 @@
+{
+  "role_session_id": "RS-20260410-005",
+  "workflow_id": "WF-20260410-001",
+  "role_id": "devops_engineer",
+  "stage": "impact_assessment",
+  "input_refs": [
+    "HO-20260410-004"
+  ],
+  "input_summary": "# TEST_REPORT  ## 结果：6/6 PASS  | TC | 结果 | |----|------| | TC1 象限卡片 | PASS | | TC2 看板卡片 | PASS | | TC3 月历渲染 | PASS | | TC4 通知浮层 | PASS | | TC5 桌面无回归 | PASS | | TC6 构建通过 | PASS |  ## 部署信息 - 构建产物：`web/dist/` - 目标：CloudBase 静态托管 `taskflow-7gxj",
+  "selected_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet",
+    "execution_mode": "single",
+    "source": "handoff_recommendation"
+  },
+  "selected_model_source": "handoff_recommendation",
+  "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 claude-sonnet，来源 HO-20260410-004。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-004。",
+  "expected_outputs": [
+    "handoff_resolution",
+    "DEPLOYMENT_PLAN",
+    "RELEASE_MANIFEST",
+    "ROLLBACK_PLAN"
+  ],
+  "handoff_id": "HO-20260410-004",
+  "task_id": null,
+  "artifact_ids": [],
+  "status": "queued",
+  "produced_handoff_packet_ids": [
+    "HO-20260410-005"
+  ],
+  "produced_artifact_ids": [],
+  "last_execution_run_id": null,
+  "created_by": "host_agent",
+  "started_at": null,
+  "ended_at": null,
+  "created_at": "2026-04-10T12:11:48.550979+00:00",
+  "updated_at": "2026-04-10T12:12:18.480905+00:00"
+}

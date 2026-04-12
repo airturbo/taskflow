@@ -1,0 +1,75 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "workspace": "今日",
+  "screenshots": {
+    "home": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/01-home.png",
+    "quickCreate": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/02-quick-create.png",
+    "detail": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/03-detail-edit.png",
+    "persistence": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/04-persistence.png",
+    "search": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/05-search.png",
+    "calendar": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/06-calendar.png",
+    "kanban": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/07-kanban.png",
+    "timeline": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/08-timeline.png",
+    "matrix": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/09-matrix.png",
+    "focus": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/10-focus.png",
+    "habits": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/11-habits.png",
+    "stats": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/12-stats.png"
+  },
+  "checks": {
+    "quickCreate": {
+      "titleAfterCreate": "体验官走查",
+      "dueAtAfterCreate": "2026-03-31T21:00",
+      "detailVisible": true
+    },
+    "detailEdit": {
+      "titleAfterEdit": "体验官走查回放",
+      "noteAfterEdit": "验证真实用户全流程、视图切换与工具链路。",
+      "repeatRule": "每天",
+      "estimatedPomodoros": "2",
+      "reminderCount": 2,
+      "subtaskCount": 1,
+      "attachmentCount": 1,
+      "commentCount": 1
+    },
+    "persistence": {
+      "persistedTaskFound": true,
+      "persistedSearchLabel": "今日"
+    },
+    "search": {
+      "searchValue": "体验官",
+      "matchingTaskVisible": true
+    },
+    "calendar": {
+      "monthModeVisible": true,
+      "agendaToggleVisible": true
+    },
+    "kanban": {
+      "columnCount": 3,
+      "cardsVisible": 1
+    },
+    "timeline": {
+      "barCount": 1
+    },
+    "matrix": {
+      "quadrantCount": 4,
+      "createdTaskVisible": 1
+    },
+    "focus": {
+      "timerBefore": "25:00",
+      "timerRunning": "24:59",
+      "linkedTaskText": "待开始任务：体验官走查回放 · 🍅 0/2"
+    },
+    "habits": {
+      "firstHabitTitle": "阅读 30 分钟",
+      "before": "20/30 分钟",
+      "after": "30/30 分钟"
+    },
+    "stats": {
+      "cards": 4,
+      "focusMetric": "专注时长1h 45m",
+      "habitMetric": "习惯完成率90%"
+    }
+  },
+  "consoleErrors": [],
+  "pageErrors": []
+}

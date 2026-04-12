@@ -1,0 +1,19 @@
+read:
+- PRD
+- UI_SPEC
+- security_constraints
+write:
+- ARCHITECTURE_DOC
+- TECH_DECISION_RECORD
+- API_BOUNDARY_NOTE
+- RISK_REGISTER
+approve:
+- ARCHITECTURE_DOC
+- TECH_DECISION_RECORD
+block:
+- implementation_start_if_architecture_unapproved
+- deployment_if_non_functional_requirements_unmet
+forbidden:
+- redefine_product_priority
+- override_security_blocker
+- fake_runtime_capacity_validation

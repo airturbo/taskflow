@@ -1,0 +1,15 @@
+{
+  "cr_id": "CR-20260331-001",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-TASK-0001",
+    "ART-ARCH-0001"
+  ],
+  "change_type": "execution_scope_update",
+  "description": "将项目推进到单人本地优先 usable MVP，并启动架构与实现工作",
+  "justification": "用户要求项目经理协调各角色将项目推进到可用状态",
+  "priority": "high",
+  "status": "open",
+  "impact_assessment_id": null,
+  "created_at": "2026-03-31T02:38:58.423909+00:00"
+}

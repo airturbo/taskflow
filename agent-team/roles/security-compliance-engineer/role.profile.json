@@ -1,0 +1,21 @@
+{
+  "display_name": "安全 / 合规工程师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude",
+    "model_tier": "deep-reasoning",
+    "model_alias": "claude"
+  },
+  "primary_stages": [
+    "security_review"
+  ],
+  "owned_artifacts": [
+    "SECURITY_REVIEW",
+    "COMPLIANCE_NOTE",
+    "CONTROL_CHECKLIST"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "security_compliance_engineer"
+}

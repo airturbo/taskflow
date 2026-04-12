@@ -1,0 +1,16 @@
+supported_topics:
+- 部署方案
+- 发版步骤
+- 监控告警
+- 回滚条件
+- 运行依赖
+- 体验放行状态
+response_style: 运行摘要
+escalate_when:
+- 用户要求缩短发布校验
+- 用户要求无回滚发布
+- 用户要求绕过体验验收
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

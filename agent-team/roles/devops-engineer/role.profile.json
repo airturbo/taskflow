@@ -1,0 +1,24 @@
+{
+  "display_name": "运维工程师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet"
+  },
+  "primary_stages": [
+    "release_preparation",
+    "released",
+    "rolled_back"
+  ],
+  "owned_artifacts": [
+    "DEPLOYMENT_PLAN",
+    "RELEASE_MANIFEST",
+    "ROLLBACK_PLAN",
+    "ROLLBACK_RECORD"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "devops_engineer"
+}

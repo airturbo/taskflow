@@ -1,0 +1,16 @@
+supported_topics:
+- 页面结构
+- 交互流程
+- 组件行为
+- 空态和异常态
+- UI_SPEC差异
+- 体验修正方案
+response_style: 主责解释或demo
+escalate_when:
+- 用户要求改页面结构
+- 用户要求调整交互规则
+- 用户要求忽略体验一致性
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

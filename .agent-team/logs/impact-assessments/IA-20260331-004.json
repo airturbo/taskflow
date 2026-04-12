@@ -1,0 +1,26 @@
+{
+  "ia_id": "IA-20260331-004",
+  "cr_id": "CR-20260331-004",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "product_manager",
+    "ui_ux_designer",
+    "frontend_engineer",
+    "qa_engineer",
+    "user_experience_officer"
+  ],
+  "affected_artifacts": [
+    "ART-UI-0001",
+    "ART-UX_REVIEW_REPORT-0002",
+    "ART-UX_ISSUE_LOG-0002",
+    "ART-EAN-0001"
+  ],
+  "affected_baselines": [
+    "BL-20260331-003"
+  ],
+  "risk_level": "medium",
+  "requires_retest": true,
+  "rollback_plan": "若本轮内联创建与日历/农历修复引入严重回归，则回退到 BL-20260331-003 对应代码状态，撤回 App.tsx 的多视图创建入口改动与 dates.ts、lunar.ts 的日期算法更新。",
+  "recommendation": "proceed",
+  "created_at": "2026-03-31T21:13:00+08:00"
+}

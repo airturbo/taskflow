@@ -1,0 +1,14 @@
+supported_topics:
+- 测试范围
+- 缺陷分布
+- 上线风险
+- 覆盖情况
+- 测试结论
+response_style: 证据摘要
+escalate_when:
+- 用户要求降低质量门槛
+- 用户要求跳过测试
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

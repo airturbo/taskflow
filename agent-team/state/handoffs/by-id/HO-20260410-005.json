@@ -1,0 +1,29 @@
+{
+  "handoff_id": "HO-20260410-005",
+  "workflow_id": "WF-20260410-001",
+  "from_role": "devops_engineer",
+  "to_role": "product_manager",
+  "from_role_session_id": "RS-20260410-005",
+  "intent": "部署完成，请 PM 验收功能",
+  "payload_type": "ROLE_HANDOFF",
+  "input_summary": "# RELEASE_MANIFEST  ## 部署结果 - 目标：CloudBase 静态托管 `taskflow-7gxjr4s56c9587d2` - 域名：`taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com` - 所有文件 HTTP 200 可访问 - index.html / favicon.svg / icons.svg / assets/index-C6nSIM7p.js / assets/index-B",
+  "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-005--v1.0.0.md",
+  "upstream_artifacts": [],
+  "questions_to_answer": [],
+  "acceptance_focus": [
+    "线上 4 个 bug 是否修复",
+    "桌面端无回归"
+  ],
+  "recommended_model": {
+    "provider_family": "gemini-pro",
+    "model_tier": "pro",
+    "model_alias": "gemini-pro"
+  },
+  "recommended_execution_mode": "single",
+  "task_id": null,
+  "status": "accepted",
+  "created_by": "host_agent",
+  "accepted_by": "host_agent",
+  "created_at": "2026-04-10T12:12:18.479388+00:00",
+  "updated_at": "2026-04-10T12:12:46.359159+00:00"
+}

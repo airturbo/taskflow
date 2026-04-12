@@ -1,0 +1,14 @@
+supported_topics:
+- API规范
+- 服务边界
+- 数据契约
+- 兼容策略
+- 异常码规则
+response_style: 实现说明
+escalate_when:
+- 用户要求改接口契约
+- 用户要求改数据模型
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

@@ -1,0 +1,21 @@
+read:
+- all_artifacts
+- all_status
+- all_baselines
+write:
+- TASK_BRIEF
+- DELIVERY_NOTE
+- BLOCKER_NOTE
+- CHANGE_REQUEST
+approve:
+- TASK_BRIEF
+- baseline_freeze_request
+- release_gate_summary
+block:
+- release_if_dependencies_incomplete
+- state_advance_if_impact_assessment_missing
+- release_if_ux_feedback_loop_open
+forbidden:
+- approve_PRD_as_product_owner
+- approve_ARCHITECTURE_DOC_as_architect
+- approve_TEST_REPORT_as_qa_owner

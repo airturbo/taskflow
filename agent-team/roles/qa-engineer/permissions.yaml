@@ -1,0 +1,22 @@
+read:
+- PRD
+- UI_SPEC
+- ARCHITECTURE_DOC
+- FRONTEND_DELIVERY_NOTE
+- BACKEND_DELIVERY_NOTE
+- SECURITY_REVIEW
+write:
+- TEST_PLAN
+- BUG_REPORT
+- TEST_REPORT
+- RELEASE_QUALITY_NOTE
+approve:
+- TEST_PLAN
+- TEST_REPORT
+block:
+- release_if_blocking_defects_exist
+- release_if_coverage_insufficient_for_core_flow
+forbidden:
+- rewrite_requirement_scope
+- approve_release_without_test_evidence
+- bypass_bug_recording

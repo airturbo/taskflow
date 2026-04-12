@@ -1,0 +1,19 @@
+read:
+- PRD
+- approved_baselines
+- UX_REVIEW_REPORT
+- UX_ISSUE_LOG
+write:
+- UI_SPEC
+- UX_FLOW
+- COMPONENT_SPEC
+- DESIGN_REVIEW_NOTE
+approve:
+- UI_SPEC
+- COMPONENT_SPEC
+block:
+- frontend_handoff_if_ui_spec_incomplete
+forbidden:
+- change_PRD_scope_directly
+- change_API_contract_directly
+- release_decision

@@ -1,0 +1,16 @@
+{
+  "cr_id": "CR-20260402-001",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-ARCH-0001",
+    "ART-TEST-0002",
+    "ART-DELIVERY-0002"
+  ],
+  "change_type": "desktop_repository_phase5_optimization",
+  "description": "推进桌面数据层第五阶段：把提醒候选、标签交集筛选、导航/统计计数改成 repository 直查；把桌面保存从整库 delete+rewrite 收敛为按 task 与关系表增量 upsert；并补一层持久化串行化，避免保存与派生查询并发导致读到旧数据。",
+  "justification": "当前桌面端虽然已经完成多轮任务关系拆表，但主应用仍在多个关键路径上依赖整包任务数组做派生计算，同时每次保存都整库清空重写，既浪费 IO，也让提醒与统计缺少真正的数据层闭环。继续往真实可用方向推进，必须把这些读写热点下沉到 repository。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260402-001",
+  "created_at": "2026-04-02T16:23:00+08:00"
+}

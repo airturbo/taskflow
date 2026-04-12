@@ -1,0 +1,472 @@
+===== PAGE 1 =====
+1©2026 Visa. All rights reserved. Visa Confidential
+©2026 Visa. All rights reserved. Visa Confidential
+MIDAS Acquiring setup
+7 April 2026
+
+===== PAGE 2 =====
+2©2026 Visa. All rights reserved. Visa Confidential
+This presentation is furnished to you solely in your capacity as a customer of Visa Inc. and/or a 
+participant in the Visa payments system. By accepting this presentation, you acknowledge that the 
+information contained herein (the “Information”) is confidential and subject to the confidentiality 
+restrictions contained in Visa’s operating regulations and/or other confidentiality agreements, which 
+limit your use of the Information. You agree to keep the Information confidential and not to use the 
+Information for any purpose other than in your capacity as a customer of Visa Inc. or as a participant 
+in the Visa payments system. The Information may only be disseminated within your organization on 
+a need-to-know basis to enable your participation in the Visa payments system. Please be advised 
+that the Information may constitute material non public information under U.S. federal securities 
+laws and that purchasing or selling securities of Visa Inc. while being aware of material non public
+information would constitute a violation of applicable U.S. federal securities laws.
+Notice of confidentiality
+
+===== PAGE 3 =====
+3©2026 Visa. All rights reserved. Visa Confidential
+Acquirer Client Onboarding Process
+PIF: Program Information Form
+PRM: Program Request Manager
+TPA: Third Party Agent
+DIC: Digital Issuer Certification
+DDA: Direct Debit Authority
+SFT Online: Settlement Fund Transfer Online
+VCLM: Visa Client Lifecycle Management
+CIQ: Client Information Questionnaire
+VBN: Visa Business News 
+GOC: Global Operating Certificates
+VOIP: Visa Online Invoice Portal
+Acquiring Monitoring 
+Program
+Acquirer Program Review
+Submit Risk Assessment Questionnaire
+Scope
+Implementation (Minimum 60 business days) 
+❑ Assign Implementation 
+manager
+❑ Scoping call to review 
+deliverables
+Settlement Account
+❑ Setup bank a/c details 
+in SFT-O
+❑ Configuration of 
+settlement routing 
+details in VisaNet
+Setup & 
+Configuration
+Go-live
+❑ BIN Configuration
+❑ Visa Resolve Online
+❑ Set up Host
+❑ 3D secure
+❑ Merchant enrollment
+❑ VCMS enrollment
+Pre-Work 
+❑ Project scoping
+❑ Finalize processor 
+selection if using 3rd 
+party processor
+❑ Set up bank accounts 
+by client
+Production Setup
+(3 weeks before Go-Live)
+Provisional BID 
+Assignment
+DIC: Digital Issuer Certification
+Complete and obtain 
+required approval 2 weeks 
+before Go-live:
+❑ License Approval
+❑ Post Collateral
+❑ Risk Review
+❑ CNP approval (if 
+applicable)
+❑ 3rd Party Registration
+❑ Service Delivery 
+Implementation
+Go-live DependenciesLicense Application Process
+Approval/
+ConditionAML Compliance Review
+Credit Settlement Risk Review Licensing Fee & 
+Execute Agreement
+Risk Track Assessment
+BIN 
+Assignment
+High Integrity Risk 
+Registration
+Third Party Agent 
+(TPA) Registration
+VARS
+Review
+Testing
+❑ Host testing
+❑ Terminal and reader
+❑ Attended host testing
+❑ Base II self test and 
+reports reconciliation
+❑ Completion note (90 
+days validity)
+Settlement 
+Services
+Tools and Resources
+❑ VCLM & CIQ
+❑ PRM
+❑ SFT Online
+❑ DNSSP & VOIP
+❑ VBN & Rules
+❑ VOIP
+❑ GOC
+Initial Steps Onboarding Workstreams  (can be processed in parallel)
+License
+Application
+Required to enable 
+enrolling in Visa Access 
+for tools and resources, 
+and to initiate 
+onboarding  
+workstreams
+1
+2
+Visa Access 
+Enrollment
+3
+❑ Partner Portal
+❑ Documentation
+Request acquiring BINs 
+via VCLM tool, 
+to enable configuration, 
+testing, solutioning
+Register your third-party 
+service providers and 
+TPAs via PRM tool
+Visa Acceptance Risk 
+Standards control 
+framework review.
+Required where Acquirer 
+contracts with merchant 
+or TPA classified as High 
+Integrity Risk
+CNP program identifying 
+Acquirers with excessive 
+levels of fraud, dispute 
+and enumeration activity.
+Submit via SFT Online for 
+International, and submit 
+offline for national 
+settlement, where 
+applicable 
+❑ Schedule VisaNet 
+effective date
+❑ Auto-collection of Fees
+❑ Post Go-live monitoring 
+of transactions & issues 
+(for 2 weeks)
+4
+Workstream Legend
+Licensing Services/Systems
+Provisional BID Risk Management
+Implementation
+Collateral 
+❑ Collateral package 
+consideration
+❑ Execute collateral 
+agreement 
+❑ Post CollateralVisa to Conduct Risk Review
+
+===== PAGE 4 =====
+4©2026 Visa. All rights reserved. Visa Confidential
+Projected Setup Cost – Principal Acquiring
+• Last Updated 11th Feb 2026
+• Please note that the fees listed might not be exhaustive and might not include any incidental charges or chargebacks.
+• Please note that all of the fees serve as estimates, and are subject to change at any given time. For the most updated fees, please refer to the Visa Fee Schedule on Visa Online.
+Category Fee Frequency Amount 
+(USD)
+Cost 
+Exampl
+e (USD)
+Description Comments & 
+Assumptions
+Billing milestone Billing Timing
+Licensing Initial Service Fee One time fee 75,000 Principal
+50,000 
+Associate
+75,000 Membership joining fee paid to access the benefits of Visa 
+membership. Primarily comprised of due diligence, member risk 
+review and set-up assistance services provided to License clients.
+Principal membership Invoiced as soon as Licensing 
+reviews kick off. Estimated May 
+Invoice
+To wire transfer to Visa at earliest 
+convenience for license approval
+Numeric Licensing Fee Per BIN 
+assignment
+500 1,000 Assignment fee for obtaining a new Issuing BIN or Acquiring ID. Fee assessed for 2 BINs After provisional BID is assigned, 
+Midas team can proceed to 
+assign BINs. Will be invoiced on 
+that month accordingly.
+After BIN go live
+Project Management 
+and Client Configuration
+Project Management Fee Per project/month 3,000 18,000 Project management and client configuration (PMCC)  covers 
+implementation of new programs which can include: new PCRs; 
+additions to existing programs, New or Relocations of a Data 
+Center.
+Calculated based on 6 months of 
+project management fees (6 x 
+3,000)
+Invoices upon kick off of the 
+Implementation project with the 
+Implementation manager
+After BIN go live
+New Program Installation Per numeric PCR: 3,000
+CIB: 3,000
+6,000 Fee will be assessed to each new program installation per PCR, CIB 
+and/or Settlement BIN.
+Assuming 1x CIB and 1x PCR 
+Numeric assigned
+Invoices after CIQ is completed 
+and raised as a configuration 
+request by Implementation 
+manager
+After BIN go live
+Endpoint Certification Issuance 
+Fee
+Per certificate 550 550 This fee applies to all clients and service providers that request an 
+endpoint certificate for encrypted connectivity with VisaNet.
+Applied if endpoint certificate 
+requested
+Invoices after CIQ is completed 
+and raised as a configuration 
+request by Implementation 
+manager
+After BIN go live
+eCommerce Digital Certificate 
+Issuance
+Per certificate 550 550 This fee applies to all clients and service providers that request an 
+e-commerce digital certificate for 3DS Server connectivity 
+Applied if 3DS Server Certificate 
+requested 
+After BIN go live
+Testing Attended Testing Fee Per hour 1000 per hour 12,000 Attended Testing is a fee-based support service where clients rely 
+on Visa test engineers for testing.
+Estimated 12  testing hours for 
+implementation purposes.
+Invoices after completion of 
+attended testing with Visa 
+Testing team, once total number 
+of hours are tabulated
+After BIN go live
+Host Test Cards Package Per Package 1000 1000 Test Cards for Acquiring Testing Fee assessed for 1 Test Cards 
+Package
+Invoiced once request for test 
+cards for acquiring testing have 
+been submitted by client 
+After BIN go live
+Visa Secure Test Suite (VSTS) Per Subscription 7,500 7,500 The Visa Secure Test Suite (VSTS) is available for Visa Secure EMV 
+3DS Access Control Server (ACS) and 3DS Server solution 
+providers, as well as clients that have developed their own 
+solutions to ensure that their software complies with Visa EMV 
+3DS specification prior to deployment.
+Fee assessed for 90 days 
+subscription fees . Only 
+applicable if clients have own 
+3DS Server
+Invoiced once client has 
+requested for VSTS access.
+After BIN go live
+Visa Dedicated Access –
+third party processing/ 
+self processing, direct 
+access  to settlement & 
+self-testing
+Visa Clearing Exchange License 
+Fee
+One time fee 8,000 8,000 The BASE II VCX software supplied by Visa for processing 
+transaction files and is the interface between the processing 
+centers internal payment processing systems and the VisaNet 
+Access Point (VAP).
+Fee assessed for 1 CIB, assuming 
+VCX is required.
+Invoiced once Implementation 
+manager provides confirmation 
+to proceed with VCX 
+After BIN go live
+VisaNet Test System – System 
+License Fee
+One time fee 5,000 5,000 VTS-VIP is a Visa-supplied software to clients for their host testing 
+purpose. It emulates an endpoints VisaNet connection, both in the 
+content of the messages and in the communication protocol. This 
+is used for host testing purposes.
+Only applicable if required by 
+client, according to third-party 
+processor requirements.
+Invoiced upon completion of 
+VTS  tools request form and 
+submission to team
+After BIN go live
+Visa Cloud Connect Access Fee, 
+or,
+New Extended Access Server 
+(EAS) Installation Fee
+Per endpoint 10,000 20,000 Clients connecting directly to Visanet using own endpoint Fee assessed for 1 Production 
+and 1 DR endpoint. Only 
+applicable if client setup own 
+endpoint 
+Invoiced upon activation of 
+Endpoint after all testing and 
+certification is completed
+After BIN go live
+
+===== PAGE 5 =====
+5©2026 Visa. All rights reserved. Visa Confidential
+Projected Setup Cost – Event related fees Principal Acquiring
+Category Fee Frequency Amount (USD) Cost Example 
+(USD)
+Description Comments & Assumptions
+Project Management and 
+Client Configuration
+Configuration 
+Reschedule
+Per 
+numeric/event
+3,500 3,500 Request to reschedule a previously established system 
+configuration change after a Visa acknowledgement notification 
+has been sent (e.g., client requests a change in the effective 
+implementation date).
+Only if required/requested
+Configuration 
+Cancellation
+Per 
+numeric/event
+6,500 6,500 Request to cancel a configuration request after a Visa 
+acknowledgement notification has been sent.
+Only if required/requested
+Configuration Expedite Per numeric 6,500 6,500 Request without the required minimum notice to implement 
+faster than the established lead time for a particular configuration 
+request
+Only if required/requested
+Expedited Endpoint 
+Certification Issuance 
+Fee
+Per certificate 1,000 1,000 This fee will be charged when a client or service provider 
+requests a certificate to be issued in less than the established 
+lead times for each of the following certificate types; i.e. Visa 
+Secure eCommerce, Endpoint and VSDC IPK.
+Only if required/requested
+Testing Expedited Testing 
+Requests
+Per request 3,000 3,000 For clients who request for Attended Testing schedules & Issuer 
+Card Personalization validation requests to be assigned a higher 
+priority, Test slot of up to two hours.
+Only if required/requested
+Cancellation Fees for 
+Scheduled Attended 
+Testing (Within 24 Hours)
+Per request 2,000 2,000 For clients who request to cancel scheduled Attended Testing 
+(provided with less than 24 hours notice)  (Minimum 2 hours)
+Only if required/requested
+• Last Updated 11th Feb 2026
+• Please note that the fees listed might not be exhaustive and might not include any incidental charges or chargebacks.
+• Please note that all of the fees serve as estimates, and are subject to change at any given time. For the most updated fees, please refer to the Visa Fee Schedule on Visa Online.
+
+===== PAGE 6 =====
+6©2026 Visa. All rights reserved. Visa Confidential
+Projected Setup Cost – Recurring Fees Principal Acquiring
+Category Fee Frequency Amount (USD) Cost Example 
+(USD)
+Description Comments & 
+Assumptions
+Visa Online Visa Online Access Fee Per quarter, 
+per Business 
+ID
+1,250 5000 Visa Online (VOL) serves as Visa’s B2B portal for clients to access tools and 
+information to run a payments business with Visa. 
+1 Business ID, 
+Annualised 
+Visa Resolve Online Visa Resolve Online Per month 200 2,400 Basic Package Access - Visa Resolve Online (VROL) is a Visa managed dispute 
+management service mandated for use in the Visa Rules, primarily used for 
+document exchange in supporting dispute processes.
+Access as either issuer 
+or acquirer only, and not 
+both. Annualised.
+Testing Self-Service Tools (VTS-
+V.I.P. + VTS-CS + Visa Test 
+Portal)
+Per year 5,000 5,000 Visa provides a suite of self-testing tools and support services that allow clients 
+to test their setup compatibility with VisaNet.
+Annualised
+Visa Clearing Exchange VCX Subscription Per month, 
+per CIB 
+subscribed
+500 6,000 The VCX software provided to Visa Clients worldwide for processing transaction 
+files sent to and received from VisaNet.  This fee will cover expenses associated 
+with operational support, updates, maintenance, training and documentation. 
+Assuming VCX is 
+required, annualised
+Third Party Agent Third Party Agent Fees Per year MV < $100MB: 
+2,500
+MV < $100M: 5,000
+MV < $1B: 10,000
+MV > $10B: 30,000
+5,000 The Third Party Agent Program is a Visa-mandated program to ensure Visa 
+clients register their Third Party Agents with Visa before the entities provide 
+payment related services for the clients. 
+Annualised
+Fund Transfer 
+Settlement Reporting 
+Entity (FTSRE)
+Fund Transfer 
+Settlement Reporting 
+Entity (FTSRE) Fee
+Monthly 350 0 FTSREs are required for each funds transfer that a Client makes to Visa, or Visa 
+makes to a Client, where a direct settlement relationship exists. This relates to a 
+monthly charge assessed to members and processors for each additional funds 
+transfer point.
+Not required if settling 
+international 
+transactions in one 
+currency, e.g. USD
+Visa Cloud Connect , 
+Monthly Maintenance 
+Fee
+Monthly Fee Monthly 5,000 to 50,000 
+(volume 
+dependent)
+Up to 600,000 Clients connecting directly to VisaNet using own endpoint Fee assessed for 1 
+Production and 1 DR 
+endpoint. Only 
+applicable if client setup 
+own endpoint 
+• Last Updated 11th Feb 2026
+• Please note that the fees listed might not be exhaustive and might not include any incidental charges or chargebacks.
+• Please note that all of the fees serve as estimates, and are subject to change at any given time. For the most updated fees, please refer to the Visa Fee Schedule on Visa Online.
+
+===== PAGE 7 =====
+7©2026 Visa. All rights reserved. Visa Confidential
+Post-Implementation Costs – Recurring Principal Acquring
+Category Fee Frequency Amount (USD) Cost Example 
+(USD)
+Description Comments & Assumptions
+Fixed Service Fees Quarterly Minimum Fee Per quarter 7,500 30,000 Quarterly Minimum Fee applies to principal type 
+clients who are no longer in the grace period and 
+are required to certify an Operating Certificate 
+including clients who have not started their Visa 
+Programs (no volumes)
+Grace Period: 3 Quarters from Provisional 
+Business ID assignment, unless volume starts 
+earlier. Annualised
+Credit Settlement Risk Risk Monitoring Fee Per quarter 4,000 16,000 Risk monitoring fee will be levied on Principal 
+clients that do not have a full international / 
+global long- and short-term foreign currency 
+credit rating issued by one of the three major 
+agencies (e.g., S&P, Moody's or Fitch)
+Annualised. 4,000 per quarter for non FIs.
+License Fees
+Refer to Visa Online – Fee Schedule for detailed breakdown (transaction level fees)
+Service Fees
+Network Fees
+Network Fees and VisaNet 
+Processing Chagres
+International Transaction 
+Fees
+• Last Updated 11th Feb 2026
+• Please note that the fees listed might not be exhaustive and might not include any incidental charges or chargebacks.
+• Please note that all of the fees serve as estimates, and are subject to change at any given time. For the most updated fees, please refer to the Visa Fee Schedule on Visa Online.
+

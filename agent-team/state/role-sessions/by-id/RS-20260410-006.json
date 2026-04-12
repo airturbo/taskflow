@@ -1,0 +1,40 @@
+{
+  "role_session_id": "RS-20260410-006",
+  "workflow_id": "WF-20260410-001",
+  "role_id": "product_manager",
+  "stage": "impact_assessment",
+  "input_refs": [
+    "HO-20260410-005"
+  ],
+  "input_summary": "# RELEASE_MANIFEST  ## 部署结果 - 目标：CloudBase 静态托管 `taskflow-7gxjr4s56c9587d2` - 域名：`taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com` - 所有文件 HTTP 200 可访问 - index.html / favicon.svg / icons.svg / assets/index-C6nSIM7p.js / assets/index-B",
+  "selected_model": {
+    "provider_family": "gemini-pro",
+    "model_tier": "pro",
+    "model_alias": "gemini-pro",
+    "execution_mode": "single",
+    "source": "handoff_recommendation"
+  },
+  "selected_model_source": "handoff_recommendation",
+  "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 gemini-pro，来源 HO-20260410-005。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-005。",
+  "expected_outputs": [
+    "handoff_resolution",
+    "PRD",
+    "USER_STORY",
+    "ACCEPTANCE_CRITERIA"
+  ],
+  "handoff_id": "HO-20260410-005",
+  "task_id": null,
+  "artifact_ids": [],
+  "status": "queued",
+  "produced_handoff_packet_ids": [
+    "HO-20260410-006",
+    "HO-20260410-008"
+  ],
+  "produced_artifact_ids": [],
+  "last_execution_run_id": null,
+  "created_by": "host_agent",
+  "started_at": null,
+  "ended_at": null,
+  "created_at": "2026-04-10T12:12:46.362942+00:00",
+  "updated_at": "2026-04-10T13:18:20.222380+00:00"
+}

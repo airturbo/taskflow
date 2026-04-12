@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": ["node", "obsidian"],
+    "paths": {
+      "@taskflow/core": ["../packages/taskflow-core/src/index.ts"],
+      "@taskflow/core/*": ["../packages/taskflow-core/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "eslint.config.mjs", "esbuild.config.mjs"]
+}

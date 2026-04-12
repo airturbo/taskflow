@@ -1,0 +1,32 @@
+{
+  "handoff_id": "HO-20260410-007",
+  "workflow_id": "WF-20260410-001",
+  "from_role": "project_manager_orchestrator",
+  "to_role": "frontend_engineer",
+  "from_role_session_id": "RS-20260410-001",
+  "intent": "用户 4 个新优化需求",
+  "payload_type": "ROLE_HANDOFF",
+  "input_summary": "# 需求清单  ## 1. 日历周历添加按钮精简 - 只保留每天日期行右侧小 + 号 - 去掉下方区域内巨大 + 号（`.calendar-create-strip` 或类似内联创建卡片） - 去掉周历头部横向每天旁的 + 号  ## 2. 新增任务三个时间字段 - MobileQuickCreateSheet 改为三个时间：开始时间(startAt)、计划完成(dueAt)、截止DDL(deadlineAt) - 每个用 datetime-local 输入  ## 3. 象",
+  "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-007--v1.0.0.md",
+  "upstream_artifacts": [],
+  "questions_to_answer": [],
+  "acceptance_focus": [
+    "日历只保留标题行小+",
+    "三个时间字段",
+    "象限顶栏下拉",
+    "时间线纵向紧凑",
+    "构建通过"
+  ],
+  "recommended_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet"
+  },
+  "recommended_execution_mode": "single",
+  "task_id": null,
+  "status": "accepted",
+  "created_by": "host_agent",
+  "accepted_by": "host_agent",
+  "created_at": "2026-04-10T12:47:17.933177+00:00",
+  "updated_at": "2026-04-10T12:47:26.933484+00:00"
+}

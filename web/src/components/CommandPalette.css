@@ -1,0 +1,169 @@
+.command-palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.command-palette-panel {
+  background: var(--surface, #fff);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 600px;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.command-palette-input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  outline: none;
+  background: transparent;
+  color: var(--text, #111);
+  box-sizing: border-box;
+}
+
+.command-palette-input::placeholder {
+  color: var(--text-muted, #9ca3af);
+}
+
+.command-palette-list {
+  overflow-y: auto;
+  max-height: calc(70vh - 60px);
+  padding: 4px 0 8px;
+}
+
+/* cmdk group heading selector */
+.command-palette-section [cmdk-group-heading] {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #9ca3af);
+  user-select: none;
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text, #111);
+  border-radius: 0;
+  outline: none;
+  transition: background 80ms ease;
+}
+
+.command-palette-item[aria-selected="true"],
+.command-palette-item:hover {
+  background: var(--accent-soft, #f3f4f6);
+}
+
+[data-theme="midnight"] .command-palette-item[aria-selected="true"],
+[data-theme="midnight"] .command-palette-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.command-palette-empty {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--text-muted, #9ca3af);
+  font-size: 14px;
+}
+
+/* Dots */
+.cp-priority-dot,
+.cp-list-dot,
+.cp-tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Task items */
+.cp-task-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-task-title.is-completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.cp-task-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.cp-list-badge {
+  font-size: 12px;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-status-badge {
+  font-size: 11px;
+  background: var(--surface-2, #f3f4f6);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  color: var(--text-muted, #6b7280);
+}
+
+[data-theme="midnight"] .cp-status-badge {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* List/tag items */
+.cp-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted, #9ca3af);
+  flex-shrink: 0;
+}
+
+/* Scrollbar */
+.command-palette-list::-webkit-scrollbar {
+  width: 6px;
+}
+.command-palette-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.command-palette-list::-webkit-scrollbar-thumb {
+  background: var(--border, #e5e7eb);
+  border-radius: 3px;
+}
+
+/* Dark theme overrides */
+[data-theme="midnight"] .command-palette-panel {
+  background: var(--surface, #1e1e2e);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="midnight"] .command-palette-input {
+  color: var(--text, #e2e8f0);
+  border-bottom-color: var(--border, rgba(255, 255, 255, 0.1));
+}

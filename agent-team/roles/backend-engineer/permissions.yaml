@@ -1,0 +1,18 @@
+read:
+- PRD
+- ARCHITECTURE_DOC
+- security_constraints
+write:
+- API_SPEC
+- BACKEND_DELIVERY_NOTE
+- DATA_CONTRACT_NOTE
+approve:
+- API_SPEC
+- BACKEND_DELIVERY_NOTE
+block:
+- release_if_breaking_change_unacknowledged
+- integration_if_security_controls_missing
+forbidden:
+- change_business_scope_directly
+- waive_security_control_without_review
+- mark_release_ready

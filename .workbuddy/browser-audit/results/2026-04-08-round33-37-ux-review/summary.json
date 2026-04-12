@@ -1,0 +1,50 @@
+{
+  "reviewedAt": "2026-04-08T04:01:27.063Z",
+  "url": "http://127.0.0.1:4173/",
+  "evidenceDir": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review",
+  "screenshots": {
+    "reminderCopy": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/01-reminder-copy.png",
+    "calendarMonth": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/02-calendar-month.png",
+    "calendarWeek": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/03-calendar-week.png",
+    "calendarAgenda": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/04-calendar-agenda.png",
+    "timeline": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/05-timeline-ddl-marker.png",
+    "deadlineDueTrigger": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round33-37-ux-review/screenshots/06-deadline-due-trigger.png"
+  },
+  "checks": {
+    "reminderCopy": {
+      "featuredTitle": "提醒 · DDL focused UX 回放任务",
+      "featuredBody": "提前 30 分钟（按 DDL） · DDL 今天 12:21 · 计划 今天 13:01",
+      "relativeReminderUsesDeadlineCopy": true,
+      "reminderBodyShowsDeadline": true,
+      "reminderBodyShowsPlanned": true,
+      "detailWarningVisible": true
+    },
+    "calendarMonth": {
+      "taskVisible": true,
+      "deadlineDotCount": 1
+    },
+    "calendarWeek": {
+      "taskVisible": true,
+      "deadlineBadgeText": "DDL晚于 DDL"
+    },
+    "calendarAgenda": {
+      "taskVisible": true,
+      "deadlineBadgeText": "DDL 2026.04.11 13:00计划晚于 DDL"
+    },
+    "timeline": {
+      "rowVisible": true,
+      "titleDeadlineBadgeText": "DDL晚于 DDL",
+      "deadlineMarkerCount": 1
+    },
+    "deadlineDueTrigger": {
+      "featuredTitle": "DDL 到期 · DDL focused UX 回放任务",
+      "featuredBody": "硬性 DDL 已到：今天 11:51",
+      "deadlineTitlePreferred": true,
+      "deadlineBodyPreferred": true
+    }
+  },
+  "issues": [],
+  "consoleMessages": [],
+  "pageErrors": [],
+  "conclusion": "passed"
+}

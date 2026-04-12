@@ -1,0 +1,21 @@
+{
+  "display_name": "前端开发",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet"
+  },
+  "primary_stages": [
+    "implementation_in_progress"
+  ],
+  "owned_artifacts": [
+    "FRONTEND_DELIVERY_NOTE",
+    "COMPONENT_MAPPING",
+    "FE_LIMITATION_NOTE"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "frontend_engineer"
+}

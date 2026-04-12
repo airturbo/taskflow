@@ -1,0 +1,22 @@
+read:
+- TASK_BRIEF
+- ANALYSIS_NOTE
+- COMPLIANCE_NOTE
+- UX_REVIEW_REPORT
+- UX_ISSUE_LOG
+write:
+- PRD
+- USER_STORY
+- ACCEPTANCE_CRITERIA
+- SCOPE_NOTE
+approve:
+- PRD
+- ACCEPTANCE_CRITERIA
+block:
+- design_start_if_scope_unconfirmed
+- build_start_if_acceptance_criteria_missing
+- release_if_ux_acceptance_not_closed
+forbidden:
+- approve_UI_SPEC_as_ui_owner
+- approve_ARCHITECTURE_DOC_as_architect
+- release_without_QA_and_DevOps_gate

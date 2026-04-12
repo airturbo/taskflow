@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "manifest_name": "agent-team-bootstrap-manifest",
+  "phase": "phase1",
+  "description": "Agent Team 工程骨架初始化清单。用于验证目录完整性、配置文件齐备性与运行时占位。",
+  "directories": {
+    "configs": {
+      "global": {
+        "required_files": [
+          "model-config.v1.json",
+          "router-config.v1.yaml",
+          "state-machine.v1.yaml",
+          "naming-rules.v1.md"
+        ]
+      },
+      "baselines": {
+        "required_files": [
+          "baseline.current.v1.json",
+          "baseline.history.v1.jsonl"
+        ]
+      }
+    },
+    "roles": {
+      "expected_count": 11,
+      "per_role_required_files": [
+        "role.profile.json",
+        "permissions.yaml",
+        "query-playbook.yaml",
+        "prompt.system.md"
+      ],
+      "role_folders": [
+        "project-manager-orchestrator",
+        "product-manager",
+        "ui-ux-designer",
+        "user-experience-officer",
+        "system-architect",
+        "frontend-engineer",
+        "backend-engineer",
+        "qa-engineer",
+        "devops-engineer",
+        "data-analyst",
+        "security-compliance-engineer"
+      ]
+    },
+    "artifacts": {
+      "registry": {
+        "required_files": ["artifact-registry.v1.json"]
+      },
+      "by-type": {
+        "expected_subdirs": [
+          "TASK_BRIEF",
+          "PRD",
+          "UI_SPEC",
+          "ARCHITECTURE_DOC",
+          "API_SPEC",
+          "SECURITY_REVIEW",
+          "TEST_PLAN",
+          "RELEASE_MANIFEST",
+          "DATA_REPORT",
+          "DEPLOY_SPEC",
+          "EXPERIENCE_REVIEW",
+          "EXPERIENCE_REWORK_NOTE",
+          "EXPERIENCE_SIGN_OFF"
+        ]
+      },
+      "by-role": {
+        "expected_subdirs": [
+          "project-manager-orchestrator",
+          "product-manager",
+          "ui-ux-designer",
+          "user-experience-officer",
+          "system-architect",
+          "frontend-engineer",
+          "backend-engineer",
+          "qa-engineer",
+          "devops-engineer",
+          "data-analyst",
+          "security-compliance-engineer"
+        ]
+      },
+      "archive": {
+        "description": "已归档版本存储目录"
+      }
+    },
+    "logs": {
+      "change-requests": {},
+      "impact-assessments": {},
+      "rollbacks": {},
+      "audit": {
+        "required_files": ["audit-log.v1.jsonl"]
+      }
+    },
+    "runtime": {
+      "router": {},
+      "state-machine": {},
+      "artifact-service": {},
+      "logger": {}
+    }
+  },
+  "initialization_checklist": [
+    {
+      "step": 1,
+      "action": "verify_directory_structure",
+      "description": "检查所有必需目录是否存在"
+    },
+    {
+      "step": 2,
+      "action": "verify_global_configs",
+      "description": "检查 configs/global/ 下 4 个文件是否齐备"
+    },
+    {
+      "step": 3,
+      "action": "verify_role_configs",
+      "description": "检查 11 个角色目录各含 4 个必需文件"
+    },
+    {
+      "step": 4,
+      "action": "verify_artifact_registry",
+      "description": "检查 artifact-registry.v1.json 存在且 schema 合法"
+    },
+    {
+      "step": 5,
+      "action": "verify_baseline",
+      "description": "检查 baseline.current.v1.json 存在且指向有效产物"
+    },
+    {
+      "step": 6,
+      "action": "verify_audit_log",
+      "description": "检查 audit-log.v1.jsonl 存在且可追加"
+    },
+    {
+      "step": 7,
+      "action": "verify_runtime_placeholders",
+      "description": "检查 runtime/ 下 4 个子目录存在"
+    }
+  ],
+  "post_bootstrap": {
+    "next_steps": [
+      "实现 runtime/router/ 路由执行器",
+      "实现 runtime/state-machine/ 状态机执行器",
+      "实现 runtime/artifact-service/ 产物注册读写服务",
+      "实现 runtime/logger/ 日志写入服务",
+      "编写 runtime/bootstrap.py 初始化入口脚本"
+    ]
+  }
+}

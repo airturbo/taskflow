@@ -1,0 +1,24 @@
+{
+  "display_name": "用户体验官",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude",
+    "model_tier": "deep-reasoning",
+    "model_alias": "claude"
+  },
+  "primary_stages": [
+    "testing",
+    "ux_review",
+    "release_preparation"
+  ],
+  "owned_artifacts": [
+    "UX_COVERAGE_MATRIX",
+    "UX_REVIEW_REPORT",
+    "UX_ISSUE_LOG",
+    "EXPERIENCE_ACCEPTANCE_NOTE"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "user_experience_officer"
+}

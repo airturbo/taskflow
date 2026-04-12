@@ -1,0 +1,21 @@
+{
+  "display_name": "系统架构师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude",
+    "model_tier": "deep-reasoning",
+    "model_alias": "claude"
+  },
+  "primary_stages": [
+    "architecture_in_progress"
+  ],
+  "owned_artifacts": [
+    "ARCHITECTURE_DOC",
+    "TECH_DECISION_RECORD",
+    "RISK_REGISTER"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "system_architect"
+}

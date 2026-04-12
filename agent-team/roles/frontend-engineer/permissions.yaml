@@ -1,0 +1,19 @@
+read:
+- PRD
+- UI_SPEC
+- ARCHITECTURE_DOC
+- API_SPEC
+- UX_REVIEW_REPORT
+- UX_ISSUE_LOG
+write:
+- FRONTEND_DELIVERY_NOTE
+- COMPONENT_MAPPING
+- FE_LIMITATION_NOTE
+approve:
+- FRONTEND_DELIVERY_NOTE
+block:
+- frontend_release_if_known_high_risk_ui_breakage
+forbidden:
+- modify_PRD_baseline_directly
+- redefine_UI_rules_without_design_review
+- release_gate_approval

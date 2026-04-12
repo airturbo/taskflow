@@ -1,0 +1,48 @@
+{
+  "steps": [
+    {
+      "name": "页面加载",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "新建任务",
+      "status": "SKIP",
+      "detail": "未找到快速创建输入框"
+    },
+    {
+      "name": "看板拖拽执行",
+      "status": "SKIP",
+      "detail": "todoCards=0, hasDoing=false"
+    },
+    {
+      "name": "提醒面板可见",
+      "status": "PASS",
+      "detail": "width=359"
+    },
+    {
+      "name": "Featured 提醒文案列宽度合理",
+      "status": "PASS",
+      "detail": "mainWidth=305"
+    },
+    {
+      "name": "Onboarding 可见性",
+      "status": "PASS",
+      "detail": "onboarding 未显示（符合 dismissed/completed 预期）"
+    },
+    {
+      "name": "详情面板可见",
+      "status": "PASS",
+      "detail": "height=261"
+    },
+    {
+      "name": "笔记描述模块现状",
+      "status": "INFO",
+      "detail": "height=172, width=327"
+    }
+  ],
+  "passed": true,
+  "errors": [],
+  "pageErrors": 0,
+  "consoleErrors": []
+}

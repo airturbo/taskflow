@@ -1,0 +1,16 @@
+{
+  "cr_id": "CR-20260409-001",
+  "requested_by": "product_manager",
+  "target_artifacts": [
+    "web/src/App.tsx",
+    "web/src/utils/smart-entry.ts",
+    "web/src/index.css"
+  ],
+  "change_type": "feature_addition",
+  "description": "新增5项功能：(1)系统深色/浅色模式跟随+手动切换，(2)自然语言增强，(3)统计页升级（完成趋势+Streak），(4)快捷键面板，(5)批量操作",
+  "justification": "对标世界级Todo产品，补齐核心体验差距，提升留存与用户满意度",
+  "priority": "high",
+  "status": "open",
+  "impact_assessment_id": null,
+  "created_at": "2026-04-09T05:16:20.798939+00:00"
+}

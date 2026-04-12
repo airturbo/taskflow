@@ -1,0 +1,16 @@
+{
+  "cr_id": "CR-20260407-001",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0004",
+    "ART-UX_REVIEW_REPORT-0005",
+    "ART-UX_ISSUE_LOG-0005"
+  ],
+  "change_type": "onboarding_frontstage_ux_followup_iteration",
+  "description": "按新的体验官规则重跑前台交互走查后，围绕 onboarding 与浏览器声音回退链路发现 4 个需要正式返工的问题：带时间的首条创建会让新手指引从 0/5 直接跳到 2/5 并略过排期心智、直接跳到“完成一条任务”时主区和右栏上下文错位、“先看示例工作区”会把导引折叠到几乎失去存在感，以及浏览器端 AudioContext 回退会持续报警并削弱提醒/番茄声音可信度。",
+  "justification": "当前主工作台主体完成度已经不错，但新体验官规则要求必须以前台真实操作重新验收。结果表明 onboarding 仍会在第一分钟里给新用户错误心智，且提醒声音回退在浏览器端不够稳。若继续沿用旧放行结论，项目团队会在错误的首屏体验基线上继续推进。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260407-001",
+  "created_at": "2026-04-07T13:27:44+08:00"
+}

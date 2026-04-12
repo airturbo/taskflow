@@ -1,0 +1,30 @@
+{
+  "appPid" : 11610,
+  "checks" : {
+    "initialHeading" : "全部 · 时间线",
+    "kanbanHeading" : "全部 · 看板",
+    "timelineHeading" : ""
+  },
+  "drag" : {
+    "changedAfterDrop" : false
+  },
+  "evidenceDir" : "\/Users\/turbo\/WorkBuddy\/20260330162606\/.workbuddy\/browser-audit\/results\/2026-04-08-desktop-ux-review",
+  "issues" : [
+    "REMINDER_OPTIONS_INCOMPLETE",
+    "TIMELINE_TASK_NOT_FOUND",
+    "CALENDAR_RETURN_FAILED",
+    "INITIAL_CALENDAR_HEADING_UNEXPECTED",
+    "TIMELINE_HEADING_UNEXPECTED",
+    "CALENDAR_HEADING_UNEXPECTED"
+  ],
+  "pass" : false,
+  "reminderOptions" : [
+
+  ],
+  "reviewedAt" : "2026-04-08T07:04:01Z",
+  "screenshots" : {
+    "initial" : "\/Users\/turbo\/WorkBuddy\/20260330162606\/.workbuddy\/browser-audit\/results\/2026-04-08-desktop-ux-review\/screenshots\/01-initial.png",
+    "kanban" : "\/Users\/turbo\/WorkBuddy\/20260330162606\/.workbuddy\/browser-audit\/results\/2026-04-08-desktop-ux-review\/screenshots\/02-kanban.png",
+    "timelineBeforeDrag" : "\/Users\/turbo\/WorkBuddy\/20260330162606\/.workbuddy\/browser-audit\/results\/2026-04-08-desktop-ux-review\/screenshots\/03-timeline-before-drag.png"
+  }
+}

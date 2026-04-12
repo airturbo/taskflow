@@ -1,0 +1,22 @@
+{
+  "display_name": "测试工程师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "gpt-5",
+    "model_tier": "standard",
+    "model_alias": "gpt-5"
+  },
+  "primary_stages": [
+    "test_preparation",
+    "testing"
+  ],
+  "owned_artifacts": [
+    "TEST_PLAN",
+    "BUG_REPORT",
+    "TEST_REPORT"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "qa_engineer"
+}

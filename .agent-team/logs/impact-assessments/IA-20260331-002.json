@@ -1,0 +1,34 @@
+{
+  "ia_id": "IA-20260331-002",
+  "cr_id": "CR-20260331-002",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "project_manager_orchestrator",
+    "product_manager",
+    "ui_ux_designer",
+    "system_architect",
+    "frontend_engineer",
+    "qa_engineer",
+    "devops_engineer"
+  ],
+  "affected_artifacts": [
+    "ART-TASK-0001",
+    "ART-PRD-0001",
+    "ART-US-0001",
+    "ART-UI-0001",
+    "ART-UX-0001",
+    "ART-ARCH-0001",
+    "ART-ANALYSIS_NOTE-0001",
+    "ART-TEST-0001",
+    "ART-RELEASE-0001",
+    "ART-DELIVERY-0001"
+  ],
+  "affected_baselines": [
+    "BL-20260331-001"
+  ],
+  "risk_level": "high",
+  "requires_retest": true,
+  "rollback_plan": "若新版 parity demo 方向失控，则回退到 BL-20260331-001 对应的 MVP 方案。",
+  "recommendation": "proceed",
+  "created_at": "2026-03-31T11:36:35.923424+08:00"
+}

@@ -1,0 +1,14 @@
+supported_topics:
+- 指标口径
+- 数据来源
+- 分析结论
+- 效果评估
+- 实验思路
+response_style: 数据摘要
+escalate_when:
+- 用户要求改统计口径
+- 用户要求把临时分析纳入基线
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

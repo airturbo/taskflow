@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "team_profile": "agent-team-standard-phase1",
+  "phase": "phase1",
+  "description": "标准版11角色，项目经理兼任Orchestrator，并引入独立体验官作为发布前高标准体验把关角色；第一阶段全部采用single模型模式。",
+  "global": {
+    "execution_mode": "single",
+    "allow_override": true,
+    "override_priority": [
+      "artifact_override",
+      "task_override",
+      "role_default",
+      "global_default"
+    ],
+    "global_default": {
+      "provider_family": "gpt-5",
+      "model_tier": "light",
+      "model_alias": "gpt-5-mini"
+    },
+    "multi_model": {
+      "enabled": false,
+      "allowed_modes": [
+        "single"
+      ],
+      "future_reserved_modes": [
+        "fallback",
+        "parallel_compare",
+        "compare_and_merge"
+      ]
+    },
+    "routing_policy": {
+      "query_mode": "route_to_owner_role_readonly",
+      "change_mode": "require_impact_assessment_first"
+    }
+  },
+  "task_overrides": {},
+  "artifact_overrides": {}
+}

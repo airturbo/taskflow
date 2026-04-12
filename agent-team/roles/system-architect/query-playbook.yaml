@@ -1,0 +1,14 @@
+supported_topics:
+- 系统边界
+- 模块职责
+- 接口关系
+- 技术选型
+- 非功能设计
+response_style: 主责解释
+escalate_when:
+- 用户要求改架构边界
+- 用户要求替换关键技术组件
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

@@ -1,0 +1,33 @@
+{
+  "handoff_id": "HO-20260410-003",
+  "workflow_id": "WF-20260410-001",
+  "from_role": "frontend_engineer",
+  "to_role": "qa_engineer",
+  "from_role_session_id": "RS-20260410-002",
+  "intent": "前端修复 4 个移动端 bug 完成，请 QA 测试验证",
+  "payload_type": "ROLE_HANDOFF",
+  "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 修改文件 - `web/src/App.tsx` — 手机端创建反馈 3 秒自动消失 - `web/src/index.css` — Bug 1-4 的 CSS 修复  ## Bug 修复清单  ### Bug 1：象限卡片太大 - 扩展 `.is-phone .matrix-quadrant .task-card` 隐藏规则，新增 `.tag-list`/`.tag-chip`/`.priority-indicato",
+  "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-003--v1.0.0.md",
+  "upstream_artifacts": [],
+  "questions_to_answer": [],
+  "acceptance_focus": [
+    "象限卡片只有标题+时间",
+    "看板卡片标题+时间都可见",
+    "月历正常渲染和操作",
+    "通知为底部浮层3秒消失",
+    "桌面端无回归",
+    "构建通过"
+  ],
+  "recommended_model": {
+    "provider_family": "gpt-5",
+    "model_tier": "standard",
+    "model_alias": "gpt-5"
+  },
+  "recommended_execution_mode": "single",
+  "task_id": null,
+  "status": "accepted",
+  "created_by": "host_agent",
+  "accepted_by": "host_agent",
+  "created_at": "2026-04-10T11:37:36.888077+00:00",
+  "updated_at": "2026-04-10T11:37:46.084567+00:00"
+}

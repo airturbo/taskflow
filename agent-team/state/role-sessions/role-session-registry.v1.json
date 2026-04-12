@@ -1,0 +1,274 @@
+{
+  "schema_version": "1.0",
+  "items": [
+    {
+      "role_session_id": "RS-20260410-001",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "project_manager_orchestrator",
+      "stage": "impact_assessment",
+      "input_refs": [],
+      "input_summary": "前端工程师修复 TaskFlow 移动端 4 个 UI 问题：1）象限视图卡片太大，隐藏标签chips和优先级标记，只保留标题+时间 2）看板视图卡片太小只有时间没标题，需同时展示标题和时间 3）月历视图完全无法展示和操作，是严重 bug 4）操作记录通知（创建任务确认框）改为底部轻量浮层 toast 不影响布局。修改文件：web/src/App.tsx 和 web/src/index.css",
+      "selected_model": {
+        "provider_family": "gpt-5",
+        "model_tier": "light",
+        "model_alias": "gpt-5-mini",
+        "execution_mode": "single",
+        "source": "role_default"
+      },
+      "selected_model_source": "role_default",
+      "selected_model_reason": "使用角色默认模型 gpt-5-mini。 执行模式沿用角色默认配置 single。",
+      "expected_outputs": [
+        "TASK_BRIEF",
+        "DELIVERY_NOTE",
+        "BLOCKER_NOTE"
+      ],
+      "handoff_id": null,
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [
+        "HO-20260410-001",
+        "HO-20260410-007"
+      ],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T11:09:12.030527+00:00",
+      "updated_at": "2026-04-10T12:47:17.934603+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-002",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "frontend_engineer",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-001"
+      ],
+      "input_summary": "## 任务摘要  修复用户报告的 4 个移动端 UI 问题，改动范围限于 `web/src/App.tsx` 和 `web/src/index.css`。  ## Bug 清单  ### Bug 1：象限视图卡片太大 - **现象**：标签 chips（#产品 #设计 #深度工作）、优先级标记（P1）、状态下拉（进行中）都显示了，导致卡片很肥 - **修复**：手机端象限卡片隐藏所有标签 chips、优先级标记、状态下拉、添加按钮，只保留标题和时间 - **CSS 选择器**",
+      "selected_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 claude-sonnet，来源 HO-20260410-001。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-001。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "FRONTEND_DELIVERY_NOTE",
+        "COMPONENT_MAPPING",
+        "FE_LIMITATION_NOTE"
+      ],
+      "handoff_id": "HO-20260410-001",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [
+        "HO-20260410-002",
+        "HO-20260410-003"
+      ],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T11:11:34.403632+00:00",
+      "updated_at": "2026-04-10T11:37:36.889489+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-003",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "user_experience_officer",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-002"
+      ],
+      "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 已修复 Bug  ### Bug 1：象限卡片太大 - **根因**：CSS 隐藏规则不全，`select`（状态下拉）、`.tag-list`、`.priority-indicator`、`footer`、`.action-row` 等元素未被隐藏 - **修复**：扩展 `.is-phone .matrix-quadrant .task-card` 作用域下的隐藏规则，新增 `.tag-list`/`.tag-ch",
+      "selected_model": {
+        "provider_family": "claude",
+        "model_tier": "deep-reasoning",
+        "model_alias": "claude",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 claude，来源 HO-20260410-002。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-002。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "UX_COVERAGE_MATRIX",
+        "UX_REVIEW_REPORT",
+        "UX_ISSUE_LOG"
+      ],
+      "handoff_id": "HO-20260410-002",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T11:21:20.933059+00:00",
+      "updated_at": "2026-04-10T11:21:20.933059+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-004",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "qa_engineer",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-003"
+      ],
+      "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 修改文件 - `web/src/App.tsx` — 手机端创建反馈 3 秒自动消失 - `web/src/index.css` — Bug 1-4 的 CSS 修复  ## Bug 修复清单  ### Bug 1：象限卡片太大 - 扩展 `.is-phone .matrix-quadrant .task-card` 隐藏规则，新增 `.tag-list`/`.tag-chip`/`.priority-indicato",
+      "selected_model": {
+        "provider_family": "gpt-5",
+        "model_tier": "standard",
+        "model_alias": "gpt-5",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 gpt-5，来源 HO-20260410-003。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-003。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "TEST_PLAN",
+        "BUG_REPORT",
+        "TEST_REPORT"
+      ],
+      "handoff_id": "HO-20260410-003",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [
+        "HO-20260410-004"
+      ],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T11:37:46.088191+00:00",
+      "updated_at": "2026-04-10T12:11:38.745686+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-005",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "devops_engineer",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-004"
+      ],
+      "input_summary": "# TEST_REPORT  ## 结果：6/6 PASS  | TC | 结果 | |----|------| | TC1 象限卡片 | PASS | | TC2 看板卡片 | PASS | | TC3 月历渲染 | PASS | | TC4 通知浮层 | PASS | | TC5 桌面无回归 | PASS | | TC6 构建通过 | PASS |  ## 部署信息 - 构建产物：`web/dist/` - 目标：CloudBase 静态托管 `taskflow-7gxj",
+      "selected_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 claude-sonnet，来源 HO-20260410-004。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-004。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "DEPLOYMENT_PLAN",
+        "RELEASE_MANIFEST",
+        "ROLLBACK_PLAN"
+      ],
+      "handoff_id": "HO-20260410-004",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [
+        "HO-20260410-005"
+      ],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T12:11:48.550979+00:00",
+      "updated_at": "2026-04-10T12:12:18.480905+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-006",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "product_manager",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-005"
+      ],
+      "input_summary": "# RELEASE_MANIFEST  ## 部署结果 - 目标：CloudBase 静态托管 `taskflow-7gxjr4s56c9587d2` - 域名：`taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com` - 所有文件 HTTP 200 可访问 - index.html / favicon.svg / icons.svg / assets/index-C6nSIM7p.js / assets/index-B",
+      "selected_model": {
+        "provider_family": "gemini-pro",
+        "model_tier": "pro",
+        "model_alias": "gemini-pro",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 gemini-pro，来源 HO-20260410-005。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-005。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "PRD",
+        "USER_STORY",
+        "ACCEPTANCE_CRITERIA"
+      ],
+      "handoff_id": "HO-20260410-005",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [
+        "HO-20260410-006",
+        "HO-20260410-008"
+      ],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T12:12:46.362942+00:00",
+      "updated_at": "2026-04-10T13:18:20.222380+00:00"
+    },
+    {
+      "role_session_id": "RS-20260410-007",
+      "workflow_id": "WF-20260410-001",
+      "role_id": "frontend_engineer",
+      "stage": "impact_assessment",
+      "input_refs": [
+        "HO-20260410-007"
+      ],
+      "input_summary": "# 需求清单  ## 1. 日历周历添加按钮精简 - 只保留每天日期行右侧小 + 号 - 去掉下方区域内巨大 + 号（`.calendar-create-strip` 或类似内联创建卡片） - 去掉周历头部横向每天旁的 + 号  ## 2. 新增任务三个时间字段 - MobileQuickCreateSheet 改为三个时间：开始时间(startAt)、计划完成(dueAt)、截止DDL(deadlineAt) - 每个用 datetime-local 输入  ## 3. 象",
+      "selected_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet",
+        "execution_mode": "single",
+        "source": "handoff_recommendation"
+      },
+      "selected_model_source": "handoff_recommendation",
+      "selected_model_reason": "未命中显式 override，沿用 handoff 推荐模型 claude-sonnet，来源 HO-20260410-007。 执行模式沿用 handoff 推荐 single，来源 HO-20260410-007。",
+      "expected_outputs": [
+        "handoff_resolution",
+        "FRONTEND_DELIVERY_NOTE",
+        "COMPONENT_MAPPING",
+        "FE_LIMITATION_NOTE"
+      ],
+      "handoff_id": "HO-20260410-007",
+      "task_id": null,
+      "artifact_ids": [],
+      "status": "queued",
+      "produced_handoff_packet_ids": [],
+      "produced_artifact_ids": [],
+      "last_execution_run_id": null,
+      "created_by": "host_agent",
+      "started_at": null,
+      "ended_at": null,
+      "created_at": "2026-04-10T12:47:26.938091+00:00",
+      "updated_at": "2026-04-10T12:47:26.938091+00:00"
+    }
+  ]
+}

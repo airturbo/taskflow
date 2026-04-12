@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "phase": "phase1",
+  "description": "Phase 1: single model per role, no fallback or parallel",
+  "execution_mode": "single",
+  "role_model_mapping": {
+    "project_manager_orchestrator": {
+      "provider_family": "gpt-5",
+      "model_tier": "light",
+      "model_alias": "gpt-5-mini"
+    },
+    "product_manager": {
+      "provider_family": "gemini-pro",
+      "model_tier": "pro",
+      "model_alias": "gemini-pro"
+    },
+    "ui_ux_designer": {
+      "provider_family": "claude-sonnet",
+      "model_tier": "balanced",
+      "model_alias": "claude-sonnet"
+    },
+    "system_architect": {
+      "provider_family": "claude",
+      "model_tier": "deep-reasoning",
+      "model_alias": "claude"
+    },
+    "frontend_engineer": {
+      "provider_family": "claude-sonnet",
+      "model_tier": "balanced",
+      "model_alias": "claude-sonnet"
+    },
+    "backend_engineer": {
+      "provider_family": "claude-sonnet",
+      "model_tier": "balanced",
+      "model_alias": "claude-sonnet"
+    },
+    "qa_engineer": {
+      "provider_family": "gpt-5",
+      "model_tier": "standard",
+      "model_alias": "gpt-5"
+    },
+    "user_experience_officer": {
+      "provider_family": "claude",
+      "model_tier": "deep-reasoning",
+      "model_alias": "claude"
+    },
+    "devops_engineer": {
+      "provider_family": "claude-sonnet",
+      "model_tier": "balanced",
+      "model_alias": "claude-sonnet"
+    },
+    "data_analyst": {
+      "provider_family": "gemini-pro",
+      "model_tier": "pro",
+      "model_alias": "gemini-pro"
+    },
+    "security_compliance_engineer": {
+      "provider_family": "claude",
+      "model_tier": "deep-reasoning",
+      "model_alias": "claude"
+    }
+  },
+  "model_tiers": {
+    "light": "低延迟轻量级，适合编排和路由任务",
+    "balanced": "平衡速度与能力，适合实现类任务",
+    "standard": "标准推理能力，适合测试和验证",
+    "pro": "高级推理，适合需求分析和数据分析",
+    "deep-reasoning": "深度推理，适合架构设计、安全审查和最终体验把关"
+  }
+}

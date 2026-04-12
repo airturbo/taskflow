@@ -1,0 +1,21 @@
+{
+  "display_name": "UI/UX 设计师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet"
+  },
+  "primary_stages": [
+    "design_in_progress"
+  ],
+  "owned_artifacts": [
+    "UI_SPEC",
+    "UX_FLOW",
+    "COMPONENT_SPEC"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "ui_ux_designer"
+}

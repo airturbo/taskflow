@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+web/dist/
+web/src-tauri/target/
+todo-obsidian-plugin/main.js
+todo-obsidian-plugin/main.js.map
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Vercel
+.vercel/
+
+# Temp
+/tmp/
+*.tar.gz
+
+# Agent team runtime
+agent-team/runtime/__pycache__/
+agent-team/src/__pycache__/
+agent-team/build/__pycache__/
+**/*.pyc
+
+# WorkBuddy browser binaries (Playwright, large files)
+.workbuddy/browser-audit/ms-playwright/

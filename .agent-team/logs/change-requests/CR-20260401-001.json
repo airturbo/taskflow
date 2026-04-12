@@ -1,0 +1,18 @@
+{
+  "cr_id": "CR-20260401-001",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UI-0001",
+    "ART-UX_REVIEW_REPORT-0002",
+    "ART-UX_ISSUE_LOG-0002",
+    "ART-EAN-0001",
+    "ART-TEST-0001"
+  ],
+  "change_type": "interaction_and_feedback_iteration",
+  "description": "围绕高保真待办工具进行一轮正式交互深化：为看板补齐原生拖拽改状态；为时间线补齐任务条拖动与调整起止时间；强化看板与四象限中的任务状态可视性；修复任务提醒与番茄钟完成声音；并按项目团队要求组织更高强度的 UX 深度走查与多轮打磨。",
+  "justification": "当前产品在核心操作链路上仍缺少成熟产品应有的直接操控与即时反馈：看板不能拖、时间线不能改时段、状态表达偏弱、提醒与番茄无真实反馈。这些问题已经影响 parity demo 的真实性和完成度，需要通过正式 CR -> IA -> 实施 -> UX 复审闭环推进。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260401-001",
+  "created_at": "2026-04-01T11:25:00+08:00"
+}

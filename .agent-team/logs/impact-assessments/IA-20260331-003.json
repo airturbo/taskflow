@@ -1,0 +1,28 @@
+{
+  "ia_id": "IA-20260331-003",
+  "cr_id": "CR-20260331-003",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "user_experience_officer",
+    "product_manager",
+    "ui_ux_designer",
+    "frontend_engineer",
+    "qa_engineer"
+  ],
+  "affected_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0001",
+    "ART-UX_REVIEW_REPORT-0001",
+    "ART-UX_ISSUE_LOG-0001",
+    "ART-EAN-0001",
+    "ART-INTERACTION_RULES-0001",
+    "ART-UI-0001"
+  ],
+  "affected_baselines": [
+    "BL-20260331-002"
+  ],
+  "risk_level": "medium",
+  "requires_retest": true,
+  "rollback_plan": "若 UX 迭代修复引入严重倒退，回退到 BL-20260331-002 对应的 parity demo 状态，撤回 smart-entry、createTask、completed 过滤与 restoreTask 的代码改动。",
+  "recommendation": "proceed",
+  "created_at": "2026-03-31T17:00:00+08:00"
+}

@@ -1,0 +1,21 @@
+{
+  "display_name": "产品经理",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "gemini-pro",
+    "model_tier": "pro",
+    "model_alias": "gemini-pro"
+  },
+  "primary_stages": [
+    "scoped"
+  ],
+  "owned_artifacts": [
+    "PRD",
+    "USER_STORY",
+    "ACCEPTANCE_CRITERIA"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "product_manager"
+}

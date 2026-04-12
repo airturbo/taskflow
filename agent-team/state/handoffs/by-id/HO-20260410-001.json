@@ -1,0 +1,35 @@
+{
+  "handoff_id": "HO-20260410-001",
+  "workflow_id": "WF-20260410-001",
+  "from_role": "project_manager_orchestrator",
+  "to_role": "frontend_engineer",
+  "from_role_session_id": "RS-20260410-001",
+  "intent": "修复 TaskFlow 移动端 4 个 UI bug 并由体验官走查 5 轮",
+  "payload_type": "ROLE_HANDOFF",
+  "input_summary": "## 任务摘要  修复用户报告的 4 个移动端 UI 问题，改动范围限于 `web/src/App.tsx` 和 `web/src/index.css`。  ## Bug 清单  ### Bug 1：象限视图卡片太大 - **现象**：标签 chips（#产品 #设计 #深度工作）、优先级标记（P1）、状态下拉（进行中）都显示了，导致卡片很肥 - **修复**：手机端象限卡片隐藏所有标签 chips、优先级标记、状态下拉、添加按钮，只保留标题和时间 - **CSS 选择器**",
+  "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-001--v1.0.0.md",
+  "upstream_artifacts": [],
+  "questions_to_answer": [
+    "月历视图为何空白？是 JS 条件判断还是 CSS 隐藏？",
+    "除了 statusChangeFeedback 还有哪些反馈组件影响手机端布局？"
+  ],
+  "acceptance_focus": [
+    "象限卡片只显示标题+时间",
+    "看板卡片同时显示标题和时间",
+    "月历视图正常渲染和操作",
+    "操作通知为底部浮层不影响布局",
+    "构建通过"
+  ],
+  "recommended_model": {
+    "provider_family": "claude-sonnet",
+    "model_tier": "balanced",
+    "model_alias": "claude-sonnet"
+  },
+  "recommended_execution_mode": "single",
+  "task_id": null,
+  "status": "accepted",
+  "created_by": "host_agent",
+  "accepted_by": "host_agent",
+  "created_at": "2026-04-10T11:09:40.329717+00:00",
+  "updated_at": "2026-04-10T11:11:34.393657+00:00"
+}

@@ -1,0 +1,18 @@
+read:
+- PRD
+- RELEASE_MANIFEST
+- metric_data_sources
+write:
+- METRIC_SPEC
+- ANALYSIS_NOTE
+- POST_RELEASE_REVIEW
+- EXPERIMENT_NOTE
+approve:
+- METRIC_SPEC
+- POST_RELEASE_REVIEW
+block:
+- metric_signoff_if_definition_ambiguous
+forbidden:
+- alter_raw_data_without_trace
+- claim_causality_without_evidence
+- modify_release_gate_directly

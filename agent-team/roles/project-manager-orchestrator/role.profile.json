@@ -1,0 +1,25 @@
+{
+  "display_name": "项目经理 / Orchestrator",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "gpt-5",
+    "model_tier": "light",
+    "model_alias": "gpt-5-mini"
+  },
+  "primary_stages": [
+    "intake",
+    "change_request_received",
+    "release_ready",
+    "archived"
+  ],
+  "owned_artifacts": [
+    "TASK_BRIEF",
+    "DELIVERY_NOTE",
+    "BLOCKER_NOTE",
+    "CHANGE_REQUEST"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "project_manager_orchestrator"
+}

@@ -1,0 +1,28 @@
+{
+  "ia_id": "IA-20260407-002",
+  "cr_id": "CR-20260407-002",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "product_manager",
+    "ui_ux_designer",
+    "frontend_engineer",
+    "qa_engineer",
+    "user_experience_officer",
+    "project_manager_orchestrator"
+  ],
+  "affected_artifacts": [
+    "ART-PRD-0001",
+    "ART-TASK-0001",
+    "ART-UI-0001",
+    "ART-UX_REVIEW_REPORT-0006",
+    "ART-UX_ISSUE_LOG-0006"
+  ],
+  "affected_baselines": [
+    "BL-20260402-001"
+  ],
+  "risk_level": "high",
+  "requires_retest": true,
+  "rollback_plan": "若双时间语义改造导致任务编辑保存失败、系统筛选结果异常、日历/时间线任务丢失、桌面仓储查询报错或提醒触发回归，则回退本轮 `web/src/App.tsx`、`web/src/types/domain.ts`、`web/src/utils/{storage,desktop-repository,desktop-sqlite,reminder-engine}.ts` 的改动，并继续沿用当前单时间语义基线等待下一轮变更。",
+  "recommendation": "proceed",
+  "created_at": "2026-04-07T21:23:19+08:00"
+}

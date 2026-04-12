@@ -1,0 +1,205 @@
+{
+  "project_root": "/Users/turbo/WorkBuddy/20260330162606/agent-team",
+  "workbuddy_root": "/Users/turbo/WorkBuddy/20260330162606/.agent-team",
+  "synced_at": "2026-04-08T12:31:38.060476+00:00",
+  "roles": {
+    "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/roles/roles.v1.yaml",
+    "synced_count": 11,
+    "roles": [
+      {
+        "role_id": "project_manager_orchestrator",
+        "role_folder": "project-manager-orchestrator",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/project-manager-orchestrator/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/project-manager-orchestrator/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/project-manager-orchestrator/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/project-manager-orchestrator/prompt.system.md"
+      },
+      {
+        "role_id": "product_manager",
+        "role_folder": "product-manager",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/product-manager/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/product-manager/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/product-manager/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/product-manager/prompt.system.md"
+      },
+      {
+        "role_id": "ui_ux_designer",
+        "role_folder": "ui-ux-designer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/ui-ux-designer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/ui-ux-designer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/ui-ux-designer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/ui-ux-designer/prompt.system.md"
+      },
+      {
+        "role_id": "system_architect",
+        "role_folder": "system-architect",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/system-architect/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/system-architect/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/system-architect/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/system-architect/prompt.system.md"
+      },
+      {
+        "role_id": "frontend_engineer",
+        "role_folder": "frontend-engineer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/frontend-engineer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/frontend-engineer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/frontend-engineer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/frontend-engineer/prompt.system.md"
+      },
+      {
+        "role_id": "backend_engineer",
+        "role_folder": "backend-engineer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/backend-engineer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/backend-engineer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/backend-engineer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/backend-engineer/prompt.system.md"
+      },
+      {
+        "role_id": "qa_engineer",
+        "role_folder": "qa-engineer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/qa-engineer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/qa-engineer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/qa-engineer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/qa-engineer/prompt.system.md"
+      },
+      {
+        "role_id": "user_experience_officer",
+        "role_folder": "user-experience-officer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/user-experience-officer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/user-experience-officer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/user-experience-officer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/user-experience-officer/prompt.system.md"
+      },
+      {
+        "role_id": "devops_engineer",
+        "role_folder": "devops-engineer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/devops-engineer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/devops-engineer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/devops-engineer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/devops-engineer/prompt.system.md"
+      },
+      {
+        "role_id": "data_analyst",
+        "role_folder": "data-analyst",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/data-analyst/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/data-analyst/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/data-analyst/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/data-analyst/prompt.system.md"
+      },
+      {
+        "role_id": "security_compliance_engineer",
+        "role_folder": "security-compliance-engineer",
+        "profile": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/security-compliance-engineer/role.profile.json",
+        "permissions": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/security-compliance-engineer/permissions.yaml",
+        "query_playbook": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/security-compliance-engineer/query-playbook.yaml",
+        "prompt": "/Users/turbo/WorkBuddy/20260330162606/agent-team/roles/security-compliance-engineer/prompt.system.md"
+      }
+    ]
+  },
+  "configs": {
+    "copied_files": [
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/router-config.v1.yaml",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/configs/global/router-config.v1.yaml"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/state-machine.v1.yaml",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/configs/global/state-machine.v1.yaml"
+      }
+    ]
+  },
+  "state": {
+    "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/project-state.v1.json",
+    "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/project-state.v1.json",
+    "current_state": "impact_assessment",
+    "baseline_tag": "BL-20260402-001",
+    "history_count": 39,
+    "runtime_registries": {
+      "workflows": {
+        "registry": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/workflows/workflow-registry.v1.json",
+        "by_id_dir": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/workflows/by-id"
+      },
+      "role-sessions": {
+        "registry": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/role-sessions/role-session-registry.v1.json",
+        "by_id_dir": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/role-sessions/by-id"
+      },
+      "handoffs": {
+        "registry": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/handoffs/handoff-registry.v1.json",
+        "by_id_dir": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/handoffs/by-id"
+      },
+      "execution-runs": {
+        "registry": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/execution-runs/execution-run-registry.v1.json",
+        "by_id_dir": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/execution-runs/by-id"
+      }
+    }
+  },
+  "artifacts": {
+    "source": {
+      "registry": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/artifacts/registry/artifact-registry.v1.json",
+      "baseline_current": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/baselines/baseline.current.v1.json",
+      "baseline_history": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/baselines/baseline.history.v1.jsonl"
+    },
+    "target": {
+      "registry": "/Users/turbo/WorkBuddy/20260330162606/agent-team/artifacts/registry/artifact-registry.v1.json",
+      "baseline_current": "/Users/turbo/WorkBuddy/20260330162606/agent-team/configs/baselines/baseline.current.v1.json",
+      "baseline_history": "/Users/turbo/WorkBuddy/20260330162606/agent-team/configs/baselines/baseline.history.v1.jsonl"
+    },
+    "copied_directories": [
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/artifacts/by-type",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/artifacts/by-type"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/artifacts/by-role",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/artifacts/by-role"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/artifacts/archive",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/artifacts/archive"
+      }
+    ],
+    "copied_views": [],
+    "artifact_count": 48,
+    "latest_artifact_count": 31,
+    "artifact_types": [
+      "ANALYSIS_NOTE",
+      "ARCHITECTURE_DOC",
+      "DELIVERY_NOTE",
+      "EXPERIENCE_ACCEPTANCE_NOTE",
+      "INTERACTION_RULES",
+      "PRD",
+      "RELEASE_MANIFEST",
+      "TASK_BRIEF",
+      "TECH_DECISION_RECORD",
+      "TEST_REPORT",
+      "UI_SPEC",
+      "USER_STORY",
+      "UX_COVERAGE_MATRIX",
+      "UX_FLOW",
+      "UX_ISSUE_LOG",
+      "UX_REVIEW_REPORT"
+    ],
+    "baseline_tag": "BL-20260402-001",
+    "projection_file": "/Users/turbo/WorkBuddy/20260330162606/agent-team/state/workbuddy-bridge/artifact-projection.v1.json"
+  },
+  "references": {
+    "copied_files": [
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/ux-governance-rules.v1.md",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/references/ux-governance-rules.md"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/ux-review-sop.v1.md",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/references/ux-review-sop.md"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/ux-review-templates.v1.md",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/references/ux-review-templates.md"
+      },
+      {
+        "source": "/Users/turbo/WorkBuddy/20260330162606/.agent-team/configs/global/ux-review-examples.v1.md",
+        "target": "/Users/turbo/WorkBuddy/20260330162606/agent-team/references/ux-review-examples.md"
+      }
+    ]
+  }
+}

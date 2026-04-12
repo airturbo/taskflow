@@ -1,0 +1,18 @@
+{
+  "cr_id": "CR-20260407-002",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-PRD-0001",
+    "ART-TASK-0001",
+    "ART-UI-0001",
+    "ART-UX_REVIEW_REPORT-0006",
+    "ART-UX_ISSUE_LOG-0006"
+  ],
+  "change_type": "dual_time_semantics_rollout",
+  "description": "基于用户新决策，把任务原有单一截止时间拆为“计划完成时间 + 硬性 DDL”双时间语义，并要求在不膨胀导航结构的前提下同步改造筛选、详情面板、列表卡片、日历、时间线与提醒/统计逻辑。",
+  "justification": "当前产品把内部计划时间与外部硬截止混在一个 due 字段里，用户无法同时规划自己的处理节奏与真实不可违背的交付边界；继续沿用单时间语义会让今日/未来 7 天、逾期提醒、任务卡片与时间视图的认知持续失真。此次变更既是产品语义校正，也是后续风险提醒和真实排期能力的基础。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260407-002",
+  "created_at": "2026-04-07T21:23:19+08:00"
+}

@@ -1,0 +1,16 @@
+supported_topics:
+- 前端实现范围
+- 组件映射
+- 已知限制
+- 联调状态
+- 页面技术方案
+- 体验问题修复
+response_style: 实现说明
+escalate_when:
+- 用户要求改前端实现策略
+- 用户要求更改组件边界
+- 用户要求跳过体验修复
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

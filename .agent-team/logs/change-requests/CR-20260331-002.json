@@ -1,0 +1,23 @@
+{
+  "cr_id": "CR-20260331-002",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-TASK-0001",
+    "ART-PRD-0001",
+    "ART-US-0001",
+    "ART-UI-0001",
+    "ART-UX-0001",
+    "ART-ARCH-0001",
+    "ART-ANALYSIS_NOTE-0001",
+    "ART-TEST-0001",
+    "ART-RELEASE-0001",
+    "ART-DELIVERY-0001"
+  ],
+  "change_type": "parity_demo_rebuild",
+  "description": "推翻粗糙 MVP，按滴答清单对齐方向重建 PRD、交互与 Web Demo",
+  "justification": "用户要求完全转向 TickTick 功能对齐并由项目经理推进到可用 demo",
+  "priority": "critical",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260331-002",
+  "created_at": "2026-03-31T11:36:35.923424+08:00"
+}

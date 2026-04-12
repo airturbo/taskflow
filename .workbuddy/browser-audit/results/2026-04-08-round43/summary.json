@@ -1,0 +1,80 @@
+{
+  "steps": [
+    {
+      "name": "页面加载",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "列表视图初始任务数",
+      "status": "INFO",
+      "detail": "3 个任务卡片"
+    },
+    {
+      "name": "新建任务可见",
+      "status": "PASS",
+      "detail": "体验官测试-1775653893494"
+    },
+    {
+      "name": "新建后任务卡片数",
+      "status": "INFO",
+      "detail": "4（创建前 3）"
+    },
+    {
+      "name": "等待3秒后任务留存",
+      "status": "PASS",
+      "detail": "4 个卡片，任务标题仍在"
+    },
+    {
+      "name": "侧边栏\"全部\"计数",
+      "status": "PASS",
+      "detail": "显示 9"
+    },
+    {
+      "name": "切换到日历视图",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "看板视图任务卡片数",
+      "status": "PASS",
+      "detail": "4 个"
+    },
+    {
+      "name": "切换视图后回到列表",
+      "status": "PASS",
+      "detail": "4 个卡片，测试任务 仍在"
+    },
+    {
+      "name": "长时间停留后任务留存（5秒）",
+      "status": "PASS",
+      "detail": "4 个卡片"
+    },
+    {
+      "name": "最终侧边栏\"全部\"计数",
+      "status": "PASS",
+      "detail": "显示 9"
+    },
+    {
+      "name": "提醒面板可见",
+      "status": "PASS",
+      "detail": "width=359"
+    },
+    {
+      "name": "Onboarding 可见性",
+      "status": "PASS",
+      "detail": "dismissed 未复发"
+    }
+  ],
+  "passed": true,
+  "errors": [],
+  "warnings": [],
+  "pageErrors": 0,
+  "consoleErrors": [],
+  "summary": {
+    "totalSteps": 13,
+    "passed": 11,
+    "failed": 0,
+    "warnings": 0
+  }
+}

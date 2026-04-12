@@ -1,0 +1,29 @@
+{
+  "ia_id": "IA-20260407-001",
+  "cr_id": "CR-20260407-001",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "user_experience_officer",
+    "product_manager",
+    "ui_ux_designer",
+    "frontend_engineer",
+    "qa_engineer",
+    "project_manager_orchestrator"
+  ],
+  "affected_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0004",
+    "ART-UX_REVIEW_REPORT-0005",
+    "ART-UX_ISSUE_LOG-0005",
+    "ART-PRD-0001",
+    "ART-UI-0001",
+    "ART-TASK-0001"
+  ],
+  "affected_baselines": [
+    "BL-20260402-001"
+  ],
+  "risk_level": "high",
+  "requires_retest": true,
+  "rollback_plan": "若后续修正 onboarding 步骤完成逻辑、步骤跳转上下文或浏览器声音解锁链路时引入任务创建回归、任务详情错选、提醒失效或浏览器端无声失败，则回退对应 App.tsx / onboarding 状态机 / useReminderCenter.ts 改动，并沿用当前已批准的 release_preparation 基线继续等待下一轮正式复审。",
+  "recommendation": "proceed",
+  "created_at": "2026-04-07T13:27:44+08:00"
+}

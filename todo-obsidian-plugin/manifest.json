@@ -1,0 +1,10 @@
+{
+  "id": "todo-workspace-plugin",
+  "name": "TaskFlow",
+  "version": "0.1.0",
+  "minAppVersion": "0.15.0",
+  "description": "TaskFlow — 智能任务管理，Obsidian 集成插件。",
+  "author": "WorkBuddy",
+  "authorUrl": "https://www.codebuddy.ai",
+  "isDesktopOnly": true
+}

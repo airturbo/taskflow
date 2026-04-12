@@ -1,0 +1,60 @@
+{
+  "reviewedAt": "2026-04-08T04:47:12.837Z",
+  "url": "http://127.0.0.1:4173/",
+  "evidenceDir": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round38-41-month-focus-review",
+  "screenshots": {
+    "monthInitial": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round38-41-month-focus-review/screenshots/01-month-initial.png",
+    "monthFocusShift": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-08-round38-41-month-focus-review/screenshots/02-month-focus-shift.png"
+  },
+  "checks": {
+    "priorityAccent": {
+      "urgentBase": {
+        "color": "color(srgb 0.190902 0.207059 0.239373)",
+        "background": "color(srgb 1 0.994541 0.995094 / 0.900549)",
+        "borderColor": "color(srgb 0.735905 0.335312 0.335312 / 0.237882)",
+        "beforeColor": "rgb(248, 113, 113)",
+        "beforeWidth": "2px",
+        "beforeOpacity": "0.88"
+      },
+      "normalBase": {
+        "color": "rgb(107, 114, 128)",
+        "background": "color(srgb 0.996835 0.997608 1 / 0.916706)",
+        "borderColor": "rgba(136, 150, 171, 0.1)",
+        "beforeColor": "rgb(99, 132, 255)",
+        "beforeWidth": "2px",
+        "beforeOpacity": "0.88"
+      },
+      "urgentHover": {
+        "color": "color(srgb 0.190902 0.207059 0.239373)",
+        "background": "color(srgb 1 0.994541 0.995094 / 0.900549)",
+        "borderColor": "color(srgb 0.735905 0.335312 0.335312 / 0.237882)",
+        "beforeColor": "rgb(248, 113, 113)",
+        "beforeWidth": "2px",
+        "beforeOpacity": "0.88"
+      },
+      "urgentUsesDistinctAccent": true,
+      "urgentBarWidth": "2px",
+      "hoverKeepsTextToneStable": true
+    },
+    "focusHierarchy": {
+      "focusDate": "2026-04-10",
+      "secondaryDate": "2026-04-13",
+      "initialFocusedState": {
+        "focused": true,
+        "muted": false
+      },
+      "afterFocusShift": {
+        "originalFocused": false,
+        "originalMuted": true,
+        "nextFocused": true,
+        "nextMuted": false
+      },
+      "originalDateMutedAfterShift": true,
+      "secondaryDateFocusedAfterClick": true
+    }
+  },
+  "issues": [],
+  "consoleMessages": [],
+  "pageErrors": [],
+  "pass": true
+}

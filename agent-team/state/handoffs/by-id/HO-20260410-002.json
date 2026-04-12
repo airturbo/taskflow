@@ -1,0 +1,32 @@
+{
+  "handoff_id": "HO-20260410-002",
+  "workflow_id": "WF-20260410-001",
+  "from_role": "frontend_engineer",
+  "to_role": "user_experience_officer",
+  "from_role_session_id": "RS-20260410-002",
+  "intent": "前端修复完成，请体验官走查 5 轮",
+  "payload_type": "ROLE_HANDOFF",
+  "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 已修复 Bug  ### Bug 1：象限卡片太大 - **根因**：CSS 隐藏规则不全，`select`（状态下拉）、`.tag-list`、`.priority-indicator`、`footer`、`.action-row` 等元素未被隐藏 - **修复**：扩展 `.is-phone .matrix-quadrant .task-card` 作用域下的隐藏规则，新增 `.tag-list`/`.tag-ch",
+  "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-002--v1.0.0.md",
+  "upstream_artifacts": [],
+  "questions_to_answer": [],
+  "acceptance_focus": [
+    "象限卡片只有标题+时间",
+    "看板卡片标题+时间都可见",
+    "月历正常渲染",
+    "通知为底部浮层不影响布局",
+    "桌面端无回归"
+  ],
+  "recommended_model": {
+    "provider_family": "claude",
+    "model_tier": "deep-reasoning",
+    "model_alias": "claude"
+  },
+  "recommended_execution_mode": "single",
+  "task_id": null,
+  "status": "accepted",
+  "created_by": "host_agent",
+  "accepted_by": "host_agent",
+  "created_at": "2026-04-10T11:21:12.828865+00:00",
+  "updated_at": "2026-04-10T11:21:20.928876+00:00"
+}

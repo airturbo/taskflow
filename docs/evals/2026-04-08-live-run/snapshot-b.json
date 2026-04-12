@@ -1,0 +1,509 @@
+{
+  "label": "当前融合版",
+  "original_project_root": "/Users/turbo/WorkBuddy/20260330162606/agent-team",
+  "sandbox_project_root": "/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-b",
+  "healthcheck": {
+    "project_root": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-b",
+    "roles_count": 11,
+    "artifacts_count": 48,
+    "workflows_count": 0,
+    "role_sessions_count": 0,
+    "handoffs_count": 0,
+    "current_state": "impact_assessment",
+    "baseline_tag": "BL-20260402-001",
+    "state_store": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-b/state/project-state.v1.json",
+    "locks_dir": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-b/.agent-team-locks",
+    "default_execution_mode": "single",
+    "env_file": {
+      "path": "/private/var/folders/m7/smyp2_b14450q0hkpkqmgjdm0000gn/T/agent-team-lightweight-eval-7fjdove9/project-b/.env",
+      "exists": false,
+      "loaded_keys": []
+    }
+  },
+  "project_state": {
+    "current_state": "impact_assessment",
+    "available_transitions": [
+      "scoped",
+      "design_in_progress",
+      "architecture_in_progress",
+      "implementation_in_progress",
+      "testing",
+      "ux_review",
+      "intake"
+    ],
+    "baseline_tag": "BL-20260402-001",
+    "semantic_aliases": {
+      "available_transitions": {
+        "ux_review": [
+          "experience_review"
+        ]
+      }
+    }
+  },
+  "alias_query": {
+    "artifact_type": "EXPERIENCE_REVIEW",
+    "stage": "experience_review",
+    "status": "approved",
+    "count": 3,
+    "sample": [
+      {
+        "artifact_id": "ART-UX_REVIEW_REPORT-0002",
+        "artifact_type": "UX_REVIEW_REPORT",
+        "owner_role": "user_experience_officer",
+        "stage": "ux_review",
+        "status": "approved",
+        "version": "v2.0.0",
+        "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0002--v2.0.0.md",
+        "created_at": "2026-03-31T17:56:00+08:00",
+        "updated_at": "2026-03-31T17:56:00+08:00",
+        "semantic_artifact_type_aliases": [
+          "EXPERIENCE_REVIEW"
+        ],
+        "semantic_stage_aliases": [
+          "experience_review"
+        ]
+      },
+      {
+        "artifact_id": "ART-UX_REVIEW_REPORT-0003",
+        "artifact_type": "UX_REVIEW_REPORT",
+        "owner_role": "user_experience_officer",
+        "stage": "ux_review",
+        "status": "approved",
+        "version": "v1.1.0",
+        "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0003--v1.1.0.md",
+        "created_at": "2026-04-03T11:21:00+08:00",
+        "updated_at": "2026-04-03T11:21:00+08:00",
+        "semantic_artifact_type_aliases": [
+          "EXPERIENCE_REVIEW"
+        ],
+        "semantic_stage_aliases": [
+          "experience_review"
+        ]
+      },
+      {
+        "artifact_id": "ART-UX_REVIEW_REPORT-0004",
+        "artifact_type": "UX_REVIEW_REPORT",
+        "owner_role": "user_experience_officer",
+        "stage": "ux_review",
+        "status": "approved",
+        "version": "v1.0.0",
+        "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0004--v1.0.0.md",
+        "created_at": "2026-04-03T12:24:00+08:00",
+        "updated_at": "2026-04-03T12:24:00+08:00",
+        "semantic_artifact_type_aliases": [
+          "EXPERIENCE_REVIEW"
+        ],
+        "semantic_stage_aliases": [
+          "experience_review"
+        ]
+      }
+    ]
+  },
+  "artifact_projection": {
+    "exists": true,
+    "registry": {
+      "artifact_count": 48,
+      "artifact_types": [
+        "ANALYSIS_NOTE",
+        "ARCHITECTURE_DOC",
+        "DELIVERY_NOTE",
+        "EXPERIENCE_ACCEPTANCE_NOTE",
+        "INTERACTION_RULES",
+        "PRD",
+        "RELEASE_MANIFEST",
+        "TASK_BRIEF",
+        "TECH_DECISION_RECORD",
+        "TEST_REPORT",
+        "UI_SPEC",
+        "USER_STORY",
+        "UX_COVERAGE_MATRIX",
+        "UX_FLOW",
+        "UX_ISSUE_LOG",
+        "UX_REVIEW_REPORT"
+      ],
+      "owner_roles": [
+        "devops_engineer",
+        "product_manager",
+        "project_manager_orchestrator",
+        "qa_engineer",
+        "system_architect",
+        "ui_ux_designer",
+        "user_experience_officer"
+      ],
+      "stages": [
+        "architecture_in_progress",
+        "design_in_progress",
+        "release_preparation",
+        "release_ready",
+        "released",
+        "scoped",
+        "testing",
+        "ux_review"
+      ],
+      "latest_by_artifact_id": [
+        {
+          "artifact_id": "ART-ANALYSIS_NOTE-0001",
+          "artifact_type": "ANALYSIS_NOTE",
+          "owner_role": "project_manager_orchestrator",
+          "stage": "released",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/ANALYSIS_NOTE/ANALYSIS_NOTE--ART-ANALYSIS_NOTE-0001--v1.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-ARCH-0001",
+          "artifact_type": "ARCHITECTURE_DOC",
+          "owner_role": "system_architect",
+          "stage": "architecture_in_progress",
+          "status": "approved",
+          "version": "v3.0.0",
+          "storage_path": "artifacts/by-type/ARCHITECTURE_DOC/ARCHITECTURE_DOC--ART-ARCH-0001--v3.0.0.md",
+          "created_at": "2026-04-02T16:48:00+08:00",
+          "updated_at": "2026-04-02T16:48:00+08:00"
+        },
+        {
+          "artifact_id": "ART-DELIVERY-0001",
+          "artifact_type": "DELIVERY_NOTE",
+          "owner_role": "project_manager_orchestrator",
+          "stage": "released",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/DELIVERY_NOTE/DELIVERY_NOTE--ART-DELIVERY-0001--v2.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-DELIVERY-0002",
+          "artifact_type": "DELIVERY_NOTE",
+          "owner_role": "project_manager_orchestrator",
+          "stage": "released",
+          "status": "approved",
+          "version": "v1.1.0",
+          "storage_path": "artifacts/by-type/DELIVERY_NOTE/DELIVERY_NOTE--ART-DELIVERY-0002--v1.1.0.md",
+          "created_at": "2026-04-02T16:48:00+08:00",
+          "updated_at": "2026-04-02T16:48:00+08:00"
+        },
+        {
+          "artifact_id": "ART-EAN-0001",
+          "artifact_type": "EXPERIENCE_ACCEPTANCE_NOTE",
+          "owner_role": "user_experience_officer",
+          "stage": "release_preparation",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/EXPERIENCE_ACCEPTANCE_NOTE/EXPERIENCE_ACCEPTANCE_NOTE--ART-EAN-0001--v1.0.0.md",
+          "created_at": "2026-03-31T19:33:00+08:00",
+          "updated_at": "2026-03-31T19:33:00+08:00"
+        },
+        {
+          "artifact_id": "ART-EAN-0002",
+          "artifact_type": "EXPERIENCE_ACCEPTANCE_NOTE",
+          "owner_role": "user_experience_officer",
+          "stage": "release_preparation",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/EXPERIENCE_ACCEPTANCE_NOTE/EXPERIENCE_ACCEPTANCE_NOTE--ART-EAN-0002--v1.0.0.md",
+          "created_at": "2026-04-03T11:21:00+08:00",
+          "updated_at": "2026-04-03T11:21:00+08:00"
+        },
+        {
+          "artifact_id": "ART-EAN-0003",
+          "artifact_type": "EXPERIENCE_ACCEPTANCE_NOTE",
+          "owner_role": "user_experience_officer",
+          "stage": "release_preparation",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/EXPERIENCE_ACCEPTANCE_NOTE/EXPERIENCE_ACCEPTANCE_NOTE--ART-EAN-0003--v1.0.0.md",
+          "created_at": "2026-04-03T12:24:00+08:00",
+          "updated_at": "2026-04-03T12:24:00+08:00"
+        },
+        {
+          "artifact_id": "ART-INTERACTION_RULES-0001",
+          "artifact_type": "INTERACTION_RULES",
+          "owner_role": "product_manager",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/PRD/INTERACTION_RULES--ART-INTERACTION_RULES-0001--v1.0.0.md",
+          "created_at": "2026-03-31T19:33:00+08:00",
+          "updated_at": "2026-03-31T19:33:00+08:00"
+        },
+        {
+          "artifact_id": "ART-PRD-0001",
+          "artifact_type": "PRD",
+          "owner_role": "product_manager",
+          "stage": "scoped",
+          "status": "approved",
+          "version": "v3.0.0",
+          "storage_path": "artifacts/by-type/PRD/PRD--ART-PRD-0001--v3.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-RELEASE-0001",
+          "artifact_type": "RELEASE_MANIFEST",
+          "owner_role": "devops_engineer",
+          "stage": "release_ready",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/RELEASE_MANIFEST/RELEASE_MANIFEST--ART-RELEASE-0001--v2.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-TASK-0001",
+          "artifact_type": "TASK_BRIEF",
+          "owner_role": "project_manager_orchestrator",
+          "stage": "scoped",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/TASK_BRIEF/TASK_BRIEF--ART-TASK-0001--v2.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-TECH_DECISION_RECORD-0001",
+          "artifact_type": "TECH_DECISION_RECORD",
+          "owner_role": "system_architect",
+          "stage": "architecture_in_progress",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/TECH_DECISION_RECORD/TECH_DECISION_RECORD--ART-TECH_DECISION_RECORD-0001--v1.0.0.md",
+          "created_at": "2026-04-02T16:48:00+08:00",
+          "updated_at": "2026-04-02T16:48:00+08:00"
+        },
+        {
+          "artifact_id": "ART-TEST-0001",
+          "artifact_type": "TEST_REPORT",
+          "owner_role": "qa_engineer",
+          "stage": "testing",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/TEST_REPORT/TEST_REPORT--ART-TEST-0001--v2.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-TEST-0002",
+          "artifact_type": "TEST_REPORT",
+          "owner_role": "qa_engineer",
+          "stage": "testing",
+          "status": "approved",
+          "version": "v1.1.0",
+          "storage_path": "artifacts/by-type/TEST_REPORT/TEST_REPORT--ART-TEST-0002--v1.1.0.md",
+          "created_at": "2026-04-02T16:48:00+08:00",
+          "updated_at": "2026-04-02T16:48:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UI-0001",
+          "artifact_type": "UI_SPEC",
+          "owner_role": "ui_ux_designer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v3.0.0",
+          "storage_path": "artifacts/by-type/UI_SPEC/UI_SPEC--ART-UI-0001--v3.0.0.md",
+          "created_at": "2026-03-31T19:33:00+08:00",
+          "updated_at": "2026-03-31T19:33:00+08:00"
+        },
+        {
+          "artifact_id": "ART-US-0001",
+          "artifact_type": "USER_STORY",
+          "owner_role": "product_manager",
+          "stage": "scoped",
+          "status": "approved",
+          "version": "v3.0.0",
+          "storage_path": "artifacts/by-type/USER_STORY/USER_STORY--ART-US-0001--v3.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-UX-0001",
+          "artifact_type": "UX_FLOW",
+          "owner_role": "ui_ux_designer",
+          "stage": "design_in_progress",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/UX_FLOW/UX_FLOW--ART-UX-0001--v2.0.0.md",
+          "created_at": "2026-03-31T11:36:35.923424+08:00",
+          "updated_at": "2026-03-31T11:36:35.923424+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_COVERAGE_MATRIX-0001",
+          "artifact_type": "UX_COVERAGE_MATRIX",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "superseded",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_COVERAGE_MATRIX/UX_COVERAGE_MATRIX--ART-UX_COVERAGE_MATRIX-0001--v1.0.0.md",
+          "created_at": "2026-03-31T16:30:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_COVERAGE_MATRIX-0002",
+          "artifact_type": "UX_COVERAGE_MATRIX",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/UX_COVERAGE_MATRIX/UX_COVERAGE_MATRIX--ART-UX_COVERAGE_MATRIX-0002--v2.0.0.md",
+          "created_at": "2026-03-31T17:56:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_COVERAGE_MATRIX-0003",
+          "artifact_type": "UX_COVERAGE_MATRIX",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_COVERAGE_MATRIX/UX_COVERAGE_MATRIX--ART-UX_COVERAGE_MATRIX-0003--v1.0.0.md",
+          "created_at": "2026-04-03T12:24:00+08:00",
+          "updated_at": "2026-04-03T12:24:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_COVERAGE_MATRIX-0004",
+          "artifact_type": "UX_COVERAGE_MATRIX",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "draft",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_COVERAGE_MATRIX/UX_COVERAGE_MATRIX--ART-UX_COVERAGE_MATRIX-0004--v1.0.0.md",
+          "created_at": "2026-04-07T13:27:44+08:00",
+          "updated_at": "2026-04-07T13:27:44+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_ISSUE_LOG-0001",
+          "artifact_type": "UX_ISSUE_LOG",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "superseded",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_ISSUE_LOG/UX_ISSUE_LOG--ART-UX_ISSUE_LOG-0001--v1.0.0.md",
+          "created_at": "2026-03-31T16:30:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_ISSUE_LOG-0002",
+          "artifact_type": "UX_ISSUE_LOG",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/UX_ISSUE_LOG/UX_ISSUE_LOG--ART-UX_ISSUE_LOG-0002--v2.0.0.md",
+          "created_at": "2026-03-31T17:56:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_ISSUE_LOG-0003",
+          "artifact_type": "UX_ISSUE_LOG",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.1.0",
+          "storage_path": "artifacts/by-type/UX_ISSUE_LOG/UX_ISSUE_LOG--ART-UX_ISSUE_LOG-0003--v1.1.0.md",
+          "created_at": "2026-04-03T11:21:00+08:00",
+          "updated_at": "2026-04-03T11:21:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_ISSUE_LOG-0004",
+          "artifact_type": "UX_ISSUE_LOG",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_ISSUE_LOG/UX_ISSUE_LOG--ART-UX_ISSUE_LOG-0004--v1.0.0.md",
+          "created_at": "2026-04-03T12:24:00+08:00",
+          "updated_at": "2026-04-03T12:24:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_ISSUE_LOG-0005",
+          "artifact_type": "UX_ISSUE_LOG",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "draft",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_ISSUE_LOG/UX_ISSUE_LOG--ART-UX_ISSUE_LOG-0005--v1.0.0.md",
+          "created_at": "2026-04-07T13:27:44+08:00",
+          "updated_at": "2026-04-07T13:27:44+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_REVIEW_REPORT-0001",
+          "artifact_type": "UX_REVIEW_REPORT",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "superseded",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0001--v1.0.0.md",
+          "created_at": "2026-03-31T16:30:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_REVIEW_REPORT-0002",
+          "artifact_type": "UX_REVIEW_REPORT",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v2.0.0",
+          "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0002--v2.0.0.md",
+          "created_at": "2026-03-31T17:56:00+08:00",
+          "updated_at": "2026-03-31T17:56:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_REVIEW_REPORT-0003",
+          "artifact_type": "UX_REVIEW_REPORT",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.1.0",
+          "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0003--v1.1.0.md",
+          "created_at": "2026-04-03T11:21:00+08:00",
+          "updated_at": "2026-04-03T11:21:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_REVIEW_REPORT-0004",
+          "artifact_type": "UX_REVIEW_REPORT",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "approved",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0004--v1.0.0.md",
+          "created_at": "2026-04-03T12:24:00+08:00",
+          "updated_at": "2026-04-03T12:24:00+08:00"
+        },
+        {
+          "artifact_id": "ART-UX_REVIEW_REPORT-0005",
+          "artifact_type": "UX_REVIEW_REPORT",
+          "owner_role": "user_experience_officer",
+          "stage": "ux_review",
+          "status": "draft",
+          "version": "v1.0.0",
+          "storage_path": "artifacts/by-type/UX_REVIEW_REPORT/UX_REVIEW_REPORT--ART-UX_REVIEW_REPORT-0005--v1.0.0.md",
+          "created_at": "2026-04-07T13:27:44+08:00",
+          "updated_at": "2026-04-07T13:27:44+08:00"
+        }
+      ]
+    },
+    "baseline": {},
+    "semantic_aliases": {
+      "states": {
+        "ux_review": [
+          "experience_review"
+        ]
+      },
+      "artifact_types": {
+        "UX_REVIEW_REPORT": [
+          "EXPERIENCE_REVIEW"
+        ],
+        "UX_ISSUE_LOG": [
+          "EXPERIENCE_REWORK_NOTE"
+        ],
+        "EXPERIENCE_ACCEPTANCE_NOTE": [
+          "EXPERIENCE_SIGN_OFF"
+        ]
+      }
+    }
+  },
+  "auto_structure_score": 15,
+  "source_mode": "agent-team-project"
+}

@@ -1,0 +1,94 @@
+{
+  "url": "http://127.0.0.1:4174/",
+  "reviewedAt": "2026-04-07T07:04:47.875Z",
+  "evidenceDir": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review",
+  "screenshots": {
+    "welcome": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review/screenshots/01-welcome.png",
+    "startGuide": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review/screenshots/02-start-guide.png",
+    "datedQuickCreate": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review/screenshots/03-dated-quick-create.png",
+    "completeStepContext": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review/screenshots/04-complete-step-context.png",
+    "browsePath": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-round23-32-ux-review/screenshots/05-browse-path.png"
+  },
+  "checks": {
+    "welcome": {
+      "title": "欢迎来到你的任务工作台",
+      "primaryAction": "跟着做 5 步",
+      "secondaryAction": "先看示例工作区"
+    },
+    "datedQuickCreateStepAdvance": {
+      "progressBeforeCreate": "0/5",
+      "activeStepBeforeCreate": "新建你的第一条任务",
+      "progressAfterDatedCreate": "1/5",
+      "activeStepAfterDatedCreate": "给任务安排一个时间",
+      "selectedTaskAfterDatedCreate": "今天晚上 9 点体验官第一条任务"
+    },
+    "completeStepContext": {
+      "workspaceLabel": "今天先跑一遍",
+      "selectedTaskOnCompleteStep": "给首发清单补一个提醒和子任务",
+      "visibleListTitlesOnCompleteStep": [
+        "确认周四版本彩排清单",
+        "今天晚上 9 点体验官第一条任务",
+        "把周三 15:00 设计评审排进日历",
+        "给首发清单补一个提醒和子任务"
+      ],
+      "selectedTaskVisibleInCurrentList": true
+    },
+    "browsePath": {
+      "checklistCollapsedByDefault": false,
+      "cueVisibleAfterBrowse": true,
+      "checklistHeader": "新手指引",
+      "progress": "0/5"
+    }
+  },
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    }
+  ],
+  "pageErrors": []
+}

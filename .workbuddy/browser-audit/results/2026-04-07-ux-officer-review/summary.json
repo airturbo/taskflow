@@ -1,0 +1,141 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "reviewedAt": "2026-04-07T05:26:21.486Z",
+  "evidenceDir": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review",
+  "screenshots": {
+    "welcome": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review/screenshots/01-welcome.png",
+    "startGuide": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review/screenshots/02-start-guide.png",
+    "datedQuickCreate": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review/screenshots/03-dated-quick-create.png",
+    "completeStepContext": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review/screenshots/04-complete-step-context.png",
+    "browsePath": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/2026-04-07-ux-officer-review/screenshots/05-browse-path.png"
+  },
+  "checks": {
+    "welcome": {
+      "title": "欢迎来到你的任务工作台",
+      "primaryAction": "跟着做 5 步",
+      "secondaryAction": "先看示例工作区"
+    },
+    "datedQuickCreateStepAdvance": {
+      "progressBeforeCreate": "0/5",
+      "activeStepBeforeCreate": "新建你的第一条任务",
+      "progressAfterDatedCreate": "2/5",
+      "activeStepAfterDatedCreate": "拖动一次任务",
+      "selectedTaskAfterDatedCreate": "今天晚上 9 点体验官第一条任务"
+    },
+    "completeStepContext": {
+      "workspaceLabel": "今天先跑一遍",
+      "selectedTaskOnCompleteStep": "整理发布页首屏文案",
+      "visibleListTitlesOnCompleteStep": [
+        "确认周四版本彩排清单",
+        "把周三 15:00 设计评审排进日历",
+        "给首发清单补一个提醒和子任务"
+      ],
+      "selectedTaskVisibleInCurrentList": false
+    },
+    "browsePath": {
+      "checklistCollapsedByDefault": true,
+      "cueVisibleAfterBrowse": false,
+      "checklistHeader": "新手指引",
+      "progress": "0/5"
+    }
+  },
+  "consoleMessages": [
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "pageErrors": []
+}

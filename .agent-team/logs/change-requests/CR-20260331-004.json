@@ -1,0 +1,17 @@
+{
+  "cr_id": "CR-20260331-004",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UX_REVIEW_REPORT-0002",
+    "ART-UX_ISSUE_LOG-0002",
+    "ART-EAN-0001",
+    "ART-UI-0001"
+  ],
+  "change_type": "ux_interaction_iteration",
+  "description": "围绕多视图直接创建任务的交互进行一轮正式迭代：修复日历视图点击空白后错误跳转列表的问题；改为在当前视图弹出内联创建小窗；补齐日历/四象限/看板/时间线的直接创建入口；修复日历月切换、议程锚点与农历/节气显示问题，并重新走 UX 门禁。",
+  "justification": "当前多视图创建链路存在强制跳转、日期切换失真、农历显示不准和视图内无法直接录入等问题，已经影响 parity demo 的可用性与成熟度，需要按 agent-team 流程重新收口。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260331-004",
+  "created_at": "2026-03-31T21:12:00+08:00"
+}

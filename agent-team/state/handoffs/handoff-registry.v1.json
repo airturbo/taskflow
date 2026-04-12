@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "items": [
+    {
+      "handoff_id": "HO-20260410-001",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "project_manager_orchestrator",
+      "to_role": "frontend_engineer",
+      "from_role_session_id": "RS-20260410-001",
+      "intent": "修复 TaskFlow 移动端 4 个 UI bug 并由体验官走查 5 轮",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "## 任务摘要  修复用户报告的 4 个移动端 UI 问题，改动范围限于 `web/src/App.tsx` 和 `web/src/index.css`。  ## Bug 清单  ### Bug 1：象限视图卡片太大 - **现象**：标签 chips（#产品 #设计 #深度工作）、优先级标记（P1）、状态下拉（进行中）都显示了，导致卡片很肥 - **修复**：手机端象限卡片隐藏所有标签 chips、优先级标记、状态下拉、添加按钮，只保留标题和时间 - **CSS 选择器**",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-001--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [
+        "月历视图为何空白？是 JS 条件判断还是 CSS 隐藏？",
+        "除了 statusChangeFeedback 还有哪些反馈组件影响手机端布局？"
+      ],
+      "acceptance_focus": [
+        "象限卡片只显示标题+时间",
+        "看板卡片同时显示标题和时间",
+        "月历视图正常渲染和操作",
+        "操作通知为底部浮层不影响布局",
+        "构建通过"
+      ],
+      "recommended_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T11:09:40.329717+00:00",
+      "updated_at": "2026-04-10T11:11:34.393657+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-002",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "frontend_engineer",
+      "to_role": "user_experience_officer",
+      "from_role_session_id": "RS-20260410-002",
+      "intent": "前端修复完成，请体验官走查 5 轮",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 已修复 Bug  ### Bug 1：象限卡片太大 - **根因**：CSS 隐藏规则不全，`select`（状态下拉）、`.tag-list`、`.priority-indicator`、`footer`、`.action-row` 等元素未被隐藏 - **修复**：扩展 `.is-phone .matrix-quadrant .task-card` 作用域下的隐藏规则，新增 `.tag-list`/`.tag-ch",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-002--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "象限卡片只有标题+时间",
+        "看板卡片标题+时间都可见",
+        "月历正常渲染",
+        "通知为底部浮层不影响布局",
+        "桌面端无回归"
+      ],
+      "recommended_model": {
+        "provider_family": "claude",
+        "model_tier": "deep-reasoning",
+        "model_alias": "claude"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T11:21:12.828865+00:00",
+      "updated_at": "2026-04-10T11:21:20.928876+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-003",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "frontend_engineer",
+      "to_role": "qa_engineer",
+      "from_role_session_id": "RS-20260410-002",
+      "intent": "前端修复 4 个移动端 bug 完成，请 QA 测试验证",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# FRONTEND_DELIVERY_NOTE  ## 修改文件 - `web/src/App.tsx` — 手机端创建反馈 3 秒自动消失 - `web/src/index.css` — Bug 1-4 的 CSS 修复  ## Bug 修复清单  ### Bug 1：象限卡片太大 - 扩展 `.is-phone .matrix-quadrant .task-card` 隐藏规则，新增 `.tag-list`/`.tag-chip`/`.priority-indicato",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-003--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "象限卡片只有标题+时间",
+        "看板卡片标题+时间都可见",
+        "月历正常渲染和操作",
+        "通知为底部浮层3秒消失",
+        "桌面端无回归",
+        "构建通过"
+      ],
+      "recommended_model": {
+        "provider_family": "gpt-5",
+        "model_tier": "standard",
+        "model_alias": "gpt-5"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T11:37:36.888077+00:00",
+      "updated_at": "2026-04-10T11:37:46.084567+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-004",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "qa_engineer",
+      "to_role": "devops_engineer",
+      "from_role_session_id": "RS-20260410-004",
+      "intent": "QA 测试 6/6 PASS，请 DevOps 部署到 CloudBase 静态托管",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# TEST_REPORT  ## 结果：6/6 PASS  | TC | 结果 | |----|------| | TC1 象限卡片 | PASS | | TC2 看板卡片 | PASS | | TC3 月历渲染 | PASS | | TC4 通知浮层 | PASS | | TC5 桌面无回归 | PASS | | TC6 构建通过 | PASS |  ## 部署信息 - 构建产物：`web/dist/` - 目标：CloudBase 静态托管 `taskflow-7gxj",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-004--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "所有文件成功上传",
+        "线上可访问"
+      ],
+      "recommended_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T12:11:38.743216+00:00",
+      "updated_at": "2026-04-10T12:11:48.546662+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-005",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "devops_engineer",
+      "to_role": "product_manager",
+      "from_role_session_id": "RS-20260410-005",
+      "intent": "部署完成，请 PM 验收功能",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# RELEASE_MANIFEST  ## 部署结果 - 目标：CloudBase 静态托管 `taskflow-7gxjr4s56c9587d2` - 域名：`taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com` - 所有文件 HTTP 200 可访问 - index.html / favicon.svg / icons.svg / assets/index-C6nSIM7p.js / assets/index-B",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-005--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "线上 4 个 bug 是否修复",
+        "桌面端无回归"
+      ],
+      "recommended_model": {
+        "provider_family": "gemini-pro",
+        "model_tier": "pro",
+        "model_alias": "gemini-pro"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T12:12:18.479388+00:00",
+      "updated_at": "2026-04-10T12:12:46.359159+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-006",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "product_manager",
+      "to_role": "user_experience_officer",
+      "from_role_session_id": "RS-20260410-006",
+      "intent": "PM 功能验收通过，请体验官最终体验审查",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# PM 功能验收确认  ## 验收结论：通过  QA 6/6 PASS + DevOps 部署成功 + 线上全可访问。  ## 线上地址 https://taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com/?v=v5-bugfix  ## 体验官审查重点 1. 象限 Tab → 卡片是否只有标题+时间 2. 看板 → 卡片是否同时展示标题和时间 3. 日历 → 月历是否正常渲染 4. 创建任务 → 通知是否为底部浮层",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-006--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "4 个 bug 体验达标",
+        "无其他低级问题"
+      ],
+      "recommended_model": {
+        "provider_family": "claude",
+        "model_tier": "deep-reasoning",
+        "model_alias": "claude"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "open",
+      "created_by": "host_agent",
+      "accepted_by": null,
+      "created_at": "2026-04-10T12:13:04.020885+00:00",
+      "updated_at": "2026-04-10T12:13:04.020885+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-007",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "project_manager_orchestrator",
+      "to_role": "frontend_engineer",
+      "from_role_session_id": "RS-20260410-001",
+      "intent": "用户 4 个新优化需求",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# 需求清单  ## 1. 日历周历添加按钮精简 - 只保留每天日期行右侧小 + 号 - 去掉下方区域内巨大 + 号（`.calendar-create-strip` 或类似内联创建卡片） - 去掉周历头部横向每天旁的 + 号  ## 2. 新增任务三个时间字段 - MobileQuickCreateSheet 改为三个时间：开始时间(startAt)、计划完成(dueAt)、截止DDL(deadlineAt) - 每个用 datetime-local 输入  ## 3. 象",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-007--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "日历只保留标题行小+",
+        "三个时间字段",
+        "象限顶栏下拉",
+        "时间线纵向紧凑",
+        "构建通过"
+      ],
+      "recommended_model": {
+        "provider_family": "claude-sonnet",
+        "model_tier": "balanced",
+        "model_alias": "claude-sonnet"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "accepted",
+      "created_by": "host_agent",
+      "accepted_by": "host_agent",
+      "created_at": "2026-04-10T12:47:17.933177+00:00",
+      "updated_at": "2026-04-10T12:47:26.933484+00:00"
+    },
+    {
+      "handoff_id": "HO-20260410-008",
+      "workflow_id": "WF-20260410-001",
+      "from_role": "product_manager",
+      "to_role": "user_experience_officer",
+      "from_role_session_id": "RS-20260410-006",
+      "intent": "4 个新需求已实现+测试+部署，请体验官审查",
+      "payload_type": "ROLE_HANDOFF",
+      "input_summary": "# 交付摘要  ## 4 个需求实现完成 1. 日历按钮精简：隐藏 `.calendar-create-strip` 和周历列头 + 2. 三个时间字段：开始/计划完成/DDL 3. 象限顶栏下拉模式切换 4. 时间线纵向布局重构  ## QA: 构建通过 ## DevOps: 部署成功 HTTP 200  ## 线上地址 https://taskflow-7gxjr4s56c9587d2-1302608698.tcloudbaseapp.com/?v=v6",
+      "content_path": "artifacts/by-type/ROLE_HANDOFF/ROLE_HANDOFF--HO-20260410-008--v1.0.0.md",
+      "upstream_artifacts": [],
+      "questions_to_answer": [],
+      "acceptance_focus": [
+        "日历只保留标题行小+",
+        "三个时间字段可用",
+        "象限顶栏下拉",
+        "时间线纵向布局",
+        "桌面端无回归"
+      ],
+      "recommended_model": {
+        "provider_family": "claude",
+        "model_tier": "deep-reasoning",
+        "model_alias": "claude"
+      },
+      "recommended_execution_mode": "single",
+      "task_id": null,
+      "status": "open",
+      "created_by": "host_agent",
+      "accepted_by": null,
+      "created_at": "2026-04-10T13:18:20.219754+00:00",
+      "updated_at": "2026-04-10T13:18:20.219754+00:00"
+    }
+  ]
+}

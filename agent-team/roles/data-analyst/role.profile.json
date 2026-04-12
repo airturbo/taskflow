@@ -1,0 +1,21 @@
+{
+  "display_name": "数据分析师",
+  "enabled": true,
+  "execution_mode": "single",
+  "default_model": {
+    "provider_family": "gemini-pro",
+    "model_tier": "pro",
+    "model_alias": "gemini-pro"
+  },
+  "primary_stages": [
+    "post_release_analysis"
+  ],
+  "owned_artifacts": [
+    "METRIC_SPEC",
+    "ANALYSIS_NOTE",
+    "POST_RELEASE_REVIEW"
+  ],
+  "readonly_query_enabled": true,
+  "formal_change_requires_impact_assessment": true,
+  "role_id": "data_analyst"
+}

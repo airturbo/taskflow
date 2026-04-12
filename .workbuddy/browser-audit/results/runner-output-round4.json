@@ -1,0 +1,150 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "workspace": "今日",
+  "screenshots": {
+    "home": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/01-home.png",
+    "quickCreate": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/02-quick-create.png",
+    "detail": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/03-detail-edit.png",
+    "persistence": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/04-persistence.png",
+    "search": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/05-search.png",
+    "listKeyboard": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/06-list-keyboard.png",
+    "calendar": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/07-calendar.png",
+    "calendarMonthExplicit": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/07-calendar-month-explicit.png",
+    "calendarBoundary": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/08-calendar-boundary.png",
+    "kanban": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/10-kanban.png",
+    "kanbanKeyboard": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/10-kanban-keyboard.png",
+    "timeline": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/12-timeline.png",
+    "matrix": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/13-matrix.png",
+    "matrixKeyboard": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/12-matrix-keyboard.png",
+    "stats": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/12-stats.png",
+    "completed": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/13-completed.png",
+    "trash": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/14-trash.png",
+    "tag": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/15-tag.png",
+    "filter": "/Users/turbo/WorkBuddy/20260330162606/.workbuddy/browser-audit/results/screenshots/16-filter.png"
+  },
+  "checks": {
+    "quickCreate": {
+      "titleAfterCreate": "今天晚上 9 点体验官走查",
+      "dueAtAfterCreate": "2026-04-03T21:00",
+      "detailVisible": true
+    },
+    "detailEdit": {
+      "titleAfterEdit": "体验官走查回放",
+      "noteAfterEdit": "验证真实用户全流程、视图切换与工具链路。",
+      "repeatRule": "每天",
+      "estimatedPomodoros": null,
+      "reminderCount": 2,
+      "subtaskCount": 1,
+      "attachmentCount": 1,
+      "commentCount": 1
+    },
+    "persistence": {
+      "persistedTaskFound": true,
+      "persistedSearchLabel": "今日"
+    },
+    "search": {
+      "searchValue": "体验官",
+      "workspaceLabel": "今日",
+      "missStillVisibleBeforeDebounce": 1,
+      "missVisibleAfterDebounce": 0,
+      "matchingTaskVisible": true
+    },
+    "listKeyboard": {
+      "focusedTitle": "完成 TickTick 对齐版工作台设计评审",
+      "selectedTitleAfterEnter": "完成 TickTick 对齐版工作台设计评审"
+    },
+    "calendar": {
+      "monthModeVisible": true,
+      "agendaToggleVisible": true,
+      "monthGridCreateBlocked": true,
+      "monthExplicitEntryOpened": true,
+      "weekColumnCreateBlocked": true,
+      "weekExplicitEntryOpened": true,
+      "agendaStripEntryOpened": true,
+      "agendaEmptyEntryAvailable": true,
+      "agendaEmptyEntryOpened": true
+    },
+    "kanban": {
+      "columnCount": 3,
+      "cardsVisible": 1,
+      "keyboardFocusedTitle": "完成 TickTick 对齐版工作台设计评审",
+      "selectedTitleAfterEnter": "完成 TickTick 对齐版工作台设计评审"
+    },
+    "timeline": {
+      "barCount": 1
+    },
+    "matrix": {
+      "quadrantCount": 4,
+      "createdTaskVisible": 1,
+      "keyboardFocusedTitle": "完成 TickTick 对齐版工作台设计评审",
+      "selectedTitleAfterSpace": "完成 TickTick 对齐版工作台设计评审"
+    },
+    "stats": {
+      "cards": 4,
+      "focusMetric": "已逾期0",
+      "habitMetric": "已排期7"
+    },
+    "secondaryPaths": {
+      "todayTaskStillVisibleAfterComplete": 0,
+      "completedVisible": 1,
+      "trashVisible": 1,
+      "restoredWorkspace": "已完成",
+      "restoredVisible": 1,
+      "tagWorkspace": "已完成",
+      "tagViewVisible": 1,
+      "filterWorkspace": "本周截止",
+      "filterViewVisible": 0
+    }
+  },
+  "consoleErrors": [
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "pageErrors": []
+}

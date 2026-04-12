@@ -1,0 +1,26 @@
+{
+  "ia_id": "IA-20260403-001",
+  "cr_id": "CR-20260403-001",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "user_experience_officer",
+    "frontend_engineer",
+    "product_manager",
+    "project_manager_orchestrator",
+    "qa_engineer"
+  ],
+  "affected_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0003",
+    "ART-UX_REVIEW_REPORT-0004",
+    "ART-UX_ISSUE_LOG-0004",
+    "ART-EAN-0003"
+  ],
+  "affected_baselines": [
+    "BL-20260331-003"
+  ],
+  "risk_level": "medium",
+  "requires_retest": true,
+  "rollback_plan": "若右侧详情栏布局修正导致表单可读性下降、响应式抽屉出现内容裁切或桌面壳构建失败，则回退本轮 App.tsx / index.css / ux-review-runner.mjs 改动，并沿用上一轮已批准的 UX 制品继续作为运行基线。",
+  "recommendation": "proceed",
+  "created_at": "2026-04-03T12:11:00+08:00"
+}

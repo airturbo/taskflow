@@ -1,0 +1,17 @@
+{
+  "cr_id": "CR-20260403-001",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0003",
+    "ART-UX_REVIEW_REPORT-0004",
+    "ART-UX_ISSUE_LOG-0004",
+    "ART-EAN-0003"
+  ],
+  "change_type": "web_desktop_parity_deep_review_iteration",
+  "description": "围绕 master 新提出的 3 个方向继续打磨 parity demo：修正网页端全屏下右侧详情栏横向溢出，由体验官按最新 scope 再做 10 轮完整走查，并把 app 端与网页端的一致性重新拉到最终门禁。",
+  "justification": "当前产品虽然已通过上一轮桌面交互收口，但网页端右栏在高密度详情内容下仍会暴露横向滚动条，体验官的覆盖矩阵也还残留旧 scope 口径；如果不重新做完整走查并校准 app/web parity，项目团队会在错误基线上继续迭代，放行结论不够可信。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260403-001",
+  "created_at": "2026-04-03T12:10:00+08:00"
+}

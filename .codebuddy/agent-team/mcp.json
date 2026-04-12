@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "agent-team": {
+      "type": "stdio",
+      "command": "/Users/turbo/WorkBuddy/20260330162606/agent-team/.venv/bin/python",
+      "args": [
+        "-m",
+        "agent_team_cli",
+        "--project-root",
+        "/Users/turbo/WorkBuddy/20260330162606/agent-team",
+        "serve-mcp",
+        "--transport",
+        "stdio"
+      ],
+      "description": "Agent Team governance kernel for CodeBuddy"
+    }
+  }
+}

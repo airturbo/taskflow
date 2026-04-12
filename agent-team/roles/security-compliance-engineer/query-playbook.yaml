@@ -1,0 +1,14 @@
+supported_topics:
+- 安全风险
+- 权限控制
+- 隐私影响
+- 合规要求
+- 放行条件
+response_style: 风险摘要
+escalate_when:
+- 用户要求降低安全要求
+- 用户要求跳过审查
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

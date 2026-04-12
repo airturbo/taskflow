@@ -1,0 +1,81 @@
+# State Machine Configuration — Multi-Role Agent Team
+# Project-local override: {project}/.agent-team/configs/global/state-machine.v1.yaml
+
+schema_version: "1.0"
+
+states:
+  - intake
+  - readonly_query
+  - change_request_received
+  - impact_assessment
+  - scoped
+  - design_in_progress
+  - architecture_in_progress
+  - implementation_in_progress
+  - security_review
+  - test_preparation
+  - testing
+  - ux_review
+  - release_preparation
+  - release_ready
+  - released
+  - post_release_analysis
+  - rolled_back
+  - archived
+
+initial_state: intake
+
+rules:
+  readonly_no_mutation: true
+  change_request_requires_id: true
+  impact_assessment_before_resume: true
+  ux_gate_required_before_release: true
+  archived_is_terminal: true
+
+state_labels:
+  intake: "项目启动 — 收集初始需求与背景"
+  readonly_query: "只读查询 — 不改变任何状态或产物"
+  change_request_received: "变更请求已收到 — 等待影响评估"
+  impact_assessment: "影响评估中 — 分析变更对上下游的影响"
+  scoped: "需求已确认 — PRD 与验收标准已 approved"
+  design_in_progress: "设计进行中 — UI/UX 方案制定"
+  architecture_in_progress: "架构设计中 — 技术方案与边界确认"
+  implementation_in_progress: "开发进行中 — 前后端编码"
+  security_review: "安全审查 — 安全/合规检查"
+  test_preparation: "测试准备 — 用例编写与环境准备"
+  testing: "测试进行中 — 执行测试与缺陷跟踪"
+  ux_review: "体验评审 — 用户体验官先快速对齐 PRD / scope / 主链路，再以独立挑剔用户身份做最终体验走查与审美把关"
+  release_preparation: "发布准备 — 仅在体验门禁通过后进入，准备部署清单与回滚方案"
+  release_ready: "待发布 — 所有门禁已通过"
+  released: "已发布 — 生产环境运行中"
+  post_release_analysis: "发布后分析 — 效果评估与复盘"
+  rolled_back: "已回退 — 生产环境已回退到上一版本"
+  archived: "已归档 — 项目结束"
+
+transitions:
+  intake: [readonly_query, change_request_received, scoped]
+  readonly_query: [intake, scoped, design_in_progress, architecture_in_progress, implementation_in_progress, testing, ux_review, release_ready, released, post_release_analysis]
+  change_request_received: [impact_assessment]
+  impact_assessment: [scoped, design_in_progress, architecture_in_progress, implementation_in_progress, testing, ux_review, intake]
+  scoped: [readonly_query, design_in_progress, change_request_received]
+  design_in_progress: [readonly_query, architecture_in_progress, change_request_received]
+  architecture_in_progress: [readonly_query, implementation_in_progress, security_review, change_request_received]
+  implementation_in_progress: [readonly_query, security_review, test_preparation, change_request_received]
+  security_review: [readonly_query, implementation_in_progress, test_preparation, change_request_received]
+  test_preparation: [readonly_query, testing, change_request_received]
+  testing: [readonly_query, ux_review, implementation_in_progress, change_request_received]
+  ux_review: [readonly_query, release_preparation, implementation_in_progress, testing, change_request_received]
+  release_preparation: [readonly_query, release_ready, testing, ux_review, change_request_received]
+  release_ready: [readonly_query, released, change_request_received]
+  released: [readonly_query, post_release_analysis, rolled_back]
+  post_release_analysis: [readonly_query, archived, change_request_received]
+  rolled_back: [readonly_query, implementation_in_progress, change_request_received]
+  archived: [readonly_query]
+
+guards:
+  change_request_received:
+    requires: change_request_id
+    message: "进入变更流程需要提供 change_request_id"
+  released:
+    requires: [test_report_approved, experience_acceptance_approved, release_manifest_approved]
+    message: "发布需要测试报告、体验验收和发布清单均已 approved"

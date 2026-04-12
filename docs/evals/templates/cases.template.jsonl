@@ -1,0 +1,6 @@
+{"case_id":"FE-1","lane":"frontend","title":"前端只读理解链路","goal":"验证前端角色能否在不改状态的前提下快速获得治理上下文","pass_criteria":["角色为 frontend_engineer","workflow 已生成","role_session 已生成","project_state 已注入"]}
+{"case_id":"FE-2","lane":"frontend","title":"前端体验闭环链路","goal":"验证 EXPERIENCE / UX 词汇桥接是否能支撑前端承接体验问题","pass_criteria":["可用 EXPERIENCE_REVIEW 查询到产物","命中 UX_REVIEW_REPORT 或等价产物","返回 semantic artifact aliases","返回 semantic stage aliases"]}
+{"case_id":"BE-1","lane":"backend","title":"后端只读理解链路","goal":"验证后端角色能否稳定承接 API / 数据契约风险类任务","pass_criteria":["角色为 backend_engineer","workflow 已生成","role_session 已生成","project_state 已注入"]}
+{"case_id":"BE-2","lane":"backend","title":"后端治理守卫链路","goal":"验证融合后没有为了顺滑而放松 CR / IA 守卫","pass_criteria":["进入 change_request_received 前被阻断","verdict 为 requires_impact_assessment 或等价阻断","message 明确说明缺少前置条件"]}
+{"case_id":"GOV-1","lane":"shared","title":"共享状态别名链路","goal":"验证 experience_review / ux_review 两套体验状态词汇能够兼容","pass_criteria":["transition_state 可接受 experience_review","实际进入 canonical state 或等价状态","返回 semantic_mapping 或状态 alias 证据"]}
+{"case_id":"GOV-2","lane":"shared","title":"共享真相层可见性链路","goal":"验证融合后 sidecar 真能读到 WorkBuddy truth layer，而不只是多了一层目录","pass_criteria":["baseline_tag 可见","artifact registry 非空","artifact projection 可见","EXPERIENCE_REVIEW 查询非空"]}

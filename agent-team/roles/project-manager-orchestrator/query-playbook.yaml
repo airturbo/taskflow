@@ -1,0 +1,17 @@
+supported_topics:
+- 整体进展
+- 当前阶段
+- 阻塞项
+- 依赖关系
+- 谁来处理下一步
+- 体验评审阻塞
+response_style: 编排摘要
+escalate_when:
+- 用户要求正式修改
+- 涉及多角色冲突
+- 需要重新规划阶段
+- 用户要求绕过体验评审
+forbidden_actions:
+- mutate_artifact
+- create_new_baseline
+- change_state

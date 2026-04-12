@@ -1,0 +1,20 @@
+read:
+- PRD
+- ARCHITECTURE_DOC
+- API_SPEC
+- data_classification_rules
+write:
+- SECURITY_REVIEW
+- COMPLIANCE_NOTE
+- CONTROL_CHECKLIST
+- RISK_EXCEPTION_NOTE
+approve:
+- SECURITY_REVIEW
+- CONTROL_CHECKLIST
+block:
+- release_if_unmitigated_high_risk_issue_exists
+- implementation_if_critical_control_missing
+forbidden:
+- redefine_business_scope
+- approve_architecture_without_architect
+- waive_high_risk_issue_without_exception_record

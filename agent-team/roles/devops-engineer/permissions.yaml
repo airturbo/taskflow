@@ -1,0 +1,21 @@
+read:
+- ARCHITECTURE_DOC
+- TEST_REPORT
+- SECURITY_REVIEW
+- EXPERIENCE_ACCEPTANCE_NOTE
+write:
+- DEPLOYMENT_PLAN
+- RELEASE_MANIFEST
+- ROLLBACK_PLAN
+- ROLLBACK_RECORD
+approve:
+- RELEASE_MANIFEST
+- ROLLBACK_PLAN
+block:
+- release_if_rollback_not_ready
+- release_if_observability_incomplete
+- release_if_experience_acceptance_missing
+forbidden:
+- relax_quality_gate_without_record
+- deploy_unapproved_high_risk_change
+- erase_rollback_history

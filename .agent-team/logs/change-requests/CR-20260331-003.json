@@ -1,0 +1,16 @@
+{
+  "cr_id": "CR-20260331-003",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UX_COVERAGE_MATRIX-0001",
+    "ART-UX_REVIEW_REPORT-0001",
+    "ART-UX_ISSUE_LOG-0001"
+  ],
+  "change_type": "ux_iteration_fix",
+  "description": "基于首轮体验评审（ART-UX_REVIEW_REPORT-0001 v1.0.0）的阻断结论，进行 4 轮迭代修复：(1) 修正中文时间快速创建解析 (2) 修正创建后上下文保持策略 (3) 统一 completed 过滤口径 (4) 对齐番茄专注任务来源 (5) 补充多视图稀疏态摘要与引导 (6) 补测已完成/回收站/标签/智能清单 (7) 修正回收站恢复落点",
+  "justification": "用户体验官首轮评审阻断发布（6.8/10），3 个 P1 + 2 个 P2 + 1 个覆盖缺口需闭环修复后才能放行",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260331-003",
+  "created_at": "2026-03-31T17:00:00+08:00"
+}

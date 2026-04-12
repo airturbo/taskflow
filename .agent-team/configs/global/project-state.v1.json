@@ -1,0 +1,320 @@
+{
+  "current_state": "impact_assessment",
+  "baseline_tag": "BL-20260402-001",
+  "history": [
+    {
+      "from": "intake",
+      "to": "scoped",
+      "triggered_by": "product_manager",
+      "reason": "PRD 和用户故事产出并确认产品范围",
+      "change_request_id": null,
+      "timestamp": "2026-03-30T12:19:39.000000+00:00"
+    },
+    {
+      "from": "scoped",
+      "to": "design_in_progress",
+      "triggered_by": "ui_ux_designer",
+      "reason": "UI_SPEC 和 UX_FLOW 已产出",
+      "change_request_id": null,
+      "timestamp": "2026-03-30T12:43:56.000000+00:00"
+    },
+    {
+      "from": "design_in_progress",
+      "to": "change_request_received",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "用户要求推进到可用状态",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:38:58.422359+00:00"
+    },
+    {
+      "from": "change_request_received",
+      "to": "impact_assessment",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "评估范围切分、实现路径与风险",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:38:58.422359+00:00"
+    },
+    {
+      "from": "impact_assessment",
+      "to": "architecture_in_progress",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "批准按单人本地优先 usable MVP 路线推进",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:38:58.422359+00:00"
+    },
+    {
+      "from": "architecture_in_progress",
+      "to": "implementation_in_progress",
+      "triggered_by": "frontend_engineer",
+      "reason": "web 前端工程初始化并开始实现 usable MVP",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "implementation_in_progress",
+      "to": "test_preparation",
+      "triggered_by": "qa_engineer",
+      "reason": "核心功能已可构建，进入测试准备",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "test_preparation",
+      "to": "testing",
+      "triggered_by": "qa_engineer",
+      "reason": "开始执行构建和核心流程验证",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "testing",
+      "to": "release_preparation",
+      "triggered_by": "devops_engineer",
+      "reason": "测试通过，整理本地预览版发布清单",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "release_preparation",
+      "to": "release_ready",
+      "triggered_by": "devops_engineer",
+      "reason": "发布清单与回滚说明已具备",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "release_ready",
+      "to": "released",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "本地 Web 预览版已可运行并向用户交付",
+      "change_request_id": "CR-20260331-001",
+      "timestamp": "2026-03-31T02:47:32.012703+00:00"
+    },
+    {
+      "from": "released",
+      "to": "post_release_analysis",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "基于用户反馈复盘粗糙 MVP 与目标偏差",
+      "change_request_id": null,
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "post_release_analysis",
+      "to": "change_request_received",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "收到推倒重来并对齐滴答清单的正式变更请求",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "change_request_received",
+      "to": "impact_assessment",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "评估全量重构范围、风险与角色影响",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "impact_assessment",
+      "to": "scoped",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "批准以 TickTick 对齐方案重建产品范围",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "scoped",
+      "to": "design_in_progress",
+      "triggered_by": "ui_ux_designer",
+      "reason": "新版 UI_SPEC 与 UX_FLOW 已产出",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "design_in_progress",
+      "to": "architecture_in_progress",
+      "triggered_by": "system_architect",
+      "reason": "新版架构与数据模型已确认",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "architecture_in_progress",
+      "to": "implementation_in_progress",
+      "triggered_by": "frontend_engineer",
+      "reason": "web 工作台已重写为 parity demo",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "implementation_in_progress",
+      "to": "test_preparation",
+      "triggered_by": "qa_engineer",
+      "reason": "核心链路与构建验证准备完成",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "test_preparation",
+      "to": "testing",
+      "triggered_by": "qa_engineer",
+      "reason": "执行对齐版 demo 的功能验证",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "testing",
+      "to": "release_preparation",
+      "triggered_by": "devops_engineer",
+      "reason": "测试通过并整理发布清单",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "release_preparation",
+      "to": "release_ready",
+      "triggered_by": "devops_engineer",
+      "reason": "发布清单与交付说明已齐备",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "release_ready",
+      "to": "released",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "本地 TickTick 对齐 demo 已可预览交付",
+      "change_request_id": "CR-20260331-002",
+      "timestamp": "2026-03-31T11:36:35.923424+08:00"
+    },
+    {
+      "from": "released",
+      "to": "change_request_received",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "收到桌面交互最后一轮 polish 返工请求，聚焦搜索节奏、日历创建命中与键盘焦点一致性",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-02T20:10:00+08:00"
+    },
+    {
+      "from": "change_request_received",
+      "to": "impact_assessment",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "评估本轮桌面交互收口对产品、前端与体验治理的影响",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-02T20:11:00+08:00"
+    },
+    {
+      "from": "impact_assessment",
+      "to": "implementation_in_progress",
+      "triggered_by": "frontend_engineer",
+      "reason": "开始实现搜索 debounce、日历创建边界与卡片键盘主操作收口",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-03T11:21:00+08:00"
+    },
+    {
+      "from": "implementation_in_progress",
+      "to": "test_preparation",
+      "triggered_by": "qa_engineer",
+      "reason": "构建通过并完成回归脚本修正，准备执行本轮体验复测",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-03T11:21:00+08:00"
+    },
+    {
+      "from": "test_preparation",
+      "to": "testing",
+      "triggered_by": "qa_engineer",
+      "reason": "执行 build 与 ux-review-runner 复测，验证 3 个 follow-up 是否关闭",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-03T11:21:00+08:00"
+    },
+    {
+      "from": "testing",
+      "to": "ux_review",
+      "triggered_by": "user_experience_officer",
+      "reason": "基于自动化回归证据复审搜索节奏、日历创建边界与卡片键盘焦点",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-03T11:21:00+08:00"
+    },
+    {
+      "from": "ux_review",
+      "to": "release_preparation",
+      "triggered_by": "user_experience_officer",
+      "reason": "ART-EAN-0002 已批准，本轮桌面交互 polish 返工闭环完成",
+      "change_request_id": "CR-20260402-002",
+      "timestamp": "2026-04-03T11:21:00+08:00"
+    },
+    {
+      "from": "release_preparation",
+      "to": "change_request_received",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "收到网页端右侧详情栏溢出、10 轮 UX 深度复审与 app/web parity 复核请求",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:10:00+08:00"
+    },
+    {
+      "from": "change_request_received",
+      "to": "impact_assessment",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "评估右栏布局修正、评审基线校准和跨端一致性复核的影响范围",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:11:00+08:00"
+    },
+    {
+      "from": "impact_assessment",
+      "to": "implementation_in_progress",
+      "triggered_by": "frontend_engineer",
+      "reason": "开始修正 detail rail 横向溢出并扩展浏览回归脚本",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:14:00+08:00"
+    },
+    {
+      "from": "implementation_in_progress",
+      "to": "test_preparation",
+      "triggered_by": "qa_engineer",
+      "reason": "网页端 build 与桌面端 build 已通过，准备执行本轮深度复测",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:22:00+08:00"
+    },
+    {
+      "from": "test_preparation",
+      "to": "testing",
+      "triggered_by": "qa_engineer",
+      "reason": "运行更新后的 ux-review-runner 并核对右栏 / 整页无横向溢出",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:23:00+08:00"
+    },
+    {
+      "from": "testing",
+      "to": "ux_review",
+      "triggered_by": "user_experience_officer",
+      "reason": "基于 10 轮循环结果复审网页端右栏、scope 基线与 app/web parity",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:24:00+08:00"
+    },
+    {
+      "from": "ux_review",
+      "to": "release_preparation",
+      "triggered_by": "user_experience_officer",
+      "reason": "ART-EAN-0003 已批准，本轮跨端一致性与体验门禁返工闭环完成",
+      "change_request_id": "CR-20260403-001",
+      "timestamp": "2026-04-03T12:24:00+08:00"
+    },
+    {
+      "from": "release_preparation",
+      "to": "change_request_received",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "收到按新体验官规则重跑前台走查后的正式返工请求，聚焦 onboarding 跳步、完成态上下文错位、浏览路径导引过隐与浏览器声音回退 warning",
+      "change_request_id": "CR-20260407-001",
+      "timestamp": "2026-04-07T13:27:44+08:00"
+    },
+    {
+      "from": "change_request_received",
+      "to": "impact_assessment",
+      "triggered_by": "project_manager_orchestrator",
+      "reason": "评估 onboarding 逻辑收口、引导入口显隐与提醒声音解锁链路对产品、设计、前端与 QA 的影响",
+      "change_request_id": "CR-20260407-001",
+      "timestamp": "2026-04-07T13:27:44+08:00"
+    }
+  ],
+  "created_at": "2026-03-30T12:16:14.527026+00:00",
+  "updated_at": "2026-04-07T13:27:44+08:00"
+}

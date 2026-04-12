@@ -1,0 +1,21 @@
+{
+  "ia_id": "IA-20260331-001",
+  "cr_id": "CR-20260331-001",
+  "assessed_by": "project_manager_orchestrator",
+  "affected_roles": [
+    "project_manager_orchestrator",
+    "system_architect",
+    "frontend_engineer",
+    "qa_engineer"
+  ],
+  "affected_artifacts": [
+    "ART-TASK-0001",
+    "ART-ARCH-0001"
+  ],
+  "affected_baselines": [],
+  "risk_level": "medium",
+  "requires_retest": true,
+  "rollback_plan": "若实现偏离目标，则回退到设计基线 BL-20260331-001，仅保留 PRD/UI/UX/TASK/ARCH 文档。",
+  "recommendation": "proceed",
+  "created_at": "2026-03-31T02:38:58.424360+00:00"
+}

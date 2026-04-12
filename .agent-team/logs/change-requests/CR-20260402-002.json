@@ -1,0 +1,15 @@
+{
+  "cr_id": "CR-20260402-002",
+  "requested_by": "project_manager_orchestrator",
+  "target_artifacts": [
+    "ART-UX_REVIEW_REPORT-0003",
+    "ART-UX_ISSUE_LOG-0003"
+  ],
+  "change_type": "desktop_interaction_polish_iteration",
+  "description": "围绕桌面端第二轮交互收口，补齐跟手拖拽浮层、看板与四象限卡片内的状态/优先级就地编辑，并按体验官标准复盘主要交互路径后推动前端继续迭代。",
+  "justification": "桌面端已经从“拖不动”恢复到“能拖”，但交互完成度仍明显弱于网页预览：拖动缺少跟手反馈，卡片内高频属性无法原地修改，且多处桌面端细节仍有粗糙感。若不继续收口，产品会停留在功能可用而体验不成熟的状态。",
+  "priority": "high",
+  "status": "approved",
+  "impact_assessment_id": "IA-20260402-002",
+  "created_at": "2026-04-02T20:10:00+08:00"
+}

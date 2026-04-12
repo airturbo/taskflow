@@ -1,0 +1,17 @@
+{
+  "name": "TaskFlow",
+  "short_name": "TaskFlow",
+  "description": "TaskFlow — 智能任务管理",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6c63ff",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
