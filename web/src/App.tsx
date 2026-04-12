@@ -1690,6 +1690,17 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }
 
+  /** Mobile-optimized toggle: immediate completion + Undo Toast (UX-01) */
+  const mobileToggleComplete = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId)
+    if (task && !task.completed) {
+      setMobileCompletionToast({ taskId, title: task.title })
+      if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
+      completionToastTimerRef.current = window.setTimeout(() => setMobileCompletionToast(null), 3000)
+    }
+    toggleTaskComplete(taskId)
+  }
+
   const moveTaskToStatus = (taskId: string, status: TaskStatus) => {
     applyTaskMutation(taskId, (task) =>
       normalizeTaskPatch(task, {
@@ -2979,17 +2990,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 tags={tags}
                 onSelectTask={selectTask}
                 onUpdateTask={updateTask}
-                onToggleComplete={(taskId) => {
-                  // #23 — 完成动画 + 撤销 Toast
-                  const task = tasks.find(t => t.id === taskId)
-                  if (task && !task.completed) {
-                    // Show toast for completing
-                    setMobileCompletionToast({ taskId, title: task.title })
-                    if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
-                    completionToastTimerRef.current = window.setTimeout(() => setMobileCompletionToast(null), 3000)
-                  }
-                  toggleTaskComplete(taskId)
-                }}
+                onToggleComplete={mobileToggleComplete}
                 focusScope={mobileFocusScope}
                 focusScopeListId={mobileFocusScopeListId}
                 completedTodayCount={mobileCompletedTodayCount}
@@ -3011,7 +3012,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 onOpenInlineCreate={openInlineCreate}
                 onMoveTaskToDate={moveTaskToDate}
                 onChangeMode={setCalendarMode}
-                onToggleComplete={toggleTaskComplete}
+                onToggleComplete={mobileToggleComplete}
                 onChangeAnchor={setCalendarAnchor}
               />
               </ViewErrorBoundary>
@@ -3313,7 +3314,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
             lists={lists}
             tags={tags}
             onUpdateTask={updateTask}
-            onToggleComplete={toggleTaskComplete}
+            onToggleComplete={mobileToggleComplete}
             onClose={() => setTaskSheetOpen(false)}
           />
         </TaskBottomSheet>
