@@ -2,14 +2,23 @@
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-04-13 — Milestone v2.0 started
+Phase: 5 — 安全网 + 速赢
+Plan: phases/phase-05.md
+Status: Pending (ready to begin)
+Last activity: 2026-04-13 — Roadmap finalized, entering Phase 5
 
 ## Progress
-- Phases completed: 0
+- v1.1: ✅ Complete (Phase 1–4)
+- v2.0: Phase 5 ready — 0/44 requirements done
 - Last updated: 2026-04-13
+
+## Phase 5 Scope
+| REQ | Description | Status |
+|-----|-------------|--------|
+| ARCH-03 | React Error Boundary per view | Pending |
+| ARCH-04 | Offline queue 500-cap + 7-day expiry | Pending |
+| ARCH-05 | Remove global `* { transition: all }` | Pending |
+| UX-01 | Mobile: confirmation dialog → Undo Toast | Pending |
 
 ## Accumulated Context
 
@@ -23,7 +32,7 @@ Last activity: 2026-04-13 — Milestone v2.0 started
 - 报告 A（架构/工程视角）：20 个问题（P0×3, P1×4, P2×5, P3×5, 架构隐患×3）
 - 报告 B（产品/认知视角）：11 个问题（认知负担×3, 交互不一致×3, 功能缺口×3, 战略×2）
 - 去重后 25 个独立问题，全部纳入 v2.0 范围
-- 优化方案已完成：11 阶段 / 14 周 / 51 dev-days
+- 优化方案：11 阶段（Phase 5–15）/ ~14 周 / ~51 dev-days / 44 requirements
 
 ### 关键设计决策
 - 双日期模型（dueAt + deadlineAt）是产品灵魂，强化而非弱化
@@ -35,5 +44,7 @@ Last activity: 2026-04-13 — Milestone v2.0 started
 None
 
 ## Decisions Log
+- 2026-04-13: Milestone v1.1 completed
 - 2026-04-13: Milestone v2.0 started — 交互体验全面优化
 - 2026-04-13: 冲突策略 = field-level merge, 渐进式拆分, 个人体验优先
+- 2026-04-13: Roadmap finalized — 44 reqs across 11 phases (5–15)
