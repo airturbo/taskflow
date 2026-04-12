@@ -39,7 +39,7 @@
 - [ ] **FILTER-03**: NLP 输入实时解析预览（日期/标签/优先级 chip）
 
 ### UX — 交互打磨
-- [ ] **UX-01**: 移动端完成任务移除确认弹窗，改为 Undo Toast
+- [x] **UX-01**: 移动端完成任务移除确认弹窗，改为 Undo Toast
 - [ ] **UX-02**: 桌面端完成任务有动画仪式（✓ 弹跳 + strikethrough + 滑出 + Undo Toast）
 - [ ] **UX-03**: 重复任务卡片常驻 🔄 图标，完成 Toast 含下次重复日期
 - [ ] **UX-04**: Zustand 统一所有 UI 状态（替代 useState 双轨）
