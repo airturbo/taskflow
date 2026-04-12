@@ -155,6 +155,9 @@ export class TaskFlowSync {
    * Push the current in-memory workspace state to Supabase.
    * Uses upsert with conflict target (user_id, device_id) — each device has its own row.
    * The web app pulls the most recent row by updated_at, so all devices' rows are visible.
+   *
+   * NOTE: This method is intentionally silent — no Notice is shown here.
+   * Success/failure notices are the responsibility of syncNow() (user-triggered).
    */
   async push(): Promise<void> {
     if (!this.ready()) return;
@@ -186,18 +189,18 @@ export class TaskFlowSync {
       });
 
       if (error) {
+        // Background push failure — log only, no Notice (avoid noise on every vault modify)
         console.warn('[TaskFlowSync] push error:', error.message);
-        new Notice(`TaskFlow: 同步失败 - ${error.message}`);
         return;
       }
 
       // Persist the new lastSyncAt quietly — avoids triggering another push loop
       await this.plugin.updateSettingsQuiet({ lastSyncAt: now });
-      // Note: success Notice is shown only by syncNow(), not on every background push
+      this.lastPushAt = Date.now();
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
+      // Background push failure — log only, no Notice
       console.warn('[TaskFlowSync] push exception:', msg);
-      new Notice(`TaskFlow: 同步失败 - ${msg}`);
     }
   }
 
@@ -249,13 +252,33 @@ export class TaskFlowSync {
     return id;
   }
 
-  /** Debounced push — collapses rapid mutations into a single Supabase request (400 ms). */
+  /**
+   * Debounced push — collapses rapid vault mutations into a single Supabase request.
+   * Debounce delay is read from settings.syncDebounceMs (default 2000 ms).
+   * Additionally enforces a minimum interval of settings.syncMinIntervalMs (default 30 s)
+   * between consecutive background pushes to prevent hammering the API.
+   */
   private pushTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastPushAt: number = 0;
   schedulePush(): void {
     if (this.pushTimer) clearTimeout(this.pushTimer);
+
+    const settings = this.plugin.getSettings();
+    const debounceMs = settings.syncDebounceMs ?? 2000;
+    const minIntervalMs = settings.syncMinIntervalMs ?? 30000;
+
     this.pushTimer = setTimeout(() => {
       this.pushTimer = null;
+
+      const msSinceLastPush = Date.now() - this.lastPushAt;
+      if (this.lastPushAt > 0 && msSinceLastPush < minIntervalMs) {
+        console.debug(
+          `[TaskFlowSync] schedulePush skipped — last push was ${msSinceLastPush}ms ago (min interval: ${minIntervalMs}ms)`
+        );
+        return;
+      }
+
       void this.push();
-    }, 400);
+    }, debounceMs);
   }
 }

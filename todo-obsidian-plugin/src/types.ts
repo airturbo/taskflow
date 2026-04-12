@@ -37,6 +37,10 @@ export interface TodoPluginSettings {
   syncEnabled: boolean;
   lastSyncAt: string | null;
   syncDeviceId?: string;
+  /** Debounce delay (ms) before a background push fires after a vault mutation. Default: 2000 */
+  syncDebounceMs: number;
+  /** Minimum interval (ms) between consecutive background pushes. Default: 30000 */
+  syncMinIntervalMs: number;
 }
 
 export interface TodoPluginData {
@@ -57,6 +61,8 @@ export const DEFAULT_SETTINGS: TodoPluginSettings = {
   supabasePassword: '',
   syncEnabled: false,
   lastSyncAt: null,
+  syncDebounceMs: 2000,
+  syncMinIntervalMs: 30000,
 };
 
 export const DEFAULT_DATA: TodoPluginData = {

@@ -136,5 +136,38 @@ export class TodoWorkspaceSettingTab extends PluginSettingTab {
             }
           });
       });
+
+    // ─── 同步频率设置 ──────────────────────────────────────────────────
+    containerEl.createEl('h3', { text: '同步频率' });
+
+    new Setting(containerEl)
+      .setName('防抖延迟（毫秒）')
+      .setDesc('文件变更后等待多久再推送到云端。数值越大同步越省流，但延迟越高。默认 2000ms。')
+      .addText((text) => {
+        text
+          .setPlaceholder('2000')
+          .setValue(String(this.plugin.getSettings().syncDebounceMs ?? 2000))
+          .onChange(async (value) => {
+            const ms = parseInt(value, 10);
+            if (!isNaN(ms) && ms >= 500) {
+              await this.plugin.updateSettings({ syncDebounceMs: ms });
+            }
+          });
+      });
+
+    new Setting(containerEl)
+      .setName('最小推送间隔（毫秒）')
+      .setDesc('两次背景推送之间的最短间隔，防止短时间内重复推送。默认 30000ms（30 秒）。')
+      .addText((text) => {
+        text
+          .setPlaceholder('30000')
+          .setValue(String(this.plugin.getSettings().syncMinIntervalMs ?? 30000))
+          .onChange(async (value) => {
+            const ms = parseInt(value, 10);
+            if (!isNaN(ms) && ms >= 5000) {
+              await this.plugin.updateSettings({ syncMinIntervalMs: ms });
+            }
+          });
+      });
   }
 }
