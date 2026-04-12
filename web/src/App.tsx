@@ -35,6 +35,7 @@ import { MobileProjectsView } from './mobile/MobileProjectsView'
 import { MobileMeView } from './mobile/MobileMeView'
 import { MobileQuickCreateSheet, MobileConfirmSheet, MobilePromptSheet, MobileTagManagerSheet } from './mobile/MobileSheets'
 import { PwaInstallBanner } from './components/PwaInstallBanner'
+import { ViewErrorBoundary } from './components/ViewErrorBoundary'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
 import type {
   CalendarMode,
@@ -2967,6 +2968,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
           {isPhoneViewport ? (
             /* ======== 手机端：按 mobileTab 渲染 ======== */
             mobileTab === 'focus' ? (
+              <ViewErrorBoundary viewName="MobileFocusView">
               <MobileFocusView
                 segments={mobileFocusSegments}
                 sortMode={mobileFocusSortMode}
@@ -2992,7 +2994,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 focusScopeListId={mobileFocusScopeListId}
                 completedTodayCount={mobileCompletedTodayCount}
               />
+              </ViewErrorBoundary>
             ) : mobileTab === 'calendar' ? (
+              <ViewErrorBoundary viewName="MobileCalendarView">
               <MobileCalendarView
                 tasks={mobileCalendarTasks}
                 lists={lists}
@@ -3010,10 +3014,12 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 onToggleComplete={toggleTaskComplete}
                 onChangeAnchor={setCalendarAnchor}
               />
+              </ViewErrorBoundary>
             ) : mobileTab === 'matrix' ? (
               <>
                 {/* 需求3：顶栏下拉模式已在topbar实现，此处去掉segmented control */}
                 {mobileMatrixViewMode === 'matrix' ? (
+                  <ViewErrorBoundary viewName="MobileMatrixView">
                   <MobileMatrixView
                     tasks={mobileVisibleTasks}
                     lists={lists}
@@ -3025,6 +3031,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                     onMoveToQuadrant={moveTaskToQuadrant}
                     onOpenInlineCreate={openInlineCreate}
                   />
+                  </ViewErrorBoundary>
                 ) : mobileMatrixViewMode === 'kanban' ? (
                   <KanbanView
                     tasks={mobileVisibleTasks}
@@ -3054,6 +3061,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
             ) : (
               /* me tab — #11: includes projects sub-view */
               meShowProjects ? (
+                <ViewErrorBoundary viewName="MobileProjectsView">
                 <MobileProjectsView
                   folders={folders}
                   lists={lists}
@@ -3096,7 +3104,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                   }}
                   presetColors={PRESET_COLORS}
                 />
+                </ViewErrorBoundary>
               ) : (
+              <ViewErrorBoundary viewName="MobileMeView">
               <MobileMeView
                 tasks={tasks}
                 user={user ?? null}
@@ -3114,11 +3124,13 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 onGoToTrash={() => { setActiveSelection('system:trash'); setMobileTab('focus') }}
                 onGoToProjects={() => setMeShowProjects(true)}
               />
+              </ViewErrorBoundary>
               )
             )
           ) : (
             /* ======== 桌面端：保持原有逻辑 ======== */
             isToolSelection ? (
+            <ViewErrorBoundary viewName="StatsView">
             <StatsView
               tasks={contextTasks}
               tags={tags}
@@ -3126,7 +3138,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               priorityDistribution={null}
               tagDistribution={null}
             />
+            </ViewErrorBoundary>
           ) : currentView === 'list' ? (
+            <ViewErrorBoundary viewName="ListView">
             <ListView
               tasks={visibleTasks}
               lists={lists}
@@ -3141,7 +3155,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               bulkSelectedIds={bulkSelectedIds}
               onToggleBulkSelect={toggleBulkSelect}
             />
+            </ViewErrorBoundary>
           ) : currentView === 'calendar' ? (
+            <ViewErrorBoundary viewName="CalendarView">
             <CalendarView
               tasks={calendarTasks}
               lists={lists}
@@ -3156,7 +3172,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               onOpenInlineCreate={openInlineCreate}
               onMoveTaskToDate={moveTaskToDate}
             />
+            </ViewErrorBoundary>
           ) : currentView === 'kanban' ? (
+            <ViewErrorBoundary viewName="KanbanView">
             <KanbanView
               tasks={visibleTasks}
               lists={lists}
@@ -3168,7 +3186,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               onDropStatusChange={applyKanbanDropFeedback}
               onOpenInlineCreate={openInlineCreate}
             />
+            </ViewErrorBoundary>
           ) : currentView === 'timeline' ? (
+            <ViewErrorBoundary viewName="TimelineView">
             <TimelineView
               tasks={timelineTasks}
               selectedTaskId={selectedTaskId}
@@ -3180,7 +3200,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               onChangeAnchor={setCalendarAnchor}
               onChangeScale={setTimelineScale}
             />
+            </ViewErrorBoundary>
           ) : (
+            <ViewErrorBoundary viewName="MatrixView">
             <MatrixView
               tasks={visibleTasks}
               lists={lists}
@@ -3192,6 +3214,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               onMoveToQuadrant={moveTaskToQuadrant}
               onOpenInlineCreate={openInlineCreate}
             />
+            </ViewErrorBoundary>
           )
           )}
         </section>

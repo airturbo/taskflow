@@ -6906,3 +6906,16 @@ button.projection-metric:disabled {
   z-index: 5;
   position: relative;
 }
+
+/* ── ViewErrorBoundary fallback ── */
+.view-error-boundary-fallback {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 40px 24px; text-align: center; min-height: 200px;
+}
+.view-error-boundary-fallback h3 { font-size: 16px; color: var(--text); }
+.view-error-boundary-fallback p { font-size: 13px; color: var(--text-secondary); }
+.view-error-boundary-fallback button {
+  padding: 8px 16px; border-radius: var(--radius-s); font-size: 13px;
+  background: var(--surface-raised); border: 1px solid var(--border); color: var(--text);
+  cursor: pointer;
+}
