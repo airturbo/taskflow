@@ -158,15 +158,17 @@ export class TaskFlowSync {
    *
    * NOTE: This method is intentionally silent — no Notice is shown here.
    * Success/failure notices are the responsibility of syncNow() (user-triggered).
+   *
+   * Session recovery: if the upsert fails with a JWT/auth error the method will attempt
+   * a single silent re-login before retrying, then give up without throwing.
    */
   async push(): Promise<void> {
     if (!this.ready()) return;
 
-    try {
+    const doUpsert = async (): Promise<{ error: { message: string; status?: number } | null }> => {
       const data = this.plugin.getData();
       const now = new Date().toISOString();
 
-      // Serialize only the workspace data (not settings — avoid storing credentials in cloud)
       const stateForCloud: Omit<TodoPluginData, 'settings'> = {
         tasks: data.tasks,
         lists: data.lists,
@@ -184,16 +186,31 @@ export class TaskFlowSync {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (this.supabase!.from('workspace_states') as any).upsert(payload, {
+      return (this.supabase!.from('workspace_states') as any).upsert(payload, {
         onConflict: 'user_id,device_id',
-      });
+      }) as Promise<{ error: { message: string; status?: number } | null }>;
+    };
 
-      if (error) {
-        // Background push failure — log only, no Notice (avoid noise on every vault modify)
-        console.warn('[TaskFlowSync] push error:', error.message);
+    try {
+      let result = await doUpsert();
+
+      // Detect session expiry (401 / JWT expired) and attempt a single silent re-login
+      if (result.error && this.isAuthError(result.error)) {
+        const relogged = await this.tryRelogin();
+        if (!relogged) {
+          console.warn('[TaskFlowSync] push: session expired and re-login failed, skipping push');
+          return;
+        }
+        // Retry once after successful re-login
+        result = await doUpsert();
+      }
+
+      if (result.error) {
+        console.warn('[TaskFlowSync] push error:', result.error.message);
         return;
       }
 
+      const now = new Date().toISOString();
       // Persist the new lastSyncAt quietly — avoids triggering another push loop
       await this.plugin.updateSettingsQuiet({ lastSyncAt: now });
       this.lastPushAt = Date.now();
@@ -201,6 +218,42 @@ export class TaskFlowSync {
       const msg = err instanceof Error ? err.message : String(err);
       // Background push failure — log only, no Notice
       console.warn('[TaskFlowSync] push exception:', msg);
+    }
+  }
+
+  /** Returns true if the Supabase error indicates an expired / missing session. */
+  private isAuthError(error: { message: string; status?: number }): boolean {
+    if (error.status === 401) return true;
+    const msg = error.message.toLowerCase();
+    return msg.includes('jwt expired') || msg.includes('invalid jwt') || msg.includes('not authenticated');
+  }
+
+  /**
+   * Silently attempts to re-authenticate using stored credentials.
+   * Returns true if re-login succeeded and this.userId is refreshed.
+   * Max 1 attempt — if it fails we stop and let the next schedulePush cycle try again.
+   */
+  private async tryRelogin(): Promise<boolean> {
+    const settings = this.plugin.getSettings();
+    if (!this.supabase || !this.isConfigured(settings)) return false;
+
+    try {
+      const { data, error } = await this.supabase.auth.signInWithPassword({
+        email: settings.supabaseEmail.trim(),
+        password: settings.supabasePassword,
+      });
+
+      if (error || !data.user) {
+        console.warn('[TaskFlowSync] re-login failed:', error?.message);
+        return false;
+      }
+
+      this.userId = data.user.id;
+      console.debug('[TaskFlowSync] re-login succeeded');
+      return true;
+    } catch (err) {
+      console.warn('[TaskFlowSync] re-login exception:', err);
+      return false;
     }
   }
 

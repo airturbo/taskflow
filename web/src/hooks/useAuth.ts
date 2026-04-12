@@ -95,6 +95,9 @@ export const useAuth = () => {
 
   const signOut = useCallback(async () => {
     if (!supabase) return
+    // Remove all active Realtime channels before signing out to prevent
+    // stale subscriptions lingering after the session is invalidated
+    await supabase.removeAllChannels()
     await supabase.auth.signOut()
     setUser(null)
   }, [])
