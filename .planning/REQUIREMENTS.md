@@ -5,9 +5,9 @@
 ### ARCH — 架构治理
 - [ ] **ARCH-01**: App.tsx 拆分至 <400 行，状态分域为 5+ 个独立 hooks
 - [ ] **ARCH-02**: CSS 从 6908 行单文件拆分为 CSS Modules 模块化结构
-- [ ] **ARCH-03**: 每个视图有独立 React Error Boundary，崩溃不影响其他区域
-- [ ] **ARCH-04**: 离线队列有 500 条容量上限和 7 天过期策略
-- [ ] **ARCH-05**: 移除全局 `* { transition: all }`，按需声明精确 transition
+- [x] **ARCH-03**: 每个视图有独立 React Error Boundary，崩溃不影响其他区域
+- [x] **ARCH-04**: 离线队列有 500 条容量上限和 7 天过期策略
+- [x] **ARCH-05**: 移除全局 `* { transition: all }`，按需声明精确 transition
 
 ### ROUTE — 路由与状态恢复
 - [ ] **ROUTE-01**: 引入客户端路由，每个视图对应独立 URL 路径
