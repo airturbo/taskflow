@@ -15,6 +15,8 @@ import { supabase } from './supabase'
 import { getDeviceId, SCHEMA_VERSION_CONST } from './sync-shared'
 
 const QUEUE_KEY = 'taskflow-offline-queue'
+const MAX_QUEUE_SIZE = 500
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 interface QueueEntry {
   userId: string
@@ -65,6 +67,12 @@ export const enqueueOfflineState = (userId: string, state: PersistedState): void
           }
         }
 
+        // Capacity enforcement: keep newest MAX_QUEUE_SIZE tasks
+        if (mergedTasks.length > MAX_QUEUE_SIZE) {
+          mergedTasks.sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''))
+          mergedTasks.length = MAX_QUEUE_SIZE
+        }
+
         merged = {
           userId,
           state: {
@@ -107,6 +115,13 @@ export const flushOfflineQueue = async (): Promise<boolean> => {
     const entry = JSON.parse(raw) as QueueEntry
     const deviceId = getDeviceId()
 
+    // Expiry check: discard queue if too old
+    const ageMs = Date.now() - new Date(entry.enqueuedAt).getTime()
+    if (ageMs > MAX_AGE_MS) {
+      window.localStorage.removeItem(QUEUE_KEY)
+      return true // expired, treat as flushed
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase.from('workspace_states') as any).upsert({
       user_id: entry.userId,
@@ -129,4 +144,18 @@ export const flushOfflineQueue = async (): Promise<boolean> => {
 export const clearOfflineQueue = (): void => {
   if (typeof window === 'undefined') return
   window.localStorage.removeItem(QUEUE_KEY)
+}
+
+/** Get queue metadata for diagnostics */
+export const getQueueStats = (): { size: number; ageMs: number } | null => {
+  if (typeof window === 'undefined') return null
+  const raw = window.localStorage.getItem(QUEUE_KEY)
+  if (!raw) return null
+  try {
+    const entry = JSON.parse(raw) as QueueEntry
+    return {
+      size: entry.state.tasks?.length ?? 0,
+      ageMs: Date.now() - new Date(entry.enqueuedAt).getTime(),
+    }
+  } catch { return null }
 }
