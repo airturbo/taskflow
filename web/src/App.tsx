@@ -721,6 +721,12 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     _setMobileFocusScopeStore(mobileFocusScope, listId)
   // completionToastTimerRef — toast timer managed by store; keep ref for compat with direct clearTimeout
   const completionToastTimerRef = useRef<number | null>(null)
+  // Cleanup toast timer on unmount (UX-01)
+  useEffect(() => {
+    return () => {
+      if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
+    }
+  }, [])
 
   const [mobileConfirmDialog, setMobileConfirmDialog] = useState<{ message: string; onConfirm: () => void; onCancel: () => void } | null>(null)
   const [mobilePromptDialog, setMobilePromptDialog] = useState<{ message: string; defaultValue?: string; onSubmit: (value: string | null) => void } | null>(null)
@@ -3384,7 +3390,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
       {/* #23 — 完成撤销 Toast */}
       {isPhoneViewport && mobileCompletionToast && (
-        <div className="mobile-completion-toast">
+        <div className="mobile-completion-toast" role="status" aria-live="polite" aria-label="任务已完成">
           <span className="mobile-completion-toast__label">已完成「{mobileCompletionToast.title}」</span>
           <div className="mobile-completion-toast__actions">
             <button
