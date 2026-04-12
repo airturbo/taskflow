@@ -517,7 +517,7 @@ input:focus, select:focus, textarea:focus {
   padding: 2px 7px;
   font-size: 10px;
   font-weight: 600;
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition);
   cursor: pointer;
   line-height: 16px;
 }
@@ -559,7 +559,7 @@ input:focus, select:focus, textarea:focus {
 .tag-chip, .noise-chip {
   border-radius: var(--radius-s); padding: 4px 10px;
   background: var(--surface-raised); border: 1px solid var(--border);
-  transition: all var(--transition); cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition); cursor: pointer;
 }
 
 .tag-chip:hover, .noise-chip:hover { background: var(--surface-hover); }
@@ -660,7 +660,7 @@ input:focus, select:focus, textarea:focus {
 .segmented-control button, .calendar-modes button {
   border-radius: 4px; padding: 5px 14px; font-size: 12px; font-weight: 500;
   background: transparent; color: var(--text-secondary);
-  border: none; transition: all var(--transition);
+  border: none; transition: background var(--transition), color var(--transition);
 }
 
 .segmented-control button:hover, .calendar-modes button:hover { color: var(--text); }
@@ -672,14 +672,14 @@ input:focus, select:focus, textarea:focus {
 .primary-button {
   background: var(--accent); color: #fff; border-radius: var(--radius-s);
   padding: 7px 16px; font-size: 13px; font-weight: 500;
-  transition: all var(--transition);
+  transition: background var(--transition);
 }
 .primary-button:hover { background: #5574ee; }
 
 .ghost-button {
   background: var(--surface-raised); color: var(--text-secondary);
   border: 1px solid var(--border); border-radius: var(--radius-s);
-  padding: 7px 14px; font-size: 13px; transition: all var(--transition);
+  padding: 7px 14px; font-size: 13px; transition: background var(--transition), color var(--transition);
 }
 .ghost-button:hover { background: var(--surface-hover); color: var(--text); }
 
@@ -1194,7 +1194,7 @@ input:focus, select:focus, textarea:focus {
 .check-button {
   width: 20px; height: 20px; border-radius: 50%;
   border: 1.5px solid var(--text-tertiary); background: transparent;
-  color: transparent; font-size: 10px; transition: all var(--transition);
+  color: transparent; font-size: 10px; transition: border-color var(--transition), background var(--transition), color var(--transition);
   margin-top: 2px; display: flex; align-items: center; justify-content: center;
 }
 
@@ -1299,7 +1299,7 @@ input:focus, select:focus, textarea:focus {
 .priority-select-badge.priority-low::before { background: var(--text-tertiary); }
 
 .priority-select-badge {
-  position: relative; cursor: pointer; transition: all var(--transition); overflow: hidden;
+  position: relative; cursor: pointer; transition: background var(--transition), border-color var(--transition); overflow: hidden;
 }
 
 .priority-select-badge small {
@@ -1355,7 +1355,7 @@ input:focus, select:focus, textarea:focus {
 .status-select-badge.status-done { border-color: rgba(84, 210, 160, 0.34); background: rgba(84, 210, 160, 0.14); color: var(--green); }
 
 .status-select-badge {
-  position: relative; cursor: pointer; transition: all var(--transition); overflow: hidden;
+  position: relative; cursor: pointer; transition: background var(--transition), border-color var(--transition); overflow: hidden;
 }
 
 .status-select-badge:hover,
@@ -1480,7 +1480,7 @@ input:focus, select:focus, textarea:focus {
   display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
   min-height: 60px; padding: 8px 9px; border-radius: 12px;
   border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02);
-  color: var(--text); text-align: left; transition: all var(--transition);
+  color: var(--text); text-align: left; transition: background var(--transition), border-color var(--transition);
 }
 
 button.projection-metric { cursor: pointer; }
@@ -1553,7 +1553,7 @@ button.projection-metric:disabled {
 
 .calendar-visibility-toggle {
   border-radius: 999px; border: 1px solid var(--border); background: var(--surface-raised);
-  color: var(--text-secondary); padding: 5px 10px; font-size: 12px; transition: all var(--transition);
+  color: var(--text-secondary); padding: 5px 10px; font-size: 12px; transition: background var(--transition), color var(--transition);
 }
 
 .calendar-visibility-toggle:hover,
@@ -1582,7 +1582,7 @@ button.projection-metric:disabled {
   display: inline-flex; align-items: center; justify-content: center;
   width: 24px; height: 24px; border-radius: 999px;
   border: 1px solid transparent; background: transparent; color: var(--text-tertiary);
-  padding: 0; font-size: 15px; line-height: 1; transition: all var(--transition);
+  padding: 0; font-size: 15px; line-height: 1; transition: background var(--transition), color var(--transition);
 }
 
 .create-icon-button:hover,
@@ -1599,7 +1599,7 @@ button.projection-metric:disabled {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   border-radius: var(--radius-s); border: 1px dashed var(--border);
   background: transparent; color: var(--text-secondary); padding: 8px 10px;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition);
 }
 
 .calendar-strip-button strong {
@@ -1777,7 +1777,7 @@ button.projection-metric:disabled {
   align-self: flex-end; width: 22px; height: 22px; margin-top: auto;
   border-radius: 999px; border: 1px solid transparent;
   background: transparent; color: var(--text-tertiary); padding: 0;
-  text-align: center; font-size: 15px; line-height: 1; transition: all var(--transition);
+  text-align: center; font-size: 15px; line-height: 1; transition: opacity var(--transition), background var(--transition);
   opacity: 0.38;
 }
 
@@ -1876,7 +1876,7 @@ button.projection-metric:disabled {
 .agenda-create-card {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: all var(--transition);
+  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
 }
 
 .agenda-create-card:hover,
@@ -1965,7 +1965,7 @@ button.projection-metric:disabled {
   border-radius: var(--radius-m); padding: 12px;
   border: 1px solid var(--border); background: var(--surface);
   display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; transition: all var(--transition); outline: none;
+  cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); outline: none;
 }
 
 .kanban-card:hover,
@@ -2018,7 +2018,7 @@ button.projection-metric:disabled {
 .kanban-create-card {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: all var(--transition);
+  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
 }
 
 .kanban-create-card:hover,
@@ -2049,7 +2049,7 @@ button.projection-metric:disabled {
   display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px;
   border-radius: var(--radius-s); border: 1px dashed var(--border);
   background: transparent; color: var(--text-secondary); padding: 10px 12px;
-  transition: all var(--transition); text-align: left;
+  transition: background var(--transition), border-color var(--transition); text-align: left;
 }
 
 .timeline-create-slot span { font-size: 12px; font-weight: 600; color: var(--text); }
@@ -2207,7 +2207,7 @@ button.projection-metric:disabled {
   border-radius: var(--radius-s); padding: 10px;
   border: 1px solid var(--border); background: var(--surface-raised);
   display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; transition: all var(--transition); outline: none;
+  cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); outline: none;
 }
 .matrix-card:hover,
 .matrix-card.is-selected,
@@ -2237,7 +2237,7 @@ button.projection-metric:disabled {
 .matrix-create-card {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: all var(--transition);
+  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
 }
 
 .matrix-placeholder--action {
@@ -2633,7 +2633,7 @@ button.projection-metric:disabled {
 .reminder-anchor-card {
   display: flex; flex-direction: column; gap: 4px; align-items: flex-start; text-align: left;
   padding: 10px; border-radius: 12px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text-secondary); transition: all var(--transition);
+  background: var(--surface); color: var(--text-secondary); transition: border-color var(--transition), background var(--transition);
 }
 .reminder-anchor-card strong { font-size: 12px; color: var(--text); }
 .reminder-anchor-card span { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
@@ -3125,7 +3125,7 @@ button.projection-metric:disabled {
   background: var(--surface-hover);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition);
   flex-shrink: 0;
 }
 .drawer-close-btn:hover {
@@ -3170,7 +3170,7 @@ button.projection-metric:disabled {
   background: transparent;
   color: var(--text-secondary);
   flex-shrink: 0;
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition);
 }
 .mobile-topbar__menu-btn:hover,
 .mobile-topbar__menu-btn:active {
@@ -3206,7 +3206,7 @@ button.projection-metric:disabled {
   background: transparent;
   color: var(--text-secondary);
   font-size: 16px;
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition);
 }
 .mobile-topbar__icon-btn:hover,
 .mobile-topbar__icon-btn:active {
@@ -4975,7 +4975,7 @@ button.projection-metric:disabled {
   background: var(--surface);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .mobile-quick-create-date-chip.is-active {
   background: var(--accent, #6c63ff);
@@ -4996,7 +4996,7 @@ button.projection-metric:disabled {
   background: var(--surface);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   text-align: center;
 }
 .mobile-quick-create-priority-btn.is-active {
@@ -5020,7 +5020,7 @@ button.projection-metric:disabled {
   background: var(--surface);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .mobile-quick-create-tag-chip.is-active {
   background: var(--accent, #6c63ff);
@@ -5155,7 +5155,7 @@ button.projection-metric:disabled {
   color: var(--text-secondary);
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .mobile-projects-create-btn:active {
   background: var(--surface-hover);
@@ -5184,7 +5184,7 @@ button.projection-metric:disabled {
   border-radius: 50%;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .mobile-color-swatch.is-active {
   border-color: var(--text);
@@ -5391,7 +5391,7 @@ button.projection-metric:disabled {
   color: var(--text-secondary);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .mobile-task-detail__status-btn.status-btn--todo.is-active {
   background: rgba(100, 116, 139, 0.18);
@@ -5461,7 +5461,7 @@ button.projection-metric:disabled {
   color: var(--text-secondary);
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .mobile-task-detail__priority-btn.is-active {
   color: #fff;
@@ -5509,7 +5509,7 @@ button.projection-metric:disabled {
   background: var(--surface);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .mobile-task-detail__tag-chip.is-active {
   color: #fff;
