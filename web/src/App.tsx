@@ -112,7 +112,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   })
 
   const handleManualSync = useCallback(async () => {
-    if (user?.id && hasPendingQueue()) {
+    if (user?.id && await hasPendingQueue()) {
       await flushOfflineQueue()
     }
     await forceSync()
@@ -121,7 +121,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   // 网络恢复时 flush 离线队列
   useEffect(() => {
     const handleOnline = async () => {
-      if (hasPendingQueue() && user?.id) {
+      if (await hasPendingQueue() && user?.id) {
         await flushOfflineQueue()
       }
     }
