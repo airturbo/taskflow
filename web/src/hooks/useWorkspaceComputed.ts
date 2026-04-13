@@ -3,7 +3,8 @@
  * Pure refactor: no behavior changes.
  */
 import { useMemo } from 'react'
-import type { Tag, Task, TimeFieldMode } from '../types/domain'
+import type { Priority, Tag, Task, TaskStatus, TimeFieldMode } from '../types/domain'
+import type { FilterDue } from './useFilterState'
 import {
   getTasksForSelection, matchesSearch, matchesSelectedTags,
   buildTaskStats, hasTaskSchedule, isTaskVisibleInCalendarWindow,
@@ -37,6 +38,12 @@ export interface WorkspaceComputedParams {
   currentView: string
   mobileFocusScope: string
   mobileFocusScopeListId: string | null
+  /** Priority filter (empty = no filter) */
+  filterPriority?: Priority[]
+  /** Status filter (empty = no filter) */
+  filterStatus?: TaskStatus[]
+  /** Due filter (null = no filter) */
+  filterDue?: FilterDue
 }
 
 export function useWorkspaceComputed(params: WorkspaceComputedParams) {
@@ -47,7 +54,30 @@ export function useWorkspaceComputed(params: WorkspaceComputedParams) {
     calendarShowCompleted, calendarMode, calendarAnchor,
     timelineScale, currentView,
     mobileFocusScope, mobileFocusScopeListId,
+    filterPriority = [],
+    filterStatus = [],
+    filterDue = null,
   } = params
+
+  /** Helper: apply priority/status/due filters to a task list */
+  const applyExtraFilters = (items: Task[]): Task[] => {
+    let result = items
+    if (filterPriority.length > 0) result = result.filter(t => filterPriority.includes(t.priority))
+    if (filterStatus.length > 0) result = result.filter(t => filterStatus.includes(t.status))
+    if (filterDue) {
+      const todayKey = getDateKey()
+      const weekEndKey = addDays(todayKey, 7)
+      result = result.filter(t => {
+        const dateKey = (t.dueAt ?? t.deadlineAt ?? null)?.slice(0, 10) ?? null
+        if (!dateKey) return false
+        if (filterDue === 'overdue') return dateKey < todayKey
+        if (filterDue === 'today') return dateKey === todayKey
+        if (filterDue === 'week') return dateKey >= todayKey && dateKey <= weekEndKey
+        return true
+      })
+    }
+    return result
+  }
 
   const currentSelectionTimeMode: TimeFieldMode =
     selectionKind === 'system' && (selectionId === 'today' || selectionId === 'upcoming')
@@ -59,7 +89,8 @@ export function useWorkspaceComputed(params: WorkspaceComputedParams) {
     if (!inSelection) return false
     if (!matchesSelectedTags(task, selectedTagIds)) return false
     const keyword = searchKeyword.trim().toLowerCase()
-    return matchesSearch(task, keyword, tags)
+    if (!matchesSearch(task, keyword, tags)) return false
+    return applyExtraFilters([task]).length > 0
   }
 
   const compareTaskCards = (left: Task, right: Task) => {
@@ -84,6 +115,7 @@ export function useWorkspaceComputed(params: WorkspaceComputedParams) {
       let scopedTasks = getTasksForSelection({ tasks, selectionKind: sk, selectionId: si, filters, selectionTimeModes })
       if (selectedTagIds.length > 0) scopedTasks = scopedTasks.filter((t) => matchesSelectedTags(t, selectedTagIds))
       if (keyword) scopedTasks = scopedTasks.filter((t) => matchesSearch(t, keyword, tags))
+      scopedTasks = applyExtraFilters(scopedTasks)
       return scopedTasks.length
     }
     const map: Record<string, number> = {
@@ -98,23 +130,25 @@ export function useWorkspaceComputed(params: WorkspaceComputedParams) {
     tags.forEach((tag) => { map[`tag:${tag.id}`] = getScopedSelectionCount('tag', tag.id) })
     filters.forEach((filter: any) => { map[`filter:${filter.id}`] = getScopedSelectionCount('filter', filter.id) })
     return map
-  }, [filters, lists, searchKeyword, selectedTagIds, selectionTimeModes, tags, tasks])
+  }, [filters, lists, searchKeyword, selectedTagIds, selectionTimeModes, tags, tasks, filterPriority, filterStatus, filterDue])
 
   const visibleTasks = useMemo(() => {
     let base = getTasksForSelection({ tasks, selectionKind, selectionId, filters, selectionTimeModes })
     if (selectedTagIds.length > 0) base = base.filter((t) => matchesSelectedTags(t, selectedTagIds))
     const keyword = searchKeyword.trim().toLowerCase()
     if (keyword) base = base.filter((t) => matchesSearch(t, keyword, tags))
+    base = applyExtraFilters(base)
     return sortVisibleTasks(base)
-  }, [filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks])
+  }, [filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks, filterPriority, filterStatus, filterDue])
 
   const calendarTasks = useMemo(() => {
     let base = getTasksForSelection({ tasks, selectionKind, selectionId, filters, selectionTimeModes, includeCompleted: calendarShowCompleted })
     if (selectedTagIds.length > 0) base = base.filter((t) => matchesSelectedTags(t, selectedTagIds))
     const keyword = searchKeyword.trim().toLowerCase()
     if (keyword) base = base.filter((t) => matchesSearch(t, keyword, tags))
+    base = applyExtraFilters(base)
     return sortVisibleTasks(base)
-  }, [calendarShowCompleted, filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks])
+  }, [calendarShowCompleted, filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks, filterPriority, filterStatus, filterDue])
 
   const mobileCalendarTasks = useMemo(() => {
     let base = tasks.filter(t => !t.deleted && (calendarShowCompleted || !t.completed) && (t.dueAt || t.startAt))

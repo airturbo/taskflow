@@ -70,6 +70,7 @@ export interface WorkspaceShellProps {
   quickCreateInputRef: any; searchInputRef: any
   searchInput: string; setSearchInput: (v: string) => void; searchKeyword: string
   toggleSelectedTag: (id: string) => void
+  onApplyCommandFilter?: (tagIds: string[], priority: import('../types/domain').Priority | null, status: import('../types/domain').TaskStatus | null, due: import('../hooks/useFilterState').FilterDue, keyword: string) => void
   inlineCreate: any; setInlineCreate: (v: any) => void; toggleInlineCreateTag: (id: string) => void
   createFeedback: any; setCreateFeedback: (v: any) => void
   statusChangeFeedback: any
@@ -542,7 +543,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
       {p.isPhoneViewport && <PwaInstallBanner />}
 
-      <CommandPalette open={p.commandPaletteOpen} onClose={() => p.setCommandPaletteOpen(false)} tasks={p.tasks} lists={p.lists} tags={p.tags} onSelectTask={(id: string) => selectTask(id)} onSelectList={(id: string) => p.setActiveSelection(`list:${id}`)} />
+      <CommandPalette open={p.commandPaletteOpen} onClose={() => p.setCommandPaletteOpen(false)} tasks={p.tasks} lists={p.lists} tags={p.tags} onSelectTask={(id: string) => selectTask(id)} onSelectList={(id: string) => p.setActiveSelection(`list:${id}`)} onApplyFilter={p.onApplyCommandFilter ? (payload) => p.onApplyCommandFilter!(payload.tagIds, payload.priority, payload.status, payload.due, payload.keyword) : undefined} />
     </div>
     <DragOverlay dropAnimation={null}>
       {kanbanActiveTask ? <KanbanOverlayCard task={kanbanActiveTask} /> : null}

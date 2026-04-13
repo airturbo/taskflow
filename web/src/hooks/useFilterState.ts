@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { Priority, TaskStatus } from '../types/domain'
 import { parseQueryParams } from './useRouterSync'
 
 const SEARCH_QUERY_DEBOUNCE_MS = 140
@@ -10,14 +11,48 @@ function getUrlQueryParams() {
   return parseQueryParams(queryStr)
 }
 
-export function useFilterState(initialSelectedTagIds: string[]) {
+export type FilterDue = 'overdue' | 'today' | 'week' | null
+
+export interface FilterStateExtended {
+  selectedTagIds: string[]
+  setSelectedTagIds: (ids: string[]) => void
+  searchInput: string
+  setSearchInput: (v: string) => void
+  searchKeyword: string
+  setSearchKeyword: (v: string) => void
+  searchInputRef: React.RefObject<HTMLInputElement | null>
+  toggleSelectedTag: (tagId: string) => void
+  clearSelectedTags: () => void
+  /** Priority filter (empty = no filter) */
+  filterPriority: Priority[]
+  setFilterPriority: (p: Priority[]) => void
+  clearFilterPriority: () => void
+  /** Status filter (empty = no filter) */
+  filterStatus: TaskStatus[]
+  setFilterStatus: (s: TaskStatus[]) => void
+  clearFilterStatus: () => void
+  /** Due filter (null = no filter) */
+  filterDue: FilterDue
+  setFilterDue: (d: FilterDue) => void
+  clearFilterDue: () => void
+  /** Clear all active filters */
+  clearAllFilters: () => void
+}
+
+export function useFilterState(initialSelectedTagIds: string[]): FilterStateExtended {
   const urlParams = getUrlQueryParams()
   const initialTagIds = urlParams.selectedTagIds ?? initialSelectedTagIds
   const initialSearch = urlParams.searchKeyword ?? ''
+  const initialPriority = urlParams.filterPriority ?? []
+  const initialStatus = urlParams.filterStatus ?? []
+  const initialDue = urlParams.filterDue ?? null
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialTagIds)
   const [searchInput, setSearchInput] = useState(initialSearch)
   const [searchKeyword, setSearchKeyword] = useState(initialSearch)
+  const [filterPriority, setFilterPriority] = useState<Priority[]>(initialPriority)
+  const [filterStatus, setFilterStatus] = useState<TaskStatus[]>(initialStatus)
+  const [filterDue, setFilterDue] = useState<FilterDue>(initialDue)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Debounce search input → searchKeyword
@@ -39,6 +74,16 @@ export function useFilterState(initialSelectedTagIds: string[]) {
   }
 
   const clearSelectedTags = () => setSelectedTagIds([])
+  const clearFilterPriority = () => setFilterPriority([])
+  const clearFilterStatus = () => setFilterStatus([])
+  const clearFilterDue = () => setFilterDue(null)
+  const clearAllFilters = () => {
+    setSelectedTagIds([])
+    setSearchInput('')
+    setFilterPriority([])
+    setFilterStatus([])
+    setFilterDue(null)
+  }
 
   return {
     selectedTagIds, setSelectedTagIds,
@@ -47,5 +92,9 @@ export function useFilterState(initialSelectedTagIds: string[]) {
     searchInputRef,
     toggleSelectedTag,
     clearSelectedTags,
+    filterPriority, setFilterPriority, clearFilterPriority,
+    filterStatus, setFilterStatus, clearFilterStatus,
+    filterDue, setFilterDue, clearFilterDue,
+    clearAllFilters,
   }
 }

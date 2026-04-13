@@ -156,7 +156,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const viewConfig = useViewConfig(initialState)
   const { currentView, setCurrentView, calendarMode, setCalendarMode, calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale, calendarAnchor, setCalendarAnchor, theme, setTheme, selectionTimeModes, updateSelectionTimeMode } = viewConfig
   const filterState = useFilterState(nav.migratedSelectedTagIds)
-  const { selectedTagIds, setSelectedTagIds, searchInput, setSearchInput, searchKeyword, searchInputRef, toggleSelectedTag } = filterState
+  const { selectedTagIds, setSelectedTagIds, searchInput, setSearchInput, searchKeyword, searchInputRef, toggleSelectedTag, filterPriority, setFilterPriority, filterStatus, setFilterStatus, filterDue, setFilterDue } = filterState
   const _urlTaskId = (() => {
     const hash = window.location.hash
     const qs = hash.includes('?') ? hash.slice(hash.indexOf('?')) : ''
@@ -216,6 +216,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       setSelectedTagIds,
       setSelectedTaskId,
       setCalendarShowCompleted,
+      setFilterPriority,
+      setFilterStatus,
+      setFilterDue,
     },
     {
       activeSelection,
@@ -227,6 +230,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       selectedTagIds,
       selectedTaskId,
       calendarShowCompleted,
+      filterPriority,
+      filterStatus,
+      filterDue,
     },
   )
 
@@ -242,9 +248,12 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       selectedTagIds,
       selectedTaskId,
       calendarShowCompleted,
+      filterPriority,
+      filterStatus,
+      filterDue,
     }, false)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSelection, currentView, searchKeyword, calendarMode, calendarAnchor, timelineScale, selectedTagIds, selectedTaskId, calendarShowCompleted])
+  }, [activeSelection, currentView, searchKeyword, calendarMode, calendarAnchor, timelineScale, selectedTagIds, selectedTaskId, calendarShowCompleted, filterPriority, filterStatus, filterDue])
 
   // On activeSelection change, push a new history entry (major navigation)
   const prevActiveSelectionRef = useRef(activeSelection)
@@ -278,6 +287,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     calendarShowCompleted, calendarMode, calendarAnchor,
     timelineScale, currentView,
     mobileFocusScope, mobileFocusScopeListId,
+    filterPriority, filterStatus, filterDue,
   })
   const {
     doesTaskMatchWorkspace,
@@ -391,6 +401,13 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       quickCreateInputRef={quickCreateInputRef} searchInputRef={searchInputRef}
       searchInput={searchInput} setSearchInput={setSearchInput} searchKeyword={searchKeyword}
       toggleSelectedTag={toggleSelectedTag}
+      onApplyCommandFilter={(tagIds, priority, status, due, keyword) => {
+        if (tagIds.length > 0) setSelectedTagIds(tagIds)
+        if (priority) setFilterPriority([priority])
+        if (status) setFilterStatus([status])
+        if (due) setFilterDue(due)
+        if (keyword) setSearchInput(keyword)
+      }}
       inlineCreate={inlineCreate} setInlineCreate={setInlineCreate} toggleInlineCreateTag={toggleInlineCreateTag}
       createFeedback={createFeedback} setCreateFeedback={setCreateFeedback}
       statusChangeFeedback={statusChangeFeedback}

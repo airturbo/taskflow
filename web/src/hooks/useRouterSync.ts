@@ -14,6 +14,9 @@
  *     tags=id1,id2
  *     task=taskId
  *     cal_done=1
+ *     priority=urgent,high,normal,low  (FILTER-02)
+ *     status=todo,doing,done           (FILTER-02)
+ *     due=overdue|today|week           (FILTER-02)
  *
  * Strategy:
  * - Major navigation (activeSelection change) → pushState (creates history entry)
@@ -23,7 +26,8 @@
  */
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import type { CalendarMode, TimelineScale, WorkspaceView } from '../types/domain'
+import type { CalendarMode, Priority, TaskStatus, TimelineScale, WorkspaceView } from '../types/domain'
+import type { FilterDue } from './useFilterState'
 
 // ─── URL ↔ activeSelection mapping ────────────────────────────────────────────
 
@@ -84,11 +88,17 @@ export interface ParsedQueryState {
   selectedTagIds?: string[]
   selectedTaskId?: string | null
   calendarShowCompleted?: boolean
+  filterPriority?: Priority[]
+  filterStatus?: TaskStatus[]
+  filterDue?: FilterDue
 }
 
 const VALID_VIEWS: WorkspaceView[] = ['list', 'calendar', 'kanban', 'timeline', 'matrix']
 const VALID_CAL_MODES: CalendarMode[] = ['month', 'week', 'agenda']
 const VALID_SCALES: TimelineScale[] = ['day', 'week']
+const VALID_PRIORITIES: Priority[] = ['urgent', 'high', 'normal', 'low']
+const VALID_STATUSES: TaskStatus[] = ['todo', 'doing', 'done']
+const VALID_DUES: FilterDue[] = ['overdue', 'today', 'week']
 
 /** Parse URLSearchParams → ParsedQueryState */
 export function parseQueryParams(search: string): ParsedQueryState {
@@ -119,6 +129,21 @@ export function parseQueryParams(search: string): ParsedQueryState {
 
   if (params.get('cal_done') === '1') result.calendarShowCompleted = true
 
+  const priority = params.get('priority')
+  if (priority) {
+    const parsed = priority.split(',').filter((p): p is Priority => VALID_PRIORITIES.includes(p as Priority))
+    if (parsed.length > 0) result.filterPriority = parsed
+  }
+
+  const status = params.get('status')
+  if (status) {
+    const parsed = status.split(',').filter((s): s is TaskStatus => VALID_STATUSES.includes(s as TaskStatus))
+    if (parsed.length > 0) result.filterStatus = parsed
+  }
+
+  const due = params.get('due') as FilterDue | null
+  if (due && VALID_DUES.includes(due)) result.filterDue = due
+
   return result
 }
 
@@ -132,6 +157,9 @@ export function buildQueryString(params: {
   selectedTagIds?: string[]
   selectedTaskId?: string | null
   calendarShowCompleted?: boolean
+  filterPriority?: Priority[]
+  filterStatus?: TaskStatus[]
+  filterDue?: FilterDue
 }): string {
   const p = new URLSearchParams()
 
@@ -143,6 +171,9 @@ export function buildQueryString(params: {
   if (params.selectedTagIds && params.selectedTagIds.length > 0) p.set('tags', params.selectedTagIds.join(','))
   if (params.selectedTaskId) p.set('task', params.selectedTaskId)
   if (params.calendarShowCompleted) p.set('cal_done', '1')
+  if (params.filterPriority && params.filterPriority.length > 0) p.set('priority', params.filterPriority.join(','))
+  if (params.filterStatus && params.filterStatus.length > 0) p.set('status', params.filterStatus.join(','))
+  if (params.filterDue) p.set('due', params.filterDue)
 
   const str = p.toString()
   return str ? `?${str}` : ''
@@ -160,6 +191,9 @@ export interface RouterSyncSetters {
   setSelectedTagIds: (ids: string[]) => void
   setSelectedTaskId: (id: string | null) => void
   setCalendarShowCompleted: (v: boolean) => void
+  setFilterPriority: (p: Priority[]) => void
+  setFilterStatus: (s: TaskStatus[]) => void
+  setFilterDue: (d: FilterDue) => void
 }
 
 export interface RouterSyncState {
@@ -172,6 +206,9 @@ export interface RouterSyncState {
   selectedTagIds: string[]
   selectedTaskId: string | null
   calendarShowCompleted: boolean
+  filterPriority: Priority[]
+  filterStatus: TaskStatus[]
+  filterDue: FilterDue
 }
 
 /**
@@ -215,6 +252,9 @@ export function useRouterSync(
     setters.setSelectedTagIds(parsed.selectedTagIds ?? [])
     setters.setSelectedTaskId(parsed.selectedTaskId ?? null)
     setters.setCalendarShowCompleted(parsed.calendarShowCompleted ?? false)
+    setters.setFilterPriority(parsed.filterPriority ?? [])
+    setters.setFilterStatus(parsed.filterStatus ?? [])
+    setters.setFilterDue(parsed.filterDue ?? null)
 
     // Reset guard after React processes the state updates
     const timer = setTimeout(() => { syncingFromUrl.current = false }, 50)
@@ -236,6 +276,9 @@ export function useRouterSync(
       selectedTagIds: state.selectedTagIds,
       selectedTaskId: state.selectedTaskId,
       calendarShowCompleted: state.calendarShowCompleted,
+      filterPriority: state.filterPriority,
+      filterStatus: state.filterStatus,
+      filterDue: state.filterDue,
     })
 
     const fullPath = `${path}${qs}`
@@ -265,6 +308,9 @@ export function useRouterSync(
       selectedTagIds: currentState.selectedTagIds,
       selectedTaskId: currentState.selectedTaskId,
       calendarShowCompleted: currentState.calendarShowCompleted,
+      filterPriority: currentState.filterPriority,
+      filterStatus: currentState.filterStatus,
+      filterDue: currentState.filterDue,
     })
     lastPushedPath.current = path
     navigate(`${path}${qs}`)

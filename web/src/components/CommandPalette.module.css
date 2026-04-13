@@ -159,6 +159,130 @@
   border-radius: 3px;
 }
 
+/* ── NLP chip row ──────────────────────────────────────────────────────────── */
+
+.nlpChipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 16px 10px;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.nlpChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--surface-2, #f3f4f6);
+  color: var(--text, #111);
+}
+
+.nlpChipIcon {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.nlpChipDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tag chip: tinted background */
+.nlpChipTag {
+  background: color-mix(in srgb, var(--chip-color, #6c63ff) 15%, transparent);
+  color: color-mix(in srgb, var(--chip-color, #6c63ff) 80%, #111);
+  border: 1px solid color-mix(in srgb, var(--chip-color, #6c63ff) 30%, transparent);
+}
+
+/* Priority chip: colored border */
+.nlpChipPriority {
+  background: color-mix(in srgb, var(--chip-color, #6c63ff) 12%, transparent);
+  color: color-mix(in srgb, var(--chip-color, #6c63ff) 90%, #111);
+  border: 1px solid color-mix(in srgb, var(--chip-color, #6c63ff) 35%, transparent);
+}
+
+/* Status chip */
+.nlpChipStatus {
+  background: var(--surface-2, #f3f4f6);
+  border: 1px solid var(--border, #e5e7eb);
+  color: var(--text-muted, #6b7280);
+}
+
+/* Due chip */
+.nlpChipDue {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: #a16207;
+}
+
+/* Overdue chip: warning red */
+.nlpChipDueOverdue {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #b91c1c;
+}
+
+/* List chip */
+.nlpChipList {
+  background: var(--surface-2, #f3f4f6);
+  border: 1px solid var(--border, #e5e7eb);
+  color: var(--text-muted, #6b7280);
+}
+
+/* Keyword chip */
+.nlpChipKeyword {
+  background: var(--surface-2, #f3f4f6);
+  border: 1px solid var(--border, #e5e7eb);
+  color: var(--text, #111);
+}
+
+/* Apply button */
+.nlpApplyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: var(--accent, #6c63ff);
+  color: #fff;
+  transition: opacity 80ms ease;
+}
+
+.nlpApplyBtn:hover {
+  opacity: 0.88;
+}
+
+.nlpApplyShortcut {
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+/* Dark theme: NLP chips */
+:global([data-theme="midnight"]) .nlpChipRow {
+  border-bottom-color: var(--border, rgba(255,255,255,0.1));
+}
+
+:global([data-theme="midnight"]) .nlpChipStatus,
+:global([data-theme="midnight"]) .nlpChipList,
+:global([data-theme="midnight"]) .nlpChipKeyword {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--text-muted, #94a3b8);
+}
+
 /* Dark theme overrides */
 :global([data-theme="midnight"]) .commandPalettePanel {
   background: var(--surface, #1e1e2e);

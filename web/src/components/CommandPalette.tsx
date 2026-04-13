@@ -1,7 +1,131 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Command } from 'cmdk'
-import type { Tag, Task, TodoList } from '../types/domain'
+import type { Priority, Tag, Task, TaskStatus, TodoList } from '../types/domain'
+import type { FilterDue } from '../hooks/useFilterState'
 import styles from './CommandPalette.module.css'
+
+// ─── NLP Parsing ──────────────────────────────────────────────────────────────
+
+export interface ParsedCommandQuery {
+  tags: string[]        // tag ids matched by name
+  priority: Priority | null
+  status: TaskStatus | null
+  due: FilterDue
+  listName: string | null  // for display only, not applied to FilterState
+  keyword: string
+}
+
+const PRIORITY_ALIASES: Record<string, Priority> = {
+  urgent: 'urgent',
+  '紧急': 'urgent',
+  p0: 'urgent',
+  high: 'high',
+  高: 'high',
+  p1: 'high',
+  normal: 'normal',
+  普通: 'normal',
+  p2: 'normal',
+  low: 'low',
+  低: 'low',
+  p3: 'low',
+}
+
+const STATUS_ALIASES: Record<string, TaskStatus> = {
+  todo: 'todo',
+  待办: 'todo',
+  doing: 'doing',
+  进行中: 'doing',
+  done: 'done',
+  已完成: 'done',
+}
+
+const DUE_ALIASES: Record<string, FilterDue> = {
+  overdue: 'overdue',
+  已逾期: 'overdue',
+  today: 'today',
+  今天: 'today',
+  week: 'week',
+  本周: 'week',
+}
+
+export function parseCommandQuery(input: string, allTags: Tag[]): ParsedCommandQuery {
+  const tokens = input.trim().split(/\s+/)
+  const result: ParsedCommandQuery = {
+    tags: [],
+    priority: null,
+    status: null,
+    due: null,
+    listName: null,
+    keyword: '',
+  }
+  const keywordParts: string[] = []
+
+  for (const token of tokens) {
+    if (!token) continue
+
+    // #tagname
+    if (token.startsWith('#')) {
+      const name = token.slice(1).toLowerCase()
+      const matched = allTags.find(t => t.name.toLowerCase() === name || t.name.toLowerCase().includes(name))
+      if (matched && !result.tags.includes(matched.id)) {
+        result.tags.push(matched.id)
+      } else {
+        keywordParts.push(token)
+      }
+      continue
+    }
+
+    // !priority
+    if (token.startsWith('!')) {
+      const alias = token.slice(1).toLowerCase()
+      const p = PRIORITY_ALIASES[alias]
+      if (p) { result.priority = p; continue }
+      keywordParts.push(token)
+      continue
+    }
+
+    // status:xxx
+    if (token.toLowerCase().startsWith('status:')) {
+      const val = token.slice(7).toLowerCase()
+      const s = STATUS_ALIASES[val]
+      if (s) { result.status = s; continue }
+      keywordParts.push(token)
+      continue
+    }
+
+    // due:xxx
+    if (token.toLowerCase().startsWith('due:')) {
+      const val = token.slice(4).toLowerCase()
+      const d = DUE_ALIASES[val]
+      if (d !== undefined) { result.due = d; continue }
+      keywordParts.push(token)
+      continue
+    }
+
+    // @listname — display only
+    if (token.startsWith('@')) {
+      if (!result.listName) result.listName = token.slice(1)
+      continue
+    }
+
+    keywordParts.push(token)
+  }
+
+  result.keyword = keywordParts.join(' ')
+  return result
+}
+
+// ─── Apply Filter Payload ─────────────────────────────────────────────────────
+
+export interface ApplyFilterPayload {
+  tagIds: string[]
+  priority: Priority | null
+  status: TaskStatus | null
+  due: FilterDue
+  keyword: string
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface CommandPaletteProps {
   open: boolean
@@ -11,6 +135,7 @@ interface CommandPaletteProps {
   tags: Tag[]
   onSelectTask: (taskId: string) => void
   onSelectList: (listId: string) => void
+  onApplyFilter?: (payload: ApplyFilterPayload) => void
 }
 
 const PRIORITY_COLOR: Record<string, string> = {
@@ -20,10 +145,23 @@ const PRIORITY_COLOR: Record<string, string> = {
   low: '#94a3b8',
 }
 
+const PRIORITY_LABEL: Record<string, string> = {
+  urgent: '紧急',
+  high: '高',
+  normal: '普通',
+  low: '低',
+}
+
 const STATUS_LABEL: Record<string, string> = {
   todo: '待办',
   doing: '进行中',
   done: '已完成',
+}
+
+const DUE_LABEL: Record<string, string> = {
+  overdue: '已逾期',
+  today: '今天',
+  week: '本周',
 }
 
 export function CommandPalette({
@@ -34,6 +172,7 @@ export function CommandPalette({
   tags,
   onSelectTask,
   onSelectList,
+  onApplyFilter,
 }: CommandPaletteProps) {
   const [search, setSearch] = useState('')
 
@@ -42,8 +181,7 @@ export function CommandPalette({
     if (!open) setSearch('')
   }, [open])
 
-  // Close on Escape is handled by Command.Input onKeyDown below,
-  // but also support it at the overlay level
+  // Close on Escape
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
@@ -52,13 +190,49 @@ export function CommandPalette({
         onClose()
       }
     }
-    // capture phase so we intercept before other listeners
     window.addEventListener('keydown', handler, true)
     return () => window.removeEventListener('keydown', handler, true)
   }, [open, onClose])
 
   const todayStr = new Date().toISOString().slice(0, 10)
   const q = search.trim().toLowerCase()
+
+  // ── NLP parse ─────────────────────────────────────────────────────────────
+  const parsed = parseCommandQuery(search, tags)
+  const hasFilterChips =
+    parsed.tags.length > 0 ||
+    parsed.priority !== null ||
+    parsed.status !== null ||
+    parsed.due !== null ||
+    parsed.listName !== null ||
+    parsed.keyword !== ''
+
+  const handleApply = useCallback(() => {
+    if (onApplyFilter) {
+      onApplyFilter({
+        tagIds: parsed.tags,
+        priority: parsed.priority,
+        status: parsed.status,
+        due: parsed.due,
+        keyword: parsed.keyword,
+      })
+    }
+    onClose()
+  }, [onApplyFilter, onClose, parsed])
+
+  // Cmd+Enter applies filters
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault()
+      e.stopPropagation()
+      handleApply()
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
+      onClose()
+    }
+  }, [handleApply, onClose])
 
   // ── filter tasks ───────────────────────────────────────────────────────────
   const filteredTasks = tasks
@@ -118,7 +292,6 @@ export function CommandPalette({
     <div
       className={styles.commandPaletteOverlay}
       onClick={onClose}
-      // prevent clicks from bubbling outside the portal
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div
@@ -133,14 +306,61 @@ export function CommandPalette({
             value={search}
             onValueChange={setSearch}
             autoFocus
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                e.preventDefault()
-                e.stopPropagation()
-                onClose()
-              }
-            }}
+            onKeyDown={handleKeyDown}
           />
+
+          {/* ── NLP chip preview row ──────────────────────────────────────── */}
+          {hasFilterChips && (
+            <div className={styles.nlpChipRow}>
+              {parsed.tags.map(tagId => {
+                const tag = tags.find(t => t.id === tagId)
+                if (!tag) return null
+                return (
+                  <span key={tagId} className={`${styles.nlpChip} ${styles.nlpChipTag}`} style={{ '--chip-color': tag.color } as React.CSSProperties}>
+                    <span className={styles.nlpChipDot} style={{ background: tag.color }} />
+                    #{tag.name}
+                  </span>
+                )
+              })}
+              {parsed.priority && (
+                <span className={`${styles.nlpChip} ${styles.nlpChipPriority}`} style={{ '--chip-color': PRIORITY_COLOR[parsed.priority] } as React.CSSProperties}>
+                  <span className={styles.nlpChipIcon}>!</span>
+                  {PRIORITY_LABEL[parsed.priority]}
+                </span>
+              )}
+              {parsed.status && (
+                <span className={`${styles.nlpChip} ${styles.nlpChipStatus}`}>
+                  <span className={styles.nlpChipIcon}>◎</span>
+                  {STATUS_LABEL[parsed.status]}
+                </span>
+              )}
+              {parsed.due && (
+                <span className={`${styles.nlpChip} ${parsed.due === 'overdue' ? styles.nlpChipDueOverdue : styles.nlpChipDue}`}>
+                  <span className={styles.nlpChipIcon}>📅</span>
+                  {DUE_LABEL[parsed.due]}
+                </span>
+              )}
+              {parsed.listName && (
+                <span className={`${styles.nlpChip} ${styles.nlpChipList}`}>
+                  <span className={styles.nlpChipIcon}>@</span>
+                  {parsed.listName}
+                </span>
+              )}
+              {parsed.keyword && (
+                <span className={`${styles.nlpChip} ${styles.nlpChipKeyword}`}>
+                  <span className={styles.nlpChipIcon}>🔍</span>
+                  {parsed.keyword}
+                </span>
+              )}
+              {onApplyFilter && (
+                <button className={styles.nlpApplyBtn} onClick={handleApply} type="button">
+                  应用筛选
+                  <span className={styles.nlpApplyShortcut}>⌘↵</span>
+                </button>
+              )}
+            </div>
+          )}
+
           <Command.List className={styles.commandPaletteList}>
             <Command.Empty className={styles.commandPaletteEmpty}>
               没有找到匹配的结果
