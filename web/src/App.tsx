@@ -156,7 +156,15 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const { currentView, setCurrentView, calendarMode, setCalendarMode, calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale, calendarAnchor, setCalendarAnchor, theme, setTheme, selectionTimeModes, updateSelectionTimeMode } = viewConfig
   const filterState = useFilterState(nav.migratedSelectedTagIds)
   const { selectedTagIds, setSelectedTagIds, searchInput, setSearchInput, searchKeyword, searchInputRef, toggleSelectedTag } = filterState
-  const selection = useTaskSelection(initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null)
+  const _urlTaskId = (() => {
+    const hash = window.location.hash
+    const qs = hash.includes('?') ? hash.slice(hash.indexOf('?')) : ''
+    return new URLSearchParams(qs).get('task') ?? null
+  })()
+  const _initialTaskId = _urlTaskId
+    ?? initialState.tasks.find((t: Task) => !t.deleted)?.id
+    ?? null
+  const selection = useTaskSelection(_initialTaskId)
   const { selectedTaskId, setSelectedTaskId, bulkSelectedIds, bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect } = selection
   const modals = useModalState()
   const { tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen, commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen, navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen, taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded, projectionInsightMode, setProjectionInsightMode } = modals
