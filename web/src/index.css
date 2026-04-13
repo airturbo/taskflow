@@ -776,7 +776,7 @@ button.projection-metric:disabled {
    → CalendarView.module.css */
 
 /* calendar-chip, day-task, agenda-item drag/touch/cursor → CalendarView.module.css */
-.kanban-card,
+/* kanban-card drag/touch/cursor → KanbanView.module.css */
 .matrix-card,
 .timeline-bar,
 .timeline-bar__grip {
@@ -784,126 +784,36 @@ button.projection-metric:disabled {
   user-select: none;
 }
 
-.kanban-card,
 .matrix-card,
 .timeline-bar,
 .timeline-bar__grip {
   touch-action: none;
 }
 
-.kanban-card,
 .matrix-card {
   cursor: grab;
 }
 
-.matrix-card.is-dragging,
-.kanban-card.is-dragging {
+.matrix-card.is-dragging {
   cursor: grabbing;
   opacity: 0.96;
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
 }
+/* .kanban-card.is-dragging → KanbanView.module.css */
 
 .timeline-bar.is-selected,
 .timeline-bar.is-dragging {
   cursor: grabbing;
 }
 
-/* ---- Kanban ---- */
-.kanban-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
-}
-
-.kanban-column {
-  border-right: 1px solid var(--border); padding: 0;
-  border-radius: 0; background: transparent;
-}
-.kanban-column:last-child { border-right: none; }
-
-.kanban-column header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 14px; border-bottom: 1px solid var(--border);
-}
-
-.kanban-column header h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-secondary); margin: 0; }
-.kanban-column header span { font-size: 11px; color: var(--text-tertiary); background: var(--surface-raised); padding: 1px 8px; border-radius: 10px; }
-
-.kanban-column-actions {
-  display: flex; align-items: center; gap: 8px;
-}
-
-.kanban-stack {
-  display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 280px;
-  transition: background var(--transition), box-shadow var(--transition);
-}
-
-.kanban-stack.is-drag-over {
-  background: rgba(124, 156, 255, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.24);
-}
-
-.kanban-card {
-  border-radius: var(--radius-m); padding: 12px;
-  border: 1px solid var(--border); background: var(--surface);
-  display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); outline: none;
-}
-
-.kanban-card:hover,
-.kanban-card.is-selected,
-.kanban-card:focus-visible {
-  border-color: var(--border-focus); box-shadow: var(--shadow-s); transform: translateY(-1px);
-}
-
-.kanban-card:focus-visible {
-  box-shadow: var(--shadow-s), 0 0 0 3px rgba(99, 132, 255, 0.12);
-}
-
-.kanban-card.is-dragging {
-  border-color: rgba(124, 156, 255, 0.28);
-}
-
-.kanban-card.status-todo { border-left: 3px solid rgba(148, 163, 184, 0.38); }
-.kanban-card.status-doing { border-left: 3px solid rgba(124, 156, 255, 0.42); }
-.kanban-card.status-done { border-left: 3px solid rgba(84, 210, 160, 0.42); background: rgba(84, 210, 160, 0.06); }
-
-.kanban-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.kanban-card__badge-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.kanban-header .task-time-summary,
+/* ---- Kanban → KanbanView.module.css ---- */
 .matrix-card__top .task-time-summary {
   justify-content: flex-end;
   text-align: right;
 }
-.kanban-header .task-time-summary__primary,
 .matrix-card__top .task-time-summary__primary {
   max-width: 168px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.kanban-card__title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.kanban-card h4 { font-size: 13px; font-weight: 600; margin: 0; }
-.kanban-card p { font-size: 12px; color: var(--text-tertiary); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-.kanban-card footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 8px; border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--text-tertiary);
-}
-
-.kanban-card__footer-actions { display: flex; align-items: center; gap: 8px; }
-
-.kanban-card footer select {
-  width: auto; padding: 2px 8px; font-size: 11px;
-  border-radius: 999px; background: var(--surface-raised);
-}
-
-.kanban-create-card {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
-}
-
-.kanban-create-card:hover,
-.kanban-create-card:focus-visible {
-  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
 }
 
 /* ---- Timeline ---- */
@@ -1494,7 +1404,7 @@ button.projection-metric:disabled {
   .projection-summary__header { flex-wrap: wrap; }
   .projection-summary__toolbar { width: 100%; justify-content: flex-start; flex-basis: 100%; }
   /* .calendar-grid.month/week, .calendar-weekday-header, .calendar-create-strip @1280px → CalendarView.module.css */
-  .kanban-grid { grid-template-columns: repeat(3, minmax(260px, 1fr)); overflow-x: auto; }
+  /* .kanban-grid @1280px → KanbanView.module.css */
   .matrix-grid { grid-template-columns: repeat(2, minmax(260px, 1fr)); overflow-x: auto; }
   .timeline-view { overflow-x: auto; }
   .timeline-header, .timeline-body { min-width: 760px; }
@@ -2046,29 +1956,7 @@ button.projection-metric:disabled {
   }
 }
 
-/* ---- 看板视图移动端：单列纵向 ---- */
-@media (max-width: 680px) {
-  .kanban-grid {
-    grid-template-columns: 1fr;
-    overflow-x: visible;
-    padding-bottom: 0;
-  }
-  .kanban-column {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-  .kanban-column:last-child { border-bottom: none; }
-  .kanban-stack { min-height: 80px; }
-
-  /* Phase 3: 手机端看板列折叠优化 - 每列标题更紧凑 */
-  .kanban-column header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--bg-subtle);
-    padding: 10px 14px;
-  }
-}
+/* ---- 看板视图移动端：单列纵向 → KanbanView.module.css ---- */
 
 /* ---- 四象限移动端：保持 2x2 布局 ---- */
 @media (max-width: 680px) {
@@ -2231,7 +2119,7 @@ button.projection-metric:disabled {
   .mobile-me-row,
   .mobile-me-stat,
   /* .agenda-item border-radius → CalendarView.module.css */
-  .kanban-card,
+  /* .kanban-card border-radius → KanbanView.module.css */
   .matrix-card {
     border-radius: 14px;
   }
@@ -2899,14 +2787,7 @@ button.projection-metric:disabled {
   justify-content: center;
 }
 
-/* 看板手机端紧凑卡片 */
-.is-phone .kanban-column .task-card {
-  padding: 4px 8px;
-  min-height: 32px;
-}
-.is-phone .kanban-column .task-card h3 {
-  font-size: 12px;
-}
+/* 看板手机端紧凑卡片 → KanbanView.module.css */
 
 /* ---- 优化 5：详情 Sheet 滚动修复 ---- */
 .task-sheet__handle-area {
@@ -2979,20 +2860,7 @@ button.projection-metric:disabled {
   display: none;
 }
 
-/* #7 — 看板一屏三列 */
-.is-phone .kanban-grid {
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
-  overflow: visible;
-}
-.is-phone .kanban-column { min-width: 0; }
-.is-phone .kanban-column .task-card {
-  padding: 4px 6px; min-height: 28px;
-}
-.is-phone .kanban-column .task-card h3 {
-  font-size: 11px; line-height: 1.3;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
+/* #7 — 看板一屏三列 → KanbanView.module.css */
 
 /* #8 — Scope 菜单遮罩层 */
 .mobile-scope-overlay {
@@ -3081,7 +2949,7 @@ button.projection-metric:disabled {
 
 /* #20 — 象限页 FAB 避让 */
 .is-phone .matrix-view { padding-bottom: 80px; }
-.is-phone .kanban-grid { padding-bottom: 80px; }
+/* .is-phone .kanban-grid padding-bottom → KanbanView.module.css */
 
 /* #21 — 搜索栏 */
 .mobile-search-overlay {
@@ -3151,50 +3019,7 @@ button.projection-metric:disabled {
    v4 Mobile UX Fixes
    ================================================================ */
 
-/* Bug 2 修复：看板卡片显示标题（上）+ 时间（下），隐藏其他内容 */
-.is-phone .kanban-card {
-  padding: 4px 8px;
-  min-height: 36px;
-  gap: 2px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.is-phone .kanban-card .kanban-header {
-  order: 2;
-}
-.is-phone .kanban-card .kanban-card__title-row {
-  order: 1;
-  display: flex !important;
-}
-.is-phone .kanban-card h4 {
-  font-size: 11px;
-  line-height: 1.4;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-  display: block !important;
-}
-/* 保留时间摘要，其他隐藏 */
-.is-phone .kanban-card .task-time-summary {
-  display: flex !important;
-  font-size: 10px;
-  color: var(--text-tertiary);
-}
-.is-phone .kanban-card p,
-.is-phone .kanban-card footer,
-.is-phone .kanban-card select,
-.is-phone .kanban-card .kanban-card__badge-group,
-.is-phone .kanban-card .kanban-card__footer-actions,
-.is-phone .kanban-card .kanban-card__status,
-.is-phone .kanban-card .kanban-card__priority,
-.is-phone .kanban-card .check-button,
-.is-phone .kanban-card .task-meta,
-.is-phone .kanban-card .chip-wrap {
-  display: none !important;
-}
+/* Bug 2 修复：看板卡片 → KanbanView.module.css */
 /* 象限卡片更紧凑 */
 .is-phone .matrix-quadrant .task-card {
   padding: 2px 6px;
@@ -5140,60 +4965,7 @@ button.projection-metric:disabled {
   opacity: 0.75;
 }
 
-/* ── Kanban polish ─────────────────────────────────── */
-.kanban-card__title {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: break-word;
-}
-.kanban-card__note {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-size: 12px;
-  color: var(--text-3);
-  margin-top: 2px;
-  word-break: break-word;
-}
-.kanban-card__tags {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 4px;
-  align-items: center;
-  overflow: hidden;
-}
-.kanban-card__tags-more {
-  font-size: 11px;
-  color: var(--text-3);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.kanban-col__empty {
-  padding: 16px 12px;
-  text-align: center;
-  color: var(--text-3);
-  font-size: 13px;
-  border: 1.5px dashed var(--border);
-  border-radius: 8px;
-  margin: 4px 2px;
-  opacity: 0.7;
-}
-.kanban-subtask-bar {
-  margin-top: 4px;
-  height: 3px;
-  background: var(--bg-3, #e5e7eb);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.kanban-subtask-bar__fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.2s;
-}
+/* ── Kanban polish → KanbanView.module.css ─────────────────────────────────── */
 
 /* ── Mobile task detail polish ─────────────────────── */
 .mobile-detail-footer-btn {

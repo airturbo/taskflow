@@ -5,6 +5,7 @@ import { statusMeta } from '@taskflow/core'
 import { formatTaskDualTimeSummary } from '@taskflow/core'
 import { POINTER_DRAG_THRESHOLD, buildPointerDragPreviewState, buildTaskDragPreview, getPointerDragStyle, markClickSuppressed, resolveDropZoneValueFromPoint, shouldIgnorePointerDragStart, getTagToneStyle, handleCardKeyboardActivation } from '../../utils/workspace-helpers'
 import { DragPreviewLayer, StatusSelectBadge, PrioritySelectBadge, TaskTimeSummary, statusOptions } from '../shared'
+import styles from './KanbanView.module.css'
 
 export function KanbanView({
   tasks,
@@ -128,12 +129,12 @@ export function KanbanView({
   }
 
   return (
-    <div className="kanban-grid">
+    <div className={styles.kanbanGrid}>
       {(['todo', 'doing', 'done'] as TaskStatus[]).map((status) => (
-        <section key={status} className="kanban-column">
+        <section key={status} className={styles.kanbanColumn}>
           <header>
             <h3>{statusMeta[status]}</h3>
-            <div className="kanban-column-actions">
+            <div className={styles.kanbanColumnActions}>
               <span>{columns[status].length}</span>
               <button
                 className="create-icon-button"
@@ -156,7 +157,7 @@ export function KanbanView({
           <div
             data-kanban-drop-zone={status}
             data-onboarding-anchor={status === 'todo' ? 'kanban-column' : undefined}
-            className={`kanban-stack ${dragOverStatus === status ? 'is-drag-over' : ''}`}
+            className={`${styles.kanbanStack} ${dragOverStatus === status ? 'is-drag-over' : ''}`}
             onClick={(event) => {
               if (event.target === event.currentTarget) {
                 onOpenInlineCreate({
@@ -169,7 +170,7 @@ export function KanbanView({
             }}
           >
             {columns[status].length === 0 && (
-              <div className="kanban-col__empty">拖拽任务至此列</div>
+              <div className={styles.kanbanColEmpty}>拖拽任务至此列</div>
             )}
             {columns[status].map((task) => {
               const list = lists.find((item) => item.id === task.listId)
@@ -179,7 +180,7 @@ export function KanbanView({
               return (
                 <article
                   key={task.id}
-                  className={`kanban-card status-${task.status} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''}`}
+                  className={`${styles.kanbanCard} status-${task.status} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''}`}
                   style={getPointerDragStyle(task.id, dragTaskId, dragPreview)}
                   role="button"
                   tabIndex={0}
@@ -188,36 +189,36 @@ export function KanbanView({
                   onClick={handleCardClick(task.id)}
                   onKeyDown={(event) => handleCardKeyboardActivation(event, () => onSelectTask(task.id))}
                 >
-                  <div className="kanban-header">
-                    <div className="kanban-card__badge-group" onClick={(event) => event.stopPropagation()}>
+                  <div className={styles.kanbanHeader}>
+                    <div className={styles.kanbanBadgeGroup} onClick={(event) => event.stopPropagation()}>
                       <StatusSelectBadge status={task.status} compact onChange={(status) => onChangeStatus(task.id, status)} />
                       <PrioritySelectBadge priority={task.priority} compact onChange={(priority) => onChangePriority(task.id, priority)} />
                     </div>
                     <TaskTimeSummary task={task} compact />
                   </div>
-                  <div className="kanban-card__title-row">
-                    <h4 className="kanban-card__title">{task.title}</h4>
+                  <div className={styles.kanbanTitleRow}>
+                    <h4 className={styles.kanbanTitle}>{task.title}</h4>
                   </div>
-                  {task.note && <p className="kanban-card__note">{task.note}</p>}
-                  <div className="chip-wrap dense kanban-card__tags">
+                  {task.note && <p className={styles.kanbanNote}>{task.note}</p>}
+                  <div className={`chip-wrap dense ${styles.kanbanTags}`}>
                     {taskTags.slice(0, 2).map((tag) => (
                       <span key={tag.id} className="mini-tag" style={getTagToneStyle(tag.color)}>
                         <i style={{ background: tag.color }} />#{tag.name}
                       </span>
                     ))}
                     {taskTags.length > 2 && (
-                      <span className="kanban-card__tags-more">+{taskTags.length - 2}</span>
+                      <span className={styles.kanbanTagsMore}>+{taskTags.length - 2}</span>
                     )}
                   </div>
                   <footer>
                     <span>{list?.name ?? '未知清单'}</span>
-                    <div className="kanban-card__footer-actions">
+                    <div className={styles.kanbanFooterActions}>
                       {task.subtasks.length > 0 && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                           <span>{completedSubtasks}/{task.subtasks.length} 子任务</span>
-                          <div className="kanban-subtask-bar" style={{ width: 40 }}>
+                          <div className={styles.kanbanSubtaskBar} style={{ width: 40 }}>
                             <div
-                              className="kanban-subtask-bar__fill"
+                              className={styles.kanbanSubtaskBarFill}
                               style={{ width: `${Math.round((completedSubtasks / task.subtasks.length) * 100)}%` }}
                             />
                           </div>
@@ -229,7 +230,7 @@ export function KanbanView({
               )
             })}
             <button
-              className="kanban-create-card"
+              className={styles.kanbanCreateCard}
               aria-label={`在看板${statusMeta[status]}列创建任务`}
               title={`在看板${statusMeta[status]}列创建任务`}
               onClick={(event) => {

@@ -1,0 +1,287 @@
+/* KanbanView.module.css
+   Covers: KanbanView (kanban-grid, kanban-column, kanban-stack, kanban-card,
+           kanban-create-card, kanban-subtask-bar*, kanban-col__empty, kanban-polish)
+   Globals kept: create-icon-button (shared), chip-wrap dense, mini-tag, task-card (shared)
+   Drag rules: kanban-card drag/touch/cursor extracted here; matrix-card/timeline-bar remain global
+*/
+
+/* ---- Kanban Grid + Column ---- */
+
+.kanbanGrid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+}
+
+.kanbanColumn {
+  border-right: 1px solid var(--border); padding: 0;
+  border-radius: 0; background: transparent;
+}
+.kanbanColumn:last-child { border-right: none; }
+
+.kanbanColumn header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+}
+
+.kanbanColumn header h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-secondary); margin: 0; }
+.kanbanColumn header span { font-size: 11px; color: var(--text-tertiary); background: var(--surface-raised); padding: 1px 8px; border-radius: 10px; }
+
+.kanbanColumnActions {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.kanbanStack {
+  display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 280px;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+.kanbanStack:global(.is-drag-over) {
+  background: rgba(124, 156, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.24);
+}
+
+/* ---- Kanban Card ---- */
+
+.kanbanCard {
+  border-radius: var(--radius-m); padding: 12px;
+  border: 1px solid var(--border); background: var(--surface);
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); outline: none;
+}
+
+.kanbanCard:hover,
+.kanbanCard:global(.is-selected),
+.kanbanCard:focus-visible {
+  border-color: var(--border-focus); box-shadow: var(--shadow-s); transform: translateY(-1px);
+}
+
+.kanbanCard:focus-visible {
+  box-shadow: var(--shadow-s), 0 0 0 3px rgba(99, 132, 255, 0.12);
+}
+
+.kanbanCard:global(.is-dragging) {
+  border-color: rgba(124, 156, 255, 0.28);
+}
+
+.kanbanCard:global(.status-todo) { border-left: 3px solid rgba(148, 163, 184, 0.38); }
+.kanbanCard:global(.status-doing) { border-left: 3px solid rgba(124, 156, 255, 0.42); }
+.kanbanCard:global(.status-done) { border-left: 3px solid rgba(84, 210, 160, 0.42); background: rgba(84, 210, 160, 0.06); }
+
+.kanbanHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.kanbanBadgeGroup { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.kanbanHeader :global(.task-time-summary) {
+  justify-content: flex-end;
+  text-align: right;
+}
+.kanbanHeader :global(.task-time-summary__primary) {
+  max-width: 168px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.kanbanTitleRow { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.kanbanCard h4 { font-size: 13px; font-weight: 600; margin: 0; }
+.kanbanCard p { font-size: 12px; color: var(--text-tertiary); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.kanbanCard footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 8px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-tertiary);
+}
+
+.kanbanFooterActions { display: flex; align-items: center; gap: 8px; }
+
+.kanbanCard footer select {
+  width: auto; padding: 2px 8px; font-size: 11px;
+  border-radius: 999px; background: var(--surface-raised);
+}
+
+.kanbanCreateCard {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
+  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
+}
+
+.kanbanCreateCard:hover,
+.kanbanCreateCard:focus-visible {
+  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
+}
+
+/* ---- Kanban polish ---- */
+
+.kanbanTitle {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.kanbanNote {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+.kanbanTags {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.kanbanTagsMore {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.kanbanColEmpty {
+  padding: 16px 12px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  margin: 4px 2px;
+  opacity: 0.7;
+}
+
+.kanbanSubtaskBar {
+  margin-top: 4px;
+  height: 3px;
+  background: var(--surface-raised);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.kanbanSubtaskBarFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+
+/* ---- Drag / touch behavior ---- */
+
+.kanbanCard {
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+.kanbanCard:global(.is-dragging) {
+  cursor: grabbing;
+  opacity: 0.96;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+/* ---- @media 1280px: kanban scrollable ---- */
+@media (max-width: 1280px) {
+  .kanbanGrid { grid-template-columns: repeat(3, minmax(260px, 1fr)); overflow-x: auto; }
+}
+
+/* ---- @media 680px: kanban single column ---- */
+@media (max-width: 680px) {
+  .kanbanGrid {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+  .kanbanColumn {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .kanbanColumn:last-child { border-bottom: none; }
+  .kanbanStack { min-height: 80px; }
+
+  /* Phase 3: 手机端看板列折叠优化 */
+  .kanbanColumn header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--surface-raised);
+    padding: 10px 14px;
+  }
+}
+
+/* ---- is-phone overrides ---- */
+:global(.is-phone) .kanbanGrid {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  overflow: visible;
+  padding-bottom: 80px;
+}
+:global(.is-phone) .kanbanColumn { min-width: 0; }
+
+/* is-phone: task-card compact inside kanban column */
+:global(.is-phone) .kanbanColumn :global(.task-card) {
+  padding: 4px 8px;
+  min-height: 32px;
+}
+:global(.is-phone) .kanbanColumn :global(.task-card) h3 {
+  font-size: 12px;
+}
+
+/* Bug 2: phone kanban card — title+time only, hide rest */
+:global(.is-phone) .kanbanCard {
+  padding: 4px 8px;
+  min-height: 36px;
+  gap: 2px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 14px;
+}
+:global(.is-phone) .kanbanCard .kanbanHeader {
+  order: 2;
+}
+:global(.is-phone) .kanbanCard .kanbanTitleRow {
+  order: 1;
+  display: flex !important;
+}
+:global(.is-phone) .kanbanCard h4 {
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  display: block !important;
+}
+:global(.is-phone) .kanbanCard :global(.task-time-summary) {
+  display: flex !important;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+:global(.is-phone) .kanbanCard p,
+:global(.is-phone) .kanbanCard footer,
+:global(.is-phone) .kanbanCard select,
+:global(.is-phone) .kanbanCard .kanbanBadgeGroup,
+:global(.is-phone) .kanbanCard .kanbanFooterActions,
+:global(.is-phone) .kanbanCard :global(.check-button),
+:global(.is-phone) .kanbanCard :global(.task-meta),
+:global(.is-phone) .kanbanCard :global(.chip-wrap) {
+  display: none !important;
+}
+
+/* #7: phone kanban 3-column compact task-card */
+:global(.is-phone) .kanbanColumn :global(.task-card):nth-child(n) {
+  padding: 4px 6px;
+  min-height: 28px;
+}
+:global(.is-phone) .kanbanColumn :global(.task-card) h3 {
+  font-size: 11px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
