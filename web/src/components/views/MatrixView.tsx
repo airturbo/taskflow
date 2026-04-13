@@ -4,6 +4,7 @@ import type { PointerDragPreviewState, InlineCreateRequest, PointerDragSession }
 import { getQuadrant, getQuadrantLabel, formatTaskDualTimeSummary, SPECIAL_TAG_IDS, type MatrixQuadrantKey } from '@taskflow/core'
 import { POINTER_DRAG_THRESHOLD, buildPointerDragPreviewState, buildTaskDragPreview, getPointerDragStyle, markClickSuppressed, resolveDropZoneValueFromPoint, shouldIgnorePointerDragStart, getTagToneStyle, handleCardKeyboardActivation } from '../../utils/workspace-helpers'
 import { DragPreviewLayer, StatusSelectBadge, PrioritySelectBadge, TaskTimeSummary } from '../shared'
+import styles from './MatrixView.module.css'
 
 function SparseGuide({ title, description, bullets }: { title: string; description: string; bullets: string[] }) {
   return (
@@ -162,15 +163,15 @@ export function MatrixView({
       {tasks.length <= 3 && (
         <SparseGuide title="当前象限偏轻，但优先级边界要更清楚。" description="特殊标签已经替代隐式规则；需要时直接拖拽卡片，就能把任务放回正确象限。" bullets={['拖拽改标签', '即时回写', '减少误判']} />
       )}
-      <div className="matrix-grid">
+      <div className={styles.matrixGrid}>
         {(Object.keys(meta) as MatrixQuadrantKey[]).map((key) => (
-          <section key={key} className="matrix-quadrant">
+          <section key={key} className={styles.matrixQuadrant}>
             <header>
               <div>
                 <h3>{meta[key].title}</h3>
                 <p>{meta[key].hint}</p>
               </div>
-              <div className="matrix-quadrant-actions">
+              <div className={styles.matrixQuadrantActions}>
                 <span>{quadrants[key].length}</span>
                 <button
                   className="create-icon-button"
@@ -193,7 +194,7 @@ export function MatrixView({
             </header>
             <div
               data-matrix-drop-zone={key}
-              className={`matrix-stack ${dragOverQuadrant === key ? 'is-drag-over' : ''}`}
+              className={`${styles.matrixStack} ${dragOverQuadrant === key ? 'is-drag-over' : ''}`}
               onClick={(event) => {
                 if (event.target === event.currentTarget) {
                   onOpenInlineCreate({
@@ -208,9 +209,9 @@ export function MatrixView({
             >
               {quadrants[key].length === 0 ? (
                 <>
-                  <div className="matrix-quadrant__empty-hint">{meta[key].emptyHint}</div>
+                  <div className={styles.matrixQuadrantEmptyHint}>{meta[key].emptyHint}</div>
                   <button
-                    className="matrix-placeholder matrix-placeholder--action"
+                    className={`${styles.matrixPlaceholder} ${styles.matrixPlaceholderAction}`}
                     aria-label={`在${meta[key].title}象限创建任务`}
                     title={`在${meta[key].title}象限创建任务`}
                     onClick={(event) =>
@@ -235,7 +236,7 @@ export function MatrixView({
                     return (
                       <article
                         key={task.id}
-                        className={`matrix-card status-${task.status} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''}`}
+                        className={`${styles.matrixCard} status-${task.status} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''}`}
                         style={getPointerDragStyle(task.id, dragTaskId, dragPreview)}
                         role="button"
                         tabIndex={0}
@@ -244,16 +245,16 @@ export function MatrixView({
                         onClick={handleCardClick(task.id)}
                         onKeyDown={(event) => handleCardKeyboardActivation(event, () => onSelectTask(task.id))}
                       >
-                        <div className="matrix-card__top">
-                          <div className="matrix-card__badge-group" onClick={(event) => event.stopPropagation()}>
+                        <div className={styles.matrixCardTop}>
+                          <div className={styles.matrixCardBadgeGroup} onClick={(event) => event.stopPropagation()}>
                             <StatusSelectBadge status={task.status} compact onChange={(status) => onChangeStatus(task.id, status)} />
                             <PrioritySelectBadge priority={task.priority} compact onChange={(priority) => onChangePriority(task.id, priority)} />
                           </div>
                           <TaskTimeSummary task={task} compact />
                         </div>
-                        <strong className="matrix-card__title">{task.title}</strong>
+                        <strong className={styles.matrixCardTitle}>{task.title}</strong>
                         <p>
-                          <span className="matrix-card__list-dot" style={{ background: list?.color || 'var(--text-3)' }} />
+                          <span className={styles.matrixCardListDot} style={{ background: list?.color || 'var(--text-3)' }} />
                           {list?.name ?? '未知清单'}
                         </p>
                         <div className="chip-wrap dense">
@@ -267,7 +268,7 @@ export function MatrixView({
                     )
                   })}
                   <button
-                    className="matrix-create-card"
+                    className={styles.matrixCreateCard}
                     aria-label={`在${meta[key].title}象限创建任务`}
                     title={`在${meta[key].title}象限创建任务`}
                     onClick={(event) => {

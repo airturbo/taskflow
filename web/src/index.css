@@ -778,116 +778,16 @@ button.projection-metric:disabled {
 /* calendar-chip, day-task, agenda-item drag/touch/cursor → CalendarView.module.css */
 /* kanban-card drag/touch/cursor → KanbanView.module.css */
 /* timeline-bar, timeline-bar__grip drag/touch/cursor → TimelineView.module.css */
-.matrix-card {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.matrix-card {
-  touch-action: none;
-}
-
-.matrix-card {
-  cursor: grab;
-}
-
-.matrix-card.is-dragging {
-  cursor: grabbing;
-  opacity: 0.96;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
-}
+/* matrix-card drag/touch/cursor → MatrixView.module.css */
 /* .kanban-card.is-dragging → KanbanView.module.css */
 /* .timeline-bar.is-selected/.is-dragging cursor → TimelineView.module.css */
 
 /* ---- Kanban → KanbanView.module.css ---- */
-.matrix-card__top .task-time-summary {
-  justify-content: flex-end;
-  text-align: right;
-}
-.matrix-card__top .task-time-summary__primary {
-  max-width: 168px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+/* .matrix-card__top .task-time-summary, .matrix-card__top .task-time-summary__primary → MatrixView.module.css */
 
 /* ---- Timeline → TimelineView.module.css ---- */
 
-/* ---- Matrix ---- */
-.matrix-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-}
-
-.matrix-quadrant {
-  padding: 14px; border: 1px solid var(--border);
-  border-radius: 0; background: transparent;
-}
-
-.matrix-quadrant header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.matrix-quadrant header h3 { font-size: 12px; font-weight: 600; margin: 0; }
-.matrix-quadrant header p { font-size: 11px; color: var(--text-tertiary); margin: 0; }
-.matrix-quadrant header span { font-size: 11px; color: var(--text-tertiary); background: var(--surface-raised); padding: 1px 8px; border-radius: 10px; }
-
-.matrix-quadrant-actions {
-  display: flex; align-items: center; gap: 8px;
-}
-
-.matrix-stack { display: flex; flex-direction: column; gap: 8px; min-height: 160px; transition: background var(--transition), box-shadow var(--transition); }
-
-.matrix-stack.is-drag-over {
-  background: rgba(124, 156, 255, 0.08);
-  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.2);
-}
-
-.matrix-card {
-  border-radius: var(--radius-s); padding: 10px;
-  border: 1px solid var(--border); background: var(--surface-raised);
-  display: flex; flex-direction: column; gap: 8px;
-  cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); outline: none;
-}
-.matrix-card:hover,
-.matrix-card.is-selected,
-.matrix-card:focus-visible { border-color: var(--border-focus); background: var(--surface-hover); }
-.matrix-card:focus-visible {
-  box-shadow: 0 0 0 3px rgba(99, 132, 255, 0.12);
-}
-.matrix-card.is-dragging {
-  border-color: rgba(124, 156, 255, 0.26);
-}
-.matrix-card.status-done { background: rgba(84, 210, 160, 0.08); }
-
-.matrix-card__top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.matrix-card__badge-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.matrix-card strong { font-size: 12px; font-weight: 600; }
-.matrix-card p { font-size: 11px; color: var(--text-tertiary); margin: 0; }
-
-.matrix-placeholder {
-  border: 1px dashed var(--border); border-radius: var(--radius-s);
-  padding: 12px; background: transparent; color: var(--text-tertiary);
-  font-size: 12px; line-height: 1.5;
-}
-.matrix-placeholder strong { display: block; margin-bottom: 4px; color: var(--text-secondary); font-size: 12px; }
-.matrix-placeholder p { margin: 0; }
-
-.matrix-placeholder--action,
-.matrix-create-card {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
-}
-
-.matrix-placeholder--action {
-  flex: 1; min-height: 96px;
-}
-
-.matrix-placeholder--action:hover,
-.matrix-placeholder--action:focus-visible,
-.matrix-create-card:hover,
-.matrix-create-card:focus-visible {
-  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
-}
+/* ---- Matrix → MatrixView.module.css ---- */
 
 /* ---- Tools Layout ---- */
 .tool-layout { display: flex; flex-direction: column; gap: 16px; }
@@ -1253,7 +1153,7 @@ button.projection-metric:disabled {
   .projection-summary__toolbar { width: 100%; justify-content: flex-start; flex-basis: 100%; }
   /* .calendar-grid.month/week, .calendar-weekday-header, .calendar-create-strip @1280px → CalendarView.module.css */
   /* .kanban-grid @1280px → KanbanView.module.css */
-  .matrix-grid { grid-template-columns: repeat(2, minmax(260px, 1fr)); overflow-x: auto; }
+  /* .matrix-grid @1280px → MatrixView.module.css */
   /* .timeline-view overflow-x, .timeline-header/.timeline-body min-width @1280px → TimelineView.module.css */
 }
 
@@ -1800,33 +1700,7 @@ button.projection-metric:disabled {
 
 /* ---- 看板视图移动端：单列纵向 → KanbanView.module.css ---- */
 
-/* ---- 四象限移动端：保持 2x2 布局 ---- */
-@media (max-width: 680px) {
-  .matrix-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    overflow: visible;
-  }
-  .matrix-quadrant { padding: 4px; min-height: 100px; }
-  .matrix-quadrant .task-card { padding: 2px 6px; min-height: 24px; }
-  .matrix-quadrant .task-card h3 { font-size: 11px; }
-  .matrix-stack { min-height: 100px; }
-
-  /* Phase 3: 手机端矩阵象限标题更紧凑 */
-  .matrix-quadrant header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--bg-subtle);
-    padding: 10px 14px;
-  }
-
-  /* 每个象限不同背景色 */
-  .matrix-quadrant:nth-child(1) { background: rgba(239, 68, 68, 0.04); } /* 紧急重要 */
-  .matrix-quadrant:nth-child(2) { background: rgba(245, 158, 11, 0.04); } /* 不紧急重要 */
-  .matrix-quadrant:nth-child(3) { background: rgba(59, 130, 246, 0.04); } /* 紧急不重要 */
-  .matrix-quadrant:nth-child(4) { background: rgba(156, 163, 175, 0.04); } /* 不紧急不重要 */
-}
+/* ---- 四象限移动端：保持 2x2 布局 → MatrixView.module.css ---- */
 
 /* ---- 移动端统计卡片 ---- */
 @media (max-width: 680px) {
@@ -1955,14 +1829,14 @@ button.projection-metric:disabled {
 
 /* 卡片圆角统一 14-16px */
 @media (max-width: 680px) {
+  /* .agenda-item border-radius → CalendarView.module.css */
+  /* .kanban-card border-radius → KanbanView.module.css */
+  /* .matrix-card border-radius → MatrixView.module.css */
   .task-card,
   .mobile-focus-card,
   .mobile-projects-list-item,
   .mobile-me-row,
-  .mobile-me-stat,
-  /* .agenda-item border-radius → CalendarView.module.css */
-  /* .kanban-card border-radius → KanbanView.module.css */
-  .matrix-card {
+  .mobile-me-stat {
     border-radius: 14px;
   }
 }
@@ -2688,19 +2562,7 @@ button.projection-metric:disabled {
 }
 .mobile-topbar-sort-pill:active { background: var(--border); }
 
-/* #6 — 象限卡片压缩 */
-.is-phone .matrix-quadrant .task-card {
-  padding: 3px 6px; min-height: 28px;
-}
-.is-phone .matrix-quadrant .task-card h3 {
-  font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.is-phone .matrix-quadrant .task-card .task-main > p,
-.is-phone .matrix-quadrant .task-card .chip-wrap,
-.is-phone .matrix-quadrant .task-card .task-actions,
-.is-phone .matrix-quadrant .task-card .task-meta span:nth-child(n+3) {
-  display: none;
-}
+/* #6 — 象限卡片压缩 → MatrixView.module.css (uses .task-card global inside .matrixQuadrant) */
 
 /* #7 — 看板一屏三列 → KanbanView.module.css */
 
@@ -2789,8 +2651,7 @@ button.projection-metric:disabled {
 
 /* #19 — Tab 切换淡入淡出 → WorkspaceShell.module.css (.workspacePanel + :global(.is-fading)) */
 
-/* #20 — 象限页 FAB 避让 */
-.is-phone .matrix-view { padding-bottom: 80px; }
+/* #20 — 象限页 FAB 避让 → MatrixView.module.css */
 /* .is-phone .kanban-grid padding-bottom → KanbanView.module.css */
 
 /* #21 — 搜索栏 */
@@ -2862,38 +2723,9 @@ button.projection-metric:disabled {
    ================================================================ */
 
 /* Bug 2 修复：看板卡片 → KanbanView.module.css */
-/* 象限卡片更紧凑 */
-.is-phone .matrix-quadrant .task-card {
-  padding: 2px 6px;
-  min-height: 20px;
-}
-.is-phone .matrix-quadrant .task-card h3 {
-  font-size: 10px;
-  line-height: 1.3;
-}
-/* Bug 1 修复：象限卡片只保留标题+时间，隐藏所有其他内容 */
-.is-phone .matrix-quadrant .task-card .task-main > p,
-.is-phone .matrix-quadrant .task-card .chip-wrap,
-.is-phone .matrix-quadrant .task-card .task-actions,
-.is-phone .matrix-quadrant .task-card select,
-.is-phone .matrix-quadrant .task-card .check-button,
-.is-phone .matrix-quadrant .task-card .task-meta,
-.is-phone .matrix-quadrant .task-card .kanban-card__badge-group,
-.is-phone .matrix-quadrant .task-card .status-badge,
-.is-phone .matrix-quadrant .task-card .priority-badge,
-.is-phone .matrix-quadrant .task-card .tag-list,
-.is-phone .matrix-quadrant .task-card .tag-chip,
-.is-phone .matrix-quadrant .task-card .priority-indicator,
-.is-phone .matrix-quadrant .task-card footer,
-.is-phone .matrix-quadrant .task-card .action-row,
-.is-phone .matrix-quadrant .task-card .subtask-summary,
-.is-phone .matrix-quadrant .task-card .note-preview {
-  display: none !important;
-}
-/* 隐藏象限的添加按钮（FAB 已替代） */
-.is-phone .matrix-quadrant .matrix-create-card {
-  display: none;
-}
+/* 象限卡片更紧凑 → MatrixView.module.css */
+/* Bug 1 修复：象限卡片只保留标题+时间 → MatrixView.module.css */
+/* 隐藏象限的添加按钮 → MatrixView.module.css */
 
 /* Bug 4 修复：手机端 quick-feedback 改为底部轻量 toast */
 .is-phone .quick-feedback {
@@ -4538,35 +4370,7 @@ button.projection-metric:disabled {
 
 /* ---- #76 ReminderCenterPanel 分组折叠 → ReminderCenterPanel.module.css ---- */
 
-/* ── Matrix view polish ────────────────────────────── */
-.matrix-card__title {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: break-word;
-  font-weight: 500;
-}
-.matrix-card__list-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  margin-right: 4px;
-  flex-shrink: 0;
-  vertical-align: middle;
-}
-.matrix-quadrant__empty-hint {
-  padding: 20px 16px;
-  text-align: center;
-  color: var(--text-3);
-  font-size: 12px;
-  line-height: 1.5;
-  border: 1.5px dashed var(--border);
-  border-radius: 8px;
-  margin: 8px;
-  opacity: 0.75;
-}
+/* ── Matrix view polish → MatrixView.module.css ────────────────────────────── */
 
 /* ── Kanban polish → KanbanView.module.css ─────────────────────────────────── */
 
