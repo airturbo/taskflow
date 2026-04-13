@@ -8,6 +8,11 @@ import { useSystemTheme } from './hooks/useSystemTheme'
 import { usePushNotifications } from './hooks/usePushNotifications'
 import { useWorkspaceData } from './hooks/useWorkspaceData'
 import { useViewState } from './hooks/useViewState'
+import { useModalState, type ProjectionInsightMode } from './hooks/useModalState'
+import { useTaskSelection } from './hooks/useTaskSelection'
+import { useFilterState } from './hooks/useFilterState'
+import { useViewConfig } from './hooks/useViewConfig'
+import { useNavigationState } from './hooks/useNavigationState'
 import { isSupabaseEnabled } from './utils/supabase'
 import { useMobileUiStore } from './stores/mobileUiStore'
 import { SyncIndicator } from './components/SyncIndicator'
@@ -110,11 +115,6 @@ const viewMeta: { id: WorkspaceView; label: string }[] = [
   { id: 'matrix', label: '四象限' },
 ]
 
-const DEFAULT_SELECTION_TIME_MODES: Record<TimeSelectionKey, TimeFieldMode> = {
-  today: 'planned',
-  upcoming: 'planned',
-}
-
 const timeFieldModeLabel: Record<TimeFieldMode, string> = {
   planned: '计划',
   deadline: 'DDL',
@@ -191,8 +191,6 @@ type TimelineDragState = {
   stepMinutes: number
 }
 
-type ProjectionInsightMode = 'unscheduled' | 'outside'
-
 type ProjectionSummaryMetric = {
   label: string
   value: string | number
@@ -239,7 +237,6 @@ type PointerDragSession = {
 
 const POINTER_DRAG_THRESHOLD = 6
 const POINTER_DRAG_BLOCK_SELECTOR = 'select, input, textarea, button, a, label'
-const SEARCH_QUERY_DEBOUNCE_MS = 140
 
 const shouldIgnorePointerDragStart = (target: EventTarget | null, currentTarget: HTMLElement) => {
   if (!(target instanceof HTMLElement)) return false
@@ -638,66 +635,68 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [syncStatus])
-  const legacyTagSelectionId = initialState.activeSelection.startsWith('tag:') ? initialState.activeSelection.split(':')[1] ?? '' : ''
-  const initialSelection = ['tool:focus', 'tool:habits'].includes(initialState.activeSelection)
-    ? 'system:today'
-    : legacyTagSelectionId
-      ? 'system:all'
-      : initialState.activeSelection
-  const initialSelectedTagIds = initialState.selectedTagIds.length
-    ? initialState.selectedTagIds
-    : legacyTagSelectionId
-      ? [legacyTagSelectionId]
-      : []
   // desktopMode 已废弃：App 端和 Web 端统一使用 localStorage 存储
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const desktopMode = false
 
+  // ---- Navigation ----
+  const nav = useNavigationState(initialState)
+  const { activeSelection, setActiveSelection, selectionKind, selectionId, isToolSelection } = nav
+
+  // ---- View Config ----
+  const viewConfig = useViewConfig(initialState)
+  const {
+    currentView, setCurrentView, calendarMode, setCalendarMode,
+    calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale,
+    calendarAnchor, setCalendarAnchor, theme, setTheme,
+    selectionTimeModes, setSelectionTimeModes, updateSelectionTimeMode,
+  } = viewConfig
+
+  // ---- Filter ----
+  const filterState = useFilterState(nav.migratedSelectedTagIds)
+  const {
+    selectedTagIds, setSelectedTagIds, searchInput, setSearchInput,
+    searchKeyword, setSearchKeyword, searchInputRef, toggleSelectedTag,
+  } = filterState
+
+  // ---- Task Selection ----
+  const selection = useTaskSelection(
+    initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null,
+  )
+  const {
+    selectedTaskId, setSelectedTaskId, bulkSelectedIds, setBulkSelectedIds,
+    bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect,
+  } = selection
+
+  // ---- UI Modals ----
+  const modals = useModalState()
+  const {
+    tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen,
+    commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen,
+    navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen,
+    taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded,
+    projectionInsightMode, setProjectionInsightMode,
+  } = modals
+
+  // ---- Data (stays inline — cross-domain) ----
   const [folders, setFolders] = useState(initialState.folders)
   const [lists, setLists] = useState(initialState.lists)
   const [tags, setTags] = useState(() => ensureSpecialTags(initialState.tags))
   const [filters, setFilters] = useState(initialState.filters)
   const [tasks, setTasks] = useState(initialState.tasks)
-  const [theme, setTheme] = useState<ThemeMode>(initialState.theme)
   const { resolvedTheme, cycleTheme, themeIcon, themeLabel } = useSystemTheme(theme, setTheme)
-  const [activeSelection, setActiveSelection] = useState(initialSelection)
-  const [selectedTagIds, setSelectedTagIds] = useState(initialSelectedTagIds)
-  const [selectionTimeModes, setSelectionTimeModes] = useState<PersistedState['selectionTimeModes']>({
-    ...DEFAULT_SELECTION_TIME_MODES,
-    ...(initialState.selectionTimeModes ?? {}),
-  })
-  const [currentView, setCurrentView] = useState<WorkspaceView>(initialState.currentView)
-  const [calendarMode, setCalendarMode] = useState<CalendarMode>(initialState.calendarMode)
-  const [calendarShowCompleted, setCalendarShowCompleted] = useState(initialState.calendarShowCompleted)
-  const [timelineScale, setTimelineScale] = useState<TimelineScale>(initialState.timelineScale)
-  const [calendarAnchor, setCalendarAnchor] = useState(getDateKey())
-  const [searchInput, setSearchInput] = useState('')
-  const [searchKeyword, setSearchKeyword] = useState('')
+
+  // ---- Remaining inline states ----
   const [quickEntry, setQuickEntry] = useState('')
   const [quickListId, setQuickListId] = useState('inbox')
-  const searchInputRef = useRef<HTMLInputElement>(null)
   const quickCreateInputRef = useRef<HTMLInputElement>(null)
   const [quickPriority, setQuickPriority] = useState<Priority>('normal')
   const [quickTagIds, setQuickTagIds] = useState<string[]>([])
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(
-    initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null,
-  )
   const [createFeedback, setCreateFeedback] = useState<QuickCreateFeedback | null>(null)
   const [statusChangeFeedback, setStatusChangeFeedback] = useState<StatusChangeFeedback | null>(null)
   const [inlineCreate, setInlineCreate] = useState<InlineCreateDraft | null>(null)
-  const [tagManagerOpen, setTagManagerOpen] = useState(false)
   const [firedReminderKeys, setFiredReminderKeys] = useState(initialState.firedReminderKeys)
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
-  const [navigationDrawerOpen, setNavigationDrawerOpen] = useState(false)
-  const [utilityDrawerOpen, setUtilityDrawerOpen] = useState(false)
-  const [taskSheetOpen, setTaskSheetOpen] = useState(false)   // 手机端底部 Sheet
-  const [sidebarExpanded, setSidebarExpanded] = useState(false)
-  const [projectionInsightMode, setProjectionInsightMode] = useState<ProjectionInsightMode | null>(null)
-  const [shortcutPanelOpen, setShortcutPanelOpen] = useState(false)
-  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
-  const [bulkSelectedIds, setBulkSelectedIds] = useState<Set<string>>(new Set())
-  const [bulkMode, setBulkMode] = useState(false)
-  const [exportPanelOpen, setExportPanelOpen] = useState(false)
 
   // ---- 移动端专属状态（通过 mobileUiStore Zustand store 管理，减少主组件 re-render）----
   type MobileTab = 'focus' | 'calendar' | 'matrix' | 'me'
@@ -902,16 +901,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   }, [activeSelection, calendarMode, currentView, searchKeyword, selectedTagIds, timelineScale])
 
   useEffect(() => {
-    if (!searchInput.trim()) {
-      setSearchKeyword((current) => (current ? '' : current))
-      return
-    }
-
-    const timer = window.setTimeout(() => setSearchKeyword(searchInput), SEARCH_QUERY_DEBOUNCE_MS)
-    return () => window.clearTimeout(timer)
-  }, [searchInput])
-
-  useEffect(() => {
     let cancelled = false
 
     const tickReminders = async () => {
@@ -930,10 +919,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }, [firedReminderKeys, notifySurface, tasks])
 
-  const selectionParts = activeSelection.split(':')
-  const selectionKind = selectionParts[0]
-  const selectionId = selectionParts[1] ?? ''
-  const isToolSelection = selectionKind === 'tool'
   const currentSelectionTimeMode: TimeFieldMode =
     selectionKind === 'system' && (selectionId === 'today' || selectionId === 'upcoming')
       ? selectionTimeModes?.[selectionId] ?? 'planned'
@@ -945,14 +930,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     if (!matchesSelectedTags(task, selectedTagIds)) return false
     const keyword = searchKeyword.trim().toLowerCase()
     return matchesSearch(task, keyword, tags)
-  }
-
-  const updateSelectionTimeMode = (key: TimeSelectionKey, mode: TimeFieldMode) => {
-    setSelectionTimeModes((current) => ({
-      ...DEFAULT_SELECTION_TIME_MODES,
-      ...(current ?? {}),
-      [key]: mode,
-    }))
   }
 
   const getTaskByIdFromCache = (taskId: string) => tasks.find((task) => task.id === taskId) ?? null
@@ -1483,10 +1460,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }
 
-  const toggleSelectedTag = (tagId: string) => {
-    setSelectedTagIds((current) => (current.includes(tagId) ? current.filter((item) => item !== tagId) : [...current, tagId]))
-  }
-
   // ---- 移动端快速创建 (逻辑已内联到 MobileQuickCreateSheet) ----
 
   // ---- 移动端自定义 confirm/prompt（Phase 1.5 使用）----
@@ -1794,22 +1767,8 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   // ---- 批量操作 ----
 
-  const toggleBulkSelect = (taskId: string) => {
-    setBulkSelectedIds(prev => {
-      const next = new Set(prev)
-      if (next.has(taskId)) next.delete(taskId)
-      else next.add(taskId)
-      return next
-    })
-  }
-
-  const selectAllBulk = () => {
-    setBulkSelectedIds(new Set(visibleTasks.map(t => t.id)))
-  }
-
-  const clearBulkSelect = () => {
-    setBulkSelectedIds(new Set())
-    setBulkMode(false)
+  const selectAllVisibleBulk = () => {
+    selection.selectAllBulk(visibleTasks.map(t => t.id))
   }
 
   const bulkComplete = () => {
@@ -2780,7 +2739,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
               </button>
             ) : (
               <>
-                <button className="ghost-button small" onClick={selectAllBulk}>全选</button>
+                <button className="ghost-button small" onClick={selectAllVisibleBulk}>全选</button>
                 <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
                   已选 {bulkSelectedIds.size} / {visibleTasks.length}
                 </span>
