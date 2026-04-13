@@ -4,6 +4,7 @@ import type { MobileTab } from '../stores/mobileUiStore'
 import { isSupabaseEnabled } from '../utils/supabase'
 import { SyncIndicator } from './SyncIndicator'
 import { requestAuthScreen } from '../utils/auth-events'
+import styles from './AppTopBar.module.css'
 
 export interface AppTopBarProps {
   // Layout mode
@@ -204,8 +205,8 @@ export function AppTopBar(props: AppTopBarProps) {
 
       {/* 中宽屏顶栏（仅右侧工具，无导航按钮）*/}
       {isUtilityDrawerMode && !isNavigationDrawerMode && (
-        <section className="topbar panel topbar--actions-only">
-          <div className="topbar-actions">
+        <section className={`${styles.topbar} panel ${styles.topbarActionsOnly}`}>
+          <div className={styles.topbarActions}>
             <button className="ghost-button small" onClick={onOpenUtilityDrawer}>
               {selectedTask ? '提醒 / 详情' : '提醒面板'}
             </button>

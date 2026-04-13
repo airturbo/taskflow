@@ -1,0 +1,44 @@
+/* AppTopBar.module.css — AppTopBar-specific styles */
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 24px; border-bottom: 1px solid var(--border);
+}
+
+.topbarActionsOnly {
+  justify-content: flex-end;
+}
+
+.topbarActions { display: flex; gap: 8px; align-items: center; }
+
+:global(.is-phone) .topbar,
+:global(.is-phone) .topbarActionsOnly {
+  display: none; /* 移动端用 mobile-topbar 替代 */
+}
+
+:global(.is-navigation-drawer) .topbarActionsOnly {
+  padding: 8px 14px;
+}
+
+/* ---- Responsive overrides ---- */
+@media (max-width: 960px) {
+  .topbar {
+    padding-left: 16px;
+    padding-right: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    display: flex;
+  }
+  .topbarActions {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

@@ -315,16 +315,7 @@
 }
 
 /* ---- Main Content Areas ---- */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 10px 24px; border-bottom: 1px solid var(--border);
-}
-
-.topbar--actions-only {
-  justify-content: flex-end;
-}
-
-.topbar-actions { display: flex; gap: 8px; align-items: center; }
+/* .topbar, .topbar--actions-only, .topbar-actions → AppTopBar.module.css */
 .search-input { min-width: 240px; max-width: min(360px, 42vw); font-size: 13px; }
 
 .filter-strip {
@@ -2423,13 +2414,14 @@ button.projection-metric:disabled {
 
 /* ---- 960px 以下：导航变推开式侧边栏（无遮罩，底层可操作）---- */
 /* .app-shell grid, .view-switcher, .quick-feedback, .action-toast, .calendar-nav, .calendar-controls, .composer-bar → WorkspaceShell.module.css */
+/* .topbar, .topbar-actions → AppTopBar.module.css */
 @media (max-width: 960px) {
-  .topbar, .filter-strip {
+  .filter-strip {
     padding-left: 16px;
     padding-right: 16px;
   }
   .workspace { padding: 16px; }
-  .topbar, .timeline-row, .day-task,
+  .timeline-row, .day-task,
   .agenda-item, .timeline-toolbar,
   .reminder-feed-item--featured,
   .inline-create-footer, .attachment-toolbar, .inline-create-mobility-row,
@@ -2443,7 +2435,7 @@ button.projection-metric:disabled {
   .note-editor__field-row {
     grid-template-columns: 1fr;
   }
-  .topbar-actions, .timeline-toolbar__actions {
+  .timeline-toolbar__actions {
     width: 100%;
     min-width: 0;
     flex-wrap: wrap;
@@ -2499,7 +2491,7 @@ button.projection-metric:disabled {
 
 /* ---- 680px 以下（手机端）---- */
 @media (max-width: 680px) {
-  .topbar, .filter-strip {
+  .filter-strip {
     padding-left: 14px;
     padding-right: 14px;
   }
@@ -3013,16 +3005,7 @@ button.projection-metric:disabled {
   }
 }
 
-/* ---- 移动端 Topbar + is-phone 专属 ---- */
-.is-phone .topbar,
-.is-phone .topbar--actions-only {
-  display: none; /* 移动端用 mobile-topbar 替代 */
-}
-
-/* ---- 优化 is-navigation-drawer 的顶栏 ---- */
-.is-navigation-drawer .topbar--actions-only {
-  padding: 8px 14px;
-}
+/* .is-phone .topbar / .is-navigation-drawer .topbar--actions-only → AppTopBar.module.css */
 
 /* ---- 安全区适配（刘海屏/全面屏）---- */
 @supports (padding: env(safe-area-inset-top)) {
