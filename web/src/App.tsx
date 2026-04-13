@@ -1,33 +1,28 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
-import { createPortal } from 'react-dom'
-import { useVirtualizer } from '@tanstack/react-virtual'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useRealtimeSync } from './hooks/useRealtimeSync'
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts'
 import { useSystemTheme } from './hooks/useSystemTheme'
 import { usePushNotifications } from './hooks/usePushNotifications'
-import { useModalState, type ProjectionInsightMode } from './hooks/useModalState'
+import { useModalState } from './hooks/useModalState'
 import { useTaskSelection } from './hooks/useTaskSelection'
 import { useFilterState } from './hooks/useFilterState'
 import { useViewConfig } from './hooks/useViewConfig'
 import { useNavigationState } from './hooks/useNavigationState'
-import { useQuickCreate, type InlineCreateDraft, type InlineCreatePosition, type InlineCreatePositionMode, type QuickCreateFeedback, type StatusChangeFeedback } from './hooks/useQuickCreate'
+import { useQuickCreate } from './hooks/useQuickCreate'
 import { useMobileDialogs } from './hooks/useMobileDialogs'
-import { isSupabaseEnabled } from './utils/supabase'
+import { useTaskActions } from './hooks/useTaskActions'
 import { useMobileUiStore, type MobileTab } from './stores/mobileUiStore'
-import { SyncIndicator } from './components/SyncIndicator'
 import { ShortcutPanel } from './components/ShortcutPanel'
 import { ExportPanel } from './components/ExportPanel'
 import { CommandPalette } from './components/CommandPalette'
-import { FolderListItem, SidebarSection, NavButton } from './components/WorkspaceSidebar'
 import { AppSidebar } from './components/AppSidebar'
 import { AppTopBar } from './components/AppTopBar'
 import { MobileTabBar } from './components/MobileTabBar'
-import { StatusBadge, StatusSelectBadge, PrioritySelectBadge, DragPreviewLayer, EmptyState } from './components/shared'
 import { ReminderCenterPanel } from './components/ReminderCenterPanel'
 import { ListView } from './components/views/ListView'
 import { TagPicker, TagManagementDialog } from './components/TagManagementDialog'
-import { NoteEditorField, TaskDetailPanel } from './components/TaskDetailPanel'
+import { TaskDetailPanel } from './components/TaskDetailPanel'
 import { InlineCreatePopover } from './components/InlineCreatePopover'
 import { ResponsiveDrawer, TaskBottomSheet } from './components/TaskBottomSheet'
 import { CalendarView } from './components/views/CalendarView'
@@ -47,436 +42,51 @@ import { ViewErrorBoundary } from './components/ViewErrorBoundary'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
 import type {
   CalendarMode,
-  Comment,
   PersistedState,
   Priority,
   Tag,
   Task,
-  TaskAttachment,
-  TaskStatus,
-  ThemeMode,
   TimeFieldMode,
-  TimeSelectionKey,
-  TimelineScale,
-  TodoList,
-  WorkspaceView,
 } from './types/domain'
-import { useReminderCenter, type ReminderFeedItem } from './hooks/useReminderCenter'
+import { useReminderCenter } from './hooks/useReminderCenter'
 import {
   addDays,
   addMonths,
   buildMonthMatrix,
   buildWeek,
-  diffDateKeys,
   formatDateTime,
-  formatDayLabel,
   formatMonthLabel,
   formatWeekRange,
   getDateKey,
   getNowIso,
-  isOverdue,
-  isToday,
-  isWithinDays,
   shiftDateTimeByDays,
 } from './utils/dates'
-import { collectReminderEvents, describeReminder, formatTaskWindow } from './utils/reminder-engine'
+import { collectReminderEvents, formatTaskWindow } from './utils/reminder-engine'
 import { requestAuthScreen } from './utils/auth-events'
 import { loadState, saveState, setCurrentUserId } from './utils/storage'
 import { parseSmartEntry } from './utils/smart-entry'
-import { getLunarDate } from './utils/lunar'
-import { createNextRepeatTask, describeRepeatRule } from './utils/repeat-rule'
-import { openPath } from '@tauri-apps/plugin-opener'
 import {
-  priorityMeta, statusMeta, statusUiMeta, TAG_COLOR_PRESETS,
-  SPECIAL_TAG_IDS, type MatrixQuadrantKey,
+  priorityMeta, statusMeta,
+  SPECIAL_TAG_IDS,
 } from '@taskflow/core'
 import {
   getTasksForSelection, matchesSearch, matchesSelectedTags,
-  normalizeTaskPatch, buildTaskStats, getQuadrant, getQuadrantLabel,
-  getTagIdsForQuadrant, ensureSpecialTags, isTaskRiskOverdue, getTaskDisplayTimeValue,
+  buildTaskStats, ensureSpecialTags,
   hasTaskSchedule, isTaskVisibleInCalendarWindow,
-  getCalendarTaskAnchor, getCalendarTaskDateKey, getPreferredFocusedCalendarDate,
-  groupTasksByDay, compareTasksByProjectionDistance, getProjectionAnchorDateKey,
-  isTaskPlannedAfterDeadline, getTaskPrimaryScheduleAt, formatTaskDualTimeSummary,
-  formatTaskDeadlineBadge, getTaskDeadlineMarkerTone, getTaskDeadlineMarkerTitle,
+  getCalendarTaskAnchor,
+  compareTasksByProjectionDistance, getProjectionAnchorDateKey,
+  getTaskPrimaryScheduleAt,
 } from '@taskflow/core'
 import {
-  getTaskTimelineRange, clampTimelineRange, snapTimelineMinutes, getTimelinePercent,
-  buildTimelineScaleMarks, buildTimelineCreateSlots, formatTimelineBarLabel,
-  getDateTimeValueFromMs,
   buildTimelineDraftWindow, getTimelineWindowLabel, isTaskVisibleInTimelineWindow,
-  TIMELINE_STEP_MINUTES,
 } from '@taskflow/core'
-
-const statusOptions: TaskStatus[] = ['todo', 'doing', 'done']
-
-const viewMeta: { id: WorkspaceView; label: string }[] = [
-  { id: 'calendar', label: '日历' },
-  { id: 'list', label: '列表' },
-  { id: 'kanban', label: '看板' },
-  { id: 'timeline', label: '时间线' },
-  { id: 'matrix', label: '四象限' },
-]
-
-const timeFieldModeLabel: Record<TimeFieldMode, string> = {
-  planned: '计划',
-  deadline: 'DDL',
-}
-
-const SYSTEM_TAG_IDS = Object.values(SPECIAL_TAG_IDS)
-
-type TagMutationResult =
-  | { ok: true; tagId: string }
-  | { ok: false; message: string }
-
-const normalizeTagName = (value: string) => value.trim().replace(/\s+/g, ' ')
-const isSystemTagId = (tagId: string) => SYSTEM_TAG_IDS.includes(tagId as (typeof SYSTEM_TAG_IDS)[number])
-
-const MINUTE = 60 * 1000
-const DAY_MINUTES = 24 * 60
-const MAX_EMBEDDED_ATTACHMENT_BYTES = 1.5 * 1024 * 1024
-const REMINDER_ANCHOR_OPTIONS = ['deadline', 'planned', 'start'] as const
-const REMINDER_UNIT_OPTIONS = ['m', 'h', 'd'] as const
-
-const canUseBrowserFilePicker = () => typeof window !== 'undefined' && typeof window.FileReader !== 'undefined'
-
-const makeId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 9)}`
-
-const formatAttachmentSize = (size: number | null) => {
-  if (!size || size <= 0) return null
-  if (size < 1024) return `${size} B`
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(size < 10 * 1024 ? 1 : 0)} KB`
-  return `${(size / (1024 * 1024)).toFixed(size < 10 * 1024 * 1024 ? 1 : 0)} MB`
-}
-
-const getAttachmentMetaLabel = (attachment: TaskAttachment) => {
-  const pieces = [attachment.source === 'desktop-path' ? '本地文件' : attachment.dataUrl ? '嵌入副本' : '附件']
-  const sizeLabel = formatAttachmentSize(attachment.size)
-  if (sizeLabel) pieces.push(sizeLabel)
-  return pieces.join(' · ')
-}
-
-const upsertTaskInCache = (items: Task[], nextTask: Task, prepend = false) => {
-  const existingIndex = items.findIndex((task) => task.id === nextTask.id)
-  if (existingIndex === -1) {
-    return prepend ? [nextTask, ...items] : [...items, nextTask]
-  }
-
-  const nextItems = [...items]
-  nextItems[existingIndex] = nextTask
-  return nextItems
-}
-
-
-type TimelineDragMode = 'move' | 'resize-start' | 'resize-end'
-
-type TimelineDragState = {
-  taskId: string
-  mode: TimelineDragMode
-  originX: number
-  laneWidth: number
-  originStart: number
-  originEnd: number
-  previewStart: number
-  previewEnd: number
-  windowStart: number
-  windowEnd: number
-  totalMinutes: number
-  stepMinutes: number
-}
-
-type ProjectionSummaryMetric = {
-  label: string
-  value: string | number
-  hint?: string
-  onClick?: () => void
-  active?: boolean
-  disabled?: boolean
-}
-
-type ProjectionRecoveryItem = {
-  id: string
-  title: string
-  subtitle: string
-  actionLabel: string
-  onAction: () => void
-}
-
-type DragPreviewPayload = {
-  title: string
-  status: TaskStatus
-  priority: Priority
-  meta: string
-  overdue?: boolean
-}
-
-type PointerDragPreviewState = DragPreviewPayload & {
-  taskId: string
-  x: number
-  y: number
-  deltaX: number
-  deltaY: number
-}
-
-type PointerDragSession = {
-  pointerId: number
-  taskId: string
-  startX: number
-  startY: number
-  dragged: boolean
-  sourceElement: HTMLElement
-  sourceRect: DOMRect
-  preview: DragPreviewPayload
-}
-
-const POINTER_DRAG_THRESHOLD = 6
-const POINTER_DRAG_BLOCK_SELECTOR = 'select, input, textarea, button, a, label'
-
-const shouldIgnorePointerDragStart = (target: EventTarget | null, currentTarget: HTMLElement) => {
-  if (!(target instanceof HTMLElement)) return false
-  const blocker = target.closest<HTMLElement>(POINTER_DRAG_BLOCK_SELECTOR)
-  return Boolean(blocker && blocker !== currentTarget)
-}
-
-const resolveDropZoneValueFromPoint = (clientX: number, clientY: number, selector: string, attribute: string) => {
-  if (typeof document === 'undefined') return null
-  const element = document.elementFromPoint(clientX, clientY)
-  if (!(element instanceof HTMLElement)) return null
-  return element.closest<HTMLElement>(selector)?.getAttribute(attribute) ?? null
-}
-
-const markClickSuppressed = (ref: { current: boolean }) => {
-  ref.current = true
-  window.setTimeout(() => {
-    ref.current = false
-  }, 0)
-}
-
-const handleCardKeyboardActivation = (event: React.KeyboardEvent<HTMLElement>, onActivate: () => void) => {
-  if (event.target !== event.currentTarget) return
-  if (event.key !== 'Enter' && event.key !== ' ') return
-  event.preventDefault()
-  onActivate()
-}
-
-const buildTaskAttachment = ({
-  name,
-  source,
-  path = null,
-  dataUrl = null,
-  mimeType = null,
-  size = null,
-}: {
-  name: string
-  source: TaskAttachment['source']
-  path?: string | null
-  dataUrl?: string | null
-  mimeType?: string | null
-  size?: number | null
-}): TaskAttachment => ({
-  id: makeId('att'),
-  name,
-  source,
-  path,
-  dataUrl,
-  mimeType,
-  size,
-  addedAt: getNowIso(),
-})
-
-const buildRelativeReminderValue = (anchor: typeof REMINDER_ANCHOR_OPTIONS[number], amount: number, unit: typeof REMINDER_UNIT_OPTIONS[number]) => `${anchor}|${amount}${unit}`
-
-const formatReminderOffsetLabel = (amount: number, unit: typeof REMINDER_UNIT_OPTIONS[number]) => {
-  if (amount === 0) return '到点提醒'
-  if (unit === 'm') return `提前 ${amount} 分钟`
-  if (unit === 'h') return `提前 ${amount} 小时`
-  return `提前 ${amount} 天`
-}
-
-const formatReminderAnchorLabel = (anchor: typeof REMINDER_ANCHOR_OPTIONS[number]) => {
-  if (anchor === 'deadline') return 'DDL'
-  if (anchor === 'planned') return '计划完成'
-  return '开始时间'
-}
-
-const buildPointerDragPreviewState = (current: PointerDragSession, clientX: number, clientY: number): PointerDragPreviewState => ({
-  taskId: current.taskId,
-  ...current.preview,
-  x: clientX,
-  y: clientY,
-  deltaX: clientX - current.startX,
-  deltaY: clientY - current.startY,
-})
-
-const getPointerDragStyle = (taskId: string, dragTaskId: string | null, dragPreview: PointerDragPreviewState | null): CSSProperties | undefined => {
-  if (dragTaskId !== taskId || !dragPreview || dragPreview.taskId !== taskId) return undefined
-
-  return {
-    opacity: 0.18,
-    pointerEvents: 'none',
-    boxShadow: 'none',
-  }
-}
-
-const readFileAsDataUrl = (file: File) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onerror = () => reject(reader.error ?? new Error('读取文件失败'))
-    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-    reader.readAsDataURL(file)
-  })
-
-const getTaskDeadlineAt = (task: Task) => task.deadlineAt ?? null
-
-const buildTaskDragPreview = (task: Task, meta?: string): DragPreviewPayload => ({
-  title: task.title,
-  status: task.status,
-  priority: task.priority,
-  meta: meta ?? formatDateTime(getTaskPrimaryScheduleAt(task) ?? getTaskDeadlineAt(task) ?? ''),
-  overdue: isTaskRiskOverdue(task),
-})
-
-function TaskDeadlineIndicators({ task, compact = false }: { task: Task; compact?: boolean }) {
-  const deadlineBadge = formatTaskDeadlineBadge(task)
-  const tone = getTaskDeadlineMarkerTone(task)
-  if (!deadlineBadge || !tone) return null
-
-  const plannedAfterDeadline = isTaskPlannedAfterDeadline(task)
-  const title = getTaskDeadlineMarkerTitle(task) ?? deadlineBadge
-
-  return (
-    <div className={`task-deadline-indicators ${compact ? 'is-compact' : ''}`}>
-      <span className={`time-badge ${tone === 'danger' ? 'is-danger' : tone === 'warning' ? 'is-warning' : 'is-deadline'}`} title={title} aria-label={title}>
-        {compact ? 'DDL' : deadlineBadge}
-      </span>
-      {plannedAfterDeadline && <span className="time-badge is-warning">{compact ? '晚于 DDL' : '计划晚于 DDL'}</span>}
-    </div>
-  )
-}
-
-function TaskDeadlineDot({ task }: { task: Task }) {
-  const tone = getTaskDeadlineMarkerTone(task)
-  const title = getTaskDeadlineMarkerTitle(task)
-  if (!tone || !title) return null
-  return <span className={`task-deadline-dot is-${tone}`} aria-label={title} title={title} />
-}
-
-function getTaskDeadlineMarkerOffset(task: Task, windowStart: number, windowEnd: number) {
-  const deadlineAt = getDateTimeMs(getTaskDeadlineAt(task), 'end')
-  if (!deadlineAt || deadlineAt < windowStart || deadlineAt > windowEnd) return null
-  return getTimelinePercent(deadlineAt, windowStart, windowEnd)
-}
-
-function TaskTimeSummary({ task, compact = false }: { task: Task; compact?: boolean }) {
-  const deadlineBadge = formatTaskDeadlineBadge(task)
-  const overdue = isTaskRiskOverdue(task)
-  const plannedAfterDeadline = isTaskPlannedAfterDeadline(task)
-
-  return (
-    <div className={`task-time-summary ${compact ? 'is-compact' : ''}`}>
-      <span className={`task-time-summary__primary ${overdue ? 'is-danger' : ''}`}>{formatTaskDualTimeSummary(task, { emptyLabel: '未排期' })}</span>
-      {deadlineBadge && <span className={`time-badge ${overdue ? 'is-danger' : 'is-deadline'}`}>{deadlineBadge}</span>}
-      {plannedAfterDeadline && <span className="time-badge is-warning">计划晚于 DDL</span>}
-    </div>
-  )
-}
-
-type CreateTaskPayload = {
-  title: string
-  note?: string
-  listId: string
-  priority: Priority
-  tagIds?: string[]
-  status?: TaskStatus
-  dueAt?: string | null
-  startAt?: string | null
-  deadlineAt?: string | null
-  activityLabel: string
-  markOnboardingScheduleComplete?: boolean
-}
-
-type InlineCreateRequest = {
-  view: WorkspaceView
-  anchorRect: DOMRect
-  dateKey?: string
-  listId?: string
-  priority?: Priority
-  tagIds?: string[]
-  status?: TaskStatus
-  guidance?: string
-  time?: string
-}
-
-const INLINE_CREATE_VIEWPORT_GUTTER = 16
-const INLINE_CREATE_MAX_WIDTH = 460
-const INLINE_CREATE_ESTIMATED_HEIGHT = 720
-const INLINE_CREATE_TOP_DOCK_THRESHOLD = 72
-const INLINE_CREATE_POSITION_STORAGE_KEY = 'todo-workspace-inline-create-position-v1'
-const NOTE_EDITOR_LINE_HEIGHT = 24
-
-function clampInlineCreatePosition(x: number, y: number, width = INLINE_CREATE_MAX_WIDTH, height = INLINE_CREATE_ESTIMATED_HEIGHT) {
-  return {
-    x: Math.min(Math.max(INLINE_CREATE_VIEWPORT_GUTTER, x), Math.max(INLINE_CREATE_VIEWPORT_GUTTER, window.innerWidth - width - INLINE_CREATE_VIEWPORT_GUTTER)),
-    y: Math.min(Math.max(INLINE_CREATE_VIEWPORT_GUTTER, y), Math.max(INLINE_CREATE_VIEWPORT_GUTTER, window.innerHeight - height - INLINE_CREATE_VIEWPORT_GUTTER)),
-  }
-}
-
-function getTopDockedInlineCreatePosition(width = INLINE_CREATE_MAX_WIDTH, height = INLINE_CREATE_ESTIMATED_HEIGHT): InlineCreatePosition {
-  const centered = clampInlineCreatePosition(window.innerWidth / 2 - width / 2, INLINE_CREATE_VIEWPORT_GUTTER, width, height)
-  return { ...centered, mode: 'top-docked' }
-}
-
-function normalizeInlineCreatePosition(position: InlineCreatePosition, width = INLINE_CREATE_MAX_WIDTH, height = INLINE_CREATE_ESTIMATED_HEIGHT): InlineCreatePosition {
-  if (position.mode === 'top-docked') return getTopDockedInlineCreatePosition(width, height)
-  return { ...clampInlineCreatePosition(position.x, position.y, width, height), mode: 'floating' }
-}
-
-function readInlineCreatePositionMemory(): InlineCreatePosition | null {
-  if (typeof window === 'undefined') return null
-  try {
-    const raw = window.localStorage.getItem(INLINE_CREATE_POSITION_STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as Partial<InlineCreatePosition>
-    if (parsed.mode === 'top-docked') return { x: 0, y: INLINE_CREATE_VIEWPORT_GUTTER, mode: 'top-docked' }
-    if (parsed.mode === 'floating' && Number.isFinite(parsed.x) && Number.isFinite(parsed.y)) {
-      return { x: Number(parsed.x), y: Number(parsed.y), mode: 'floating' }
-    }
-  } catch {
-    return null
-  }
-  return null
-}
-
-function persistInlineCreatePositionMemory(position: InlineCreatePosition) {
-  if (typeof window === 'undefined') return
-  try {
-    window.localStorage.setItem(INLINE_CREATE_POSITION_STORAGE_KEY, JSON.stringify(position))
-  } catch {
-    // noop
-  }
-}
-
-function getInlineCreateInitialPosition(anchorRect: DOMRect) {
-  const width = Math.min(INLINE_CREATE_MAX_WIDTH, window.innerWidth - INLINE_CREATE_VIEWPORT_GUTTER * 2)
-  const height = Math.min(INLINE_CREATE_ESTIMATED_HEIGHT, window.innerHeight - INLINE_CREATE_VIEWPORT_GUTTER * 2)
-  const centeredX = anchorRect.left + anchorRect.width / 2 - width / 2
-  const spaceAbove = anchorRect.top - INLINE_CREATE_VIEWPORT_GUTTER
-  const spaceBelow = window.innerHeight - anchorRect.bottom - INLINE_CREATE_VIEWPORT_GUTTER
-  const shouldOpenAbove = spaceBelow < 420 && spaceAbove > spaceBelow
-  const anchoredY = shouldOpenAbove ? anchorRect.top - height - 14 : anchorRect.bottom + 14
-  const fallbackY = window.innerHeight / 2 - height / 2
-  const y = spaceAbove < 240 && spaceBelow < 240 ? fallbackY : anchoredY
-  return clampInlineCreatePosition(centeredX, y, width, height)
-}
-
-function resolveInlineCreateInitialPosition(anchorRect: DOMRect): InlineCreatePosition {
-  const width = Math.min(INLINE_CREATE_MAX_WIDTH, window.innerWidth - INLINE_CREATE_VIEWPORT_GUTTER * 2)
-  const height = Math.min(INLINE_CREATE_ESTIMATED_HEIGHT, window.innerHeight - INLINE_CREATE_VIEWPORT_GUTTER * 2)
-  const rememberedPosition = readInlineCreatePositionMemory()
-  if (rememberedPosition) return normalizeInlineCreatePosition(rememberedPosition, width, height)
-  const anchored = getInlineCreateInitialPosition(anchorRect)
-  return { ...anchored, mode: 'floating' }
-}
+import {
+  viewMeta, timeFieldModeLabel, PRESET_COLORS,
+  makeId, upsertTaskInCache,
+  getDateTimeMs, getTaskDeadlineAt, resolveInlineCreateInitialPosition,
+  type CreateTaskPayload, type InlineCreateRequest,
+  type ProjectionSummaryMetric, type ProjectionRecoveryItem,
+} from './utils/app-helpers'
 
 
 function App() {
@@ -614,14 +224,14 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     currentView, setCurrentView, calendarMode, setCalendarMode,
     calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale,
     calendarAnchor, setCalendarAnchor, theme, setTheme,
-    selectionTimeModes, setSelectionTimeModes, updateSelectionTimeMode,
+    selectionTimeModes, updateSelectionTimeMode,
   } = viewConfig
 
   // ---- Filter ----
   const filterState = useFilterState(nav.migratedSelectedTagIds)
   const {
     selectedTagIds, setSelectedTagIds, searchInput, setSearchInput,
-    searchKeyword, setSearchKeyword, searchInputRef, toggleSelectedTag,
+    searchKeyword, searchInputRef, toggleSelectedTag,
   } = filterState
 
   // ---- Task Selection ----
@@ -629,7 +239,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null,
   )
   const {
-    selectedTaskId, setSelectedTaskId, bulkSelectedIds, setBulkSelectedIds,
+    selectedTaskId, setSelectedTaskId, bulkSelectedIds,
     bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect,
   } = selection
 
@@ -667,7 +277,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   // ---- 移动端专属状态（通过 mobileUiStore Zustand store 管理，减少主组件 re-render）----
   const {
     mobileTab, setMobileTab,
-    mobileTabFading, setMobileTabFading,
+    mobileTabFading,
     mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen,
     mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed,
     mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen,
@@ -864,8 +474,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     return matchesSearch(task, keyword, tags)
   }
 
-  const getTaskByIdFromCache = (taskId: string) => tasks.find((task) => task.id === taskId) ?? null
-
   const compareTaskCards = (left: Task, right: Task) => {
     if (left.completed !== right.completed) return Number(left.completed) - Number(right.completed)
     const priorityRank = { urgent: 0, high: 1, normal: 2, low: 3 }
@@ -882,15 +490,41 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   const sortVisibleTasks = (items: Task[]) => [...items].sort(compareTaskCards)
 
-  const applyTaskMutation = (taskId: string, transform: (task: Task) => Task | null) => {
-    const current = getTaskByIdFromCache(taskId)
-    if (!current) return null
+  // ---- Task/Tag/Folder/List Actions (extracted to useTaskActions) ----
+  const actions = useTaskActions({
+    tasks, setTasks, tags, setTags, lists, setLists, folders, setFolders,
+    filters, selectedTaskId, setSelectedTaskId, selectedTagIds, setSelectedTagIds,
+    activeSelection, setActiveSelection, setCurrentView, selectionTimeModes,
+    bulkSelectedIds, clearBulkSelect,
+    setStatusChangeFeedback, statusChangeFeedback,
+    setQuickTagIds, setInlineCreate,
+    markReminderSnoozed, appendReminderFeed,
+  })
+  const {
+    updateTask, toggleTaskComplete, applyStatusChangeFeedback, applyKanbanDropFeedback,
+    updateTaskPriority, moveTaskToQuadrant, undoStatusChange, rescheduleTask, moveTaskToDate,
+    bulkComplete, bulkDelete, bulkMoveToList, bulkAddTag,
+    softDeleteTask, restoreTask, duplicateTask,
+    addReminder, removeReminder, snoozeReminder,
+    addSubtask, toggleSubtask, addComment, addAttachments, removeAttachment, openAttachment,
+    createTagDefinition, updateTagDefinition, deleteTagDefinition,
+    createFolder, renameFolder, updateFolderColor, deleteFolder,
+    createList, renameList, updateListColor, updateListFolder, deleteList,
+  } = actions
 
-    const nextTask = transform(current)
-    if (!nextTask) return null
+  /** Mobile-optimized toggle: immediate completion + Undo Toast (UX-01) */
+  const mobileToggleComplete = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId)
+    if (task && !task.completed) {
+      setMobileCompletionToast({ taskId, title: task.title })
+      if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
+      completionToastTimerRef.current = window.setTimeout(() => setMobileCompletionToast(null), 3000)
+    }
+    toggleTaskComplete(taskId)
+  }
 
-    setTasks((items) => items.map((task) => (task.id === taskId ? nextTask : task)))
-    return nextTask
+  const selectAllVisibleBulk = () => {
+    selection.selectAllBulk(visibleTasks.map(t => t.id))
   }
 
   const countsBySelection = useMemo(() => {
@@ -1402,478 +1036,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   // ---- 移动端快速创建 (逻辑已内联到 MobileQuickCreateSheet) ----
 
-
-  const validateTagMutation = (name: string, excludeId?: string) => {
-    const normalized = normalizeTagName(name)
-    if (!normalized) return '标签名不能为空'
-    const duplicate = tags.some((tag) => normalizeTagName(tag.name).toLowerCase() === normalized.toLowerCase() && tag.id !== excludeId)
-    if (duplicate) return `标签"${normalized}"已存在`
-    return null
-  }
-
-  // ---- 文件夹 CRUD ----
-
-  const createFolder = (name: string, color = '#6c63ff') => {
-    const trimmed = name.trim()
-    if (!trimmed) return
-    const id = makeId('folder')
-    setFolders(prev => [...prev, { id, name: trimmed, color }])
-  }
-
-  const renameFolder = (folderId: string, name: string) => {
-    const trimmed = name.trim()
-    if (!trimmed) return
-    setFolders(prev => prev.map(f => f.id === folderId ? { ...f, name: trimmed } : f))
-  }
-
-  const updateFolderColor = (folderId: string, color: string) => {
-    setFolders(prev => prev.map(f => f.id === folderId ? { ...f, color } : f))
-  }
-
-  const deleteFolder = (folderId: string) => {
-    // 文件夹下的清单移到顶层（folderId = null）
-    setLists(prev => prev.map(l => l.folderId === folderId ? { ...l, folderId: null } : l))
-    setFolders(prev => prev.filter(f => f.id !== folderId))
-  }
-
-  // ---- 清单 CRUD ----
-
-  const createList = (name: string, folderId: string | null = null, color = '#6c63ff') => {
-    const trimmed = name.trim()
-    if (!trimmed) return
-    const id = makeId('list')
-    setLists(prev => [...prev, { id, name: trimmed, color, folderId, kind: 'custom' }])
-  }
-
-  const renameList = (listId: string, name: string) => {
-    const trimmed = name.trim()
-    if (!trimmed) return
-    setLists(prev => prev.map(l => l.id === listId ? { ...l, name: trimmed } : l))
-  }
-
-  const updateListColor = (listId: string, color: string) => {
-    setLists(prev => prev.map(l => l.id === listId ? { ...l, color } : l))
-  }
-
-  const updateListFolder = (listId: string, folderId: string | null) => {
-    setLists(prev => prev.map(l => l.id === listId ? { ...l, folderId } : l))
-  }
-
-  const deleteList = (listId: string) => {
-    // 该清单下的任务移到收件箱
-    const now = getNowIso()
-    setTasks(prev => prev.map(t =>
-      t.listId === listId ? { ...t, listId: 'inbox', updatedAt: now } : t
-    ))
-    setLists(prev => prev.filter(l => l.id !== listId))
-    // 如果当前选中的就是这个清单，切换回全部
-    if (activeSelection === `list:${listId}`) setActiveSelection('system:all')
-  }
-
-  const createTagDefinition = (name: string, color: string): TagMutationResult => {
-    const normalized = normalizeTagName(name)
-    const validationError = validateTagMutation(normalized)
-    if (validationError) return { ok: false, message: validationError }
-
-    const nextTagId = makeId('tag')
-    setTags((current) => [...current, { id: nextTagId, name: normalized, color }])
-    return { ok: true, tagId: nextTagId }
-  }
-
-  const updateTagDefinition = (tagId: string, name: string, color: string): TagMutationResult => {
-    if (isSystemTagId(tagId)) {
-      return { ok: false, message: '系统标签暂不支持重命名或改色' }
-    }
-
-    const normalized = normalizeTagName(name)
-    const validationError = validateTagMutation(normalized, tagId)
-    if (validationError) return { ok: false, message: validationError }
-
-    setTags((current) => current.map((tag) => (tag.id === tagId ? { ...tag, name: normalized, color } : tag)))
-    return { ok: true, tagId }
-  }
-
-  const deleteTagDefinition = (tagId: string): TagMutationResult => {
-    if (isSystemTagId(tagId)) {
-      return { ok: false, message: '系统标签暂不支持删除' }
-    }
-
-    const tagExists = tags.some((tag) => tag.id === tagId)
-    if (!tagExists) {
-      return { ok: false, message: '要删除的标签不存在' }
-    }
-
-    const now = getNowIso()
-    setTags((current) => current.filter((tag) => tag.id !== tagId))
-    setSelectedTagIds((current) => current.filter((item) => item !== tagId))
-    setQuickTagIds((current) => current.filter((item) => item !== tagId))
-    setInlineCreate((current) =>
-      current
-        ? {
-            ...current,
-            tagIds: current.tagIds.filter((item) => item !== tagId),
-          }
-        : current,
-    )
-    setTasks((current) =>
-      current.map((task) =>
-        task.tagIds.includes(tagId)
-          ? {
-              ...task,
-              tagIds: task.tagIds.filter((item) => item !== tagId),
-              updatedAt: now,
-            }
-          : task,
-      ),
-    )
-    return { ok: true, tagId }
-  }
-
-  const updateTask = (taskId: string, patch: Partial<Task>) => {
-    const currentTask = getTaskByIdFromCache(taskId)
-    if (!currentTask) return
-
-
-    applyTaskMutation(taskId, (task) => normalizeTaskPatch(task, patch))
-  }
-
-  const toggleTaskComplete = (taskId: string) => {
-    const currentTask = getTaskByIdFromCache(taskId)
-    if (!currentTask) return
-
-    const completing = !currentTask.completed
-
-    applyTaskMutation(taskId, (task) => {
-      return normalizeTaskPatch(task, {
-        completed: completing,
-        activity: [
-          { id: makeId('act'), content: completing ? '完成任务' : '重新打开任务', createdAt: getNowIso() },
-          ...task.activity,
-        ],
-      })
-    })
-
-    // 重复任务：完成时自动生成下一周期
-    if (completing && currentTask.repeatRule) {
-      const nextTaskData = createNextRepeatTask(currentTask)
-      if (nextTaskData) {
-        const nextTask: Task = {
-          ...nextTaskData,
-          id: makeId('task'),
-          createdAt: getNowIso(),
-          updatedAt: getNowIso(),
-          activity: [
-            { id: makeId('act'), content: `由重复任务自动生成（${describeRepeatRule(currentTask.repeatRule)}）`, createdAt: getNowIso() },
-          ],
-        }
-        setTasks(prev => [...prev, nextTask])
-      }
-    }
-  }
-
-  /** Mobile-optimized toggle: immediate completion + Undo Toast (UX-01) */
-  const mobileToggleComplete = (taskId: string) => {
-    const task = tasks.find(t => t.id === taskId)
-    if (task && !task.completed) {
-      setMobileCompletionToast({ taskId, title: task.title })
-      if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
-      completionToastTimerRef.current = window.setTimeout(() => setMobileCompletionToast(null), 3000)
-    }
-    toggleTaskComplete(taskId)
-  }
-
-  const moveTaskToStatus = (taskId: string, status: TaskStatus) => {
-    applyTaskMutation(taskId, (task) =>
-      normalizeTaskPatch(task, {
-        status,
-        activity:
-          task.status === status
-            ? task.activity
-            : [{ id: makeId('act'), content: `将状态调整为${statusMeta[status]}`, createdAt: getNowIso() }, ...task.activity],
-      }),
-    )
-  }
-
-  const applyStatusChangeFeedback = (taskId: string, status: TaskStatus) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task || task.status === status) return
-    moveTaskToStatus(taskId, status)
-    setStatusChangeFeedback({
-      taskId,
-      title: task.title,
-      fromStatus: task.status,
-      toStatus: status,
-    })
-  }
-
-  const applyKanbanDropFeedback = (taskId: string, status: TaskStatus) => {
-    applyStatusChangeFeedback(taskId, status)
-  }
-
-  const updateTaskPriority = (taskId: string, priority: Priority) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task || task.priority === priority) return
-
-    applyTaskMutation(taskId, (current) =>
-      normalizeTaskPatch(current, {
-        priority,
-        activity: [{ id: makeId('act'), content: `将优先级调整为${priorityMeta[priority].label}`, createdAt: getNowIso() }, ...current.activity],
-      }),
-    )
-  }
-
-  const moveTaskToQuadrant = (taskId: string, quadrant: MatrixQuadrantKey) => {
-    applyTaskMutation(taskId, (task) => {
-      const nextTagIds = getTagIdsForQuadrant(task.tagIds, quadrant)
-      if (nextTagIds.length === task.tagIds.length && nextTagIds.every((tagId, index) => tagId === task.tagIds[index])) {
-        return task
-      }
-
-      return normalizeTaskPatch(task, {
-        tagIds: nextTagIds,
-        activity: [{ id: makeId('act'), content: `通过四象限拖动调整为${getQuadrantLabel(quadrant)}`, createdAt: getNowIso() }, ...task.activity],
-      })
-    })
-  }
-
-  const undoStatusChange = () => {
-    if (!statusChangeFeedback) return
-    moveTaskToStatus(statusChangeFeedback.taskId, statusChangeFeedback.fromStatus)
-    setStatusChangeFeedback(null)
-  }
-
-  const rescheduleTask = (taskId: string, startAt: string, dueAt: string) => {
-    applyTaskMutation(taskId, (task) =>
-      normalizeTaskPatch(task, {
-        startAt,
-        dueAt,
-        activity: [{ id: makeId('act'), content: `通过时间线调整为 ${formatTaskWindow(startAt, dueAt)}`, createdAt: getNowIso() }, ...task.activity],
-      }),
-    )
-  }
-
-  const moveTaskToDate = (taskId: string, fromDateKey: string, toDateKey: string) => {
-    if (fromDateKey === toDateKey) return
-
-    const offsetDays = diffDateKeys(fromDateKey, toDateKey)
-    applyTaskMutation(taskId, (task) =>
-      normalizeTaskPatch(task, {
-        startAt: shiftDateTimeByDays(task.startAt, offsetDays),
-        dueAt: shiftDateTimeByDays(task.dueAt, offsetDays),
-        activity: [{ id: makeId('act'), content: `通过日历拖动改期到 ${formatDayLabel(toDateKey)}`, createdAt: getNowIso() }, ...task.activity],
-      }),
-    )
-  }
-
-  // ---- 批量操作 ----
-
-  const selectAllVisibleBulk = () => {
-    selection.selectAllBulk(visibleTasks.map(t => t.id))
-  }
-
-  const bulkComplete = () => {
-    const now = getNowIso()
-    setTasks(prev => prev.map(t =>
-      bulkSelectedIds.has(t.id)
-        ? { ...t, completed: true, status: 'done', updatedAt: now }
-        : t
-    ))
-    clearBulkSelect()
-  }
-
-  const bulkDelete = () => {
-    const now = getNowIso()
-    setTasks(prev => prev.map(t =>
-      bulkSelectedIds.has(t.id)
-        ? { ...t, deleted: true, updatedAt: now }
-        : t
-    ))
-    clearBulkSelect()
-  }
-
-  const bulkMoveToList = (listId: string) => {
-    const now = getNowIso()
-    setTasks(prev => prev.map(t =>
-      bulkSelectedIds.has(t.id)
-        ? { ...t, listId, updatedAt: now }
-        : t
-    ))
-    clearBulkSelect()
-  }
-
-  const bulkAddTag = (tagId: string) => {
-    const now = getNowIso()
-    setTasks(prev => prev.map(t =>
-      bulkSelectedIds.has(t.id) && !t.tagIds.includes(tagId)
-        ? { ...t, tagIds: [...t.tagIds, tagId], updatedAt: now }
-        : t
-    ))
-    clearBulkSelect()
-  }
-
-  const softDeleteTask = (taskId: string) => {
-    applyTaskMutation(taskId, (task) => ({
-      ...task,
-      deleted: true,
-      updatedAt: getNowIso(),
-      activity: [{ id: makeId('act'), content: '移入回收站', createdAt: getNowIso() }, ...task.activity],
-    }))
-    if (selectedTaskId === taskId) setSelectedTaskId(null)
-  }
-
-  const restoreTask = (taskId: string) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-
-    const todayProbe = getTaskDisplayTimeValue(task, selectionTimeModes?.today ?? 'planned')
-    const upcomingProbe = getTaskDisplayTimeValue(task, selectionTimeModes?.upcoming ?? 'planned')
-
-    updateTask(taskId, { deleted: false })
-    setSelectedTaskId(taskId)
-    setCurrentView('list')
-
-    if (task.completed) {
-      setActiveSelection('system:completed')
-    } else if (isToday(todayProbe) || isOverdue(todayProbe)) {
-      setActiveSelection('system:today')
-    } else if (isWithinDays(upcomingProbe, 7)) {
-      setActiveSelection('system:upcoming')
-    } else {
-      setActiveSelection(`list:${task.listId}`)
-    }
-  }
-
-  const duplicateTask = (taskId: string) => {
-    const current = getTaskByIdFromCache(taskId)
-    if (!current) return
-    const now = getNowIso()
-    const duplicate: Task = {
-      ...current,
-      id: makeId('task'),
-      title: `${current.title}（副本）`,
-      comments: [],
-      activity: [{ id: makeId('act'), content: '从原任务复制而来', createdAt: now }],
-      completed: false,
-      deleted: false,
-      completedPomodoros: 0,
-      focusMinutes: 0,
-      createdAt: now,
-      updatedAt: now,
-    }
-    setTasks((items) => upsertTaskInCache(items, duplicate, true))
-    setSelectedTaskId(duplicate.id)
-  }
-
-  const addReminder = (taskId: string, label: string, value: string, kind: 'relative' | 'absolute') => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-
-    const duplicated = task.reminders.some((item) => item.label === label && item.value === value && item.kind === kind)
-    if (duplicated) return
-
-    updateTask(taskId, {
-      reminders: [...task.reminders, { id: makeId('rem'), label, value, kind }],
-      activity: [{ id: makeId('act'), content: `新增提醒：${label}`, createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const removeReminder = (taskId: string, reminderId: string) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-    const reminder = task.reminders.find((item) => item.id === reminderId)
-    if (!reminder) return
-    updateTask(taskId, {
-      reminders: task.reminders.filter((item) => item.id !== reminderId),
-      activity: [{ id: makeId('act'), content: `移除提醒：${reminder.label}`, createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const snoozeReminder = (feedId: string, taskId: string, minutes: number) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-
-    const reminderAt = getDateTimeValueFromMs(Date.now() + minutes * MINUTE)
-    markReminderSnoozed(feedId)
-    updateTask(taskId, {
-      reminders: [...task.reminders, { id: makeId('rem'), label: `稍后 ${formatSnoozeLabel(minutes)}`, value: reminderAt, kind: 'absolute' }],
-      activity: [{ id: makeId('act'), content: `将提醒稍后 ${formatSnoozeLabel(minutes)}`, createdAt: getNowIso() }, ...task.activity],
-    })
-    appendReminderFeed({
-      title: `已稍后提醒 · ${task.title}`,
-      body: `将在 ${formatDateTime(reminderAt)} 再次提醒你。`,
-      tone: 'success',
-    })
-  }
-
-  const addSubtask = (taskId: string, title: string) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task || !title.trim()) return
-    updateTask(taskId, {
-      subtasks: [...task.subtasks, { id: makeId('sub'), title: title.trim(), completed: false }],
-      activity: [{ id: makeId('act'), content: `新增子任务：${title.trim()}`, createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const toggleSubtask = (taskId: string, subtaskId: string) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-    updateTask(taskId, {
-      subtasks: task.subtasks.map((subtask) =>
-        subtask.id === subtaskId ? { ...subtask, completed: !subtask.completed } : subtask,
-      ),
-    })
-  }
-
-  const addComment = (taskId: string, comment: Comment) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-    updateTask(taskId, {
-      comments: [comment, ...task.comments],
-      activity: [{ id: makeId('act'), content: '添加了一条评论', createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const addAttachments = (taskId: string, attachments: TaskAttachment[]) => {
-    const task = getTaskByIdFromCache(taskId)
-    const nextAttachments = attachments.filter((attachment) => attachment.name.trim())
-    if (!task || nextAttachments.length === 0) return
-    updateTask(taskId, {
-      attachments: [...task.attachments, ...nextAttachments],
-      activity: [{ id: makeId('act'), content: `添加了 ${nextAttachments.length} 个附件`, createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const removeAttachment = (taskId: string, attachmentId: string) => {
-    const task = getTaskByIdFromCache(taskId)
-    if (!task) return
-    const attachment = task.attachments.find((item) => item.id === attachmentId)
-    if (!attachment) return
-    updateTask(taskId, {
-      attachments: task.attachments.filter((item) => item.id !== attachmentId),
-      activity: [{ id: makeId('act'), content: `移除了附件：${attachment.name}`, createdAt: getNowIso() }, ...task.activity],
-    })
-  }
-
-  const openAttachment = async (attachment: TaskAttachment) => {
-    if (attachment.path) {
-      try {
-        await openPath(attachment.path)
-        return
-      } catch {
-        // continue to fallback below
-      }
-    }
-
-    if (attachment.dataUrl && typeof window !== 'undefined') {
-      const anchor = document.createElement('a')
-      anchor.href = attachment.dataUrl
-      anchor.download = attachment.name
-      anchor.rel = 'noreferrer'
-      anchor.target = '_blank'
-      anchor.click()
-    }
-  }
-
   const contextTasks = useMemo(
     () => tasks.filter((task) => !task.deleted),
     [tasks],
@@ -2139,12 +1301,12 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
           onOpenUtilityDrawer={() => setUtilityDrawerOpen(true)}
           onSetMobileFocusScope={setMobileFocusScope}
           onSetMobileFocusScopeListId={setMobileFocusScopeListId}
-          onSetMobileFocusScopeMenuOpen={setMobileFocusScopeMenuOpen}
+          onSetMobileFocusScopeMenuOpen={(v) => setMobileFocusScopeMenuOpen(typeof v === 'function' ? v(mobileFocusScopeMenuOpen) : v)}
           onSetMobileFocusSortMode={setMobileFocusSortMode}
           onSetCalendarMode={setCalendarMode}
-          onSetMobileCalendarModeMenuOpen={setMobileCalendarModeMenuOpen}
+          onSetMobileCalendarModeMenuOpen={(v) => setMobileCalendarModeMenuOpen(typeof v === 'function' ? v(mobileCalendarModeMenuOpen) : v)}
           onSetMobileMatrixViewMode={setMobileMatrixViewMode}
-          onSetMobileMatrixModeMenuOpen={setMobileMatrixModeMenuOpen}
+          onSetMobileMatrixModeMenuOpen={(v) => setMobileMatrixModeMenuOpen(typeof v === 'function' ? v(mobileMatrixModeMenuOpen) : v)}
           onCycleTheme={cycleTheme}
           onSignOut={() => signOut()}
           onForceSync={handleManualSync}
@@ -2410,7 +1572,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
                 sortMode={mobileFocusSortMode}
                 onToggleSortMode={() => setMobileFocusSortMode(m => m === 'planned' ? 'deadline' : 'planned')}
                 upcomingCollapsed={mobileFocusUpcomingCollapsed}
-                onToggleUpcoming={() => setMobileFocusUpcomingCollapsed(v => !v)}
+                onToggleUpcoming={() => setMobileFocusUpcomingCollapsed(!mobileFocusUpcomingCollapsed)}
                 lists={lists}
                 tags={tags}
                 onSelectTask={selectTask}
@@ -2820,45 +1982,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       />
     </div>
   )
-}
-
-// 颜色预设（用于清单/文件夹颜色循环）
-const PRESET_COLORS = [
-  '#6c63ff', '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b',
-  '#ef4444', '#ec4899', '#8b5cf6', '#06b6d4', '#84cc16',
-]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function formatSnoozeLabel(minutes: number) {
-  if (minutes < 60) return `${minutes} 分钟`
-  const hours = minutes / 60
-  return Number.isInteger(hours) ? `${hours} 小时` : `${hours.toFixed(1)} 小时`
-}
-
-function getDateTimeMs(value: string | null, boundary: 'start' | 'end' = 'start') {
-  if (!value) return null
-  const normalized = value.includes('T') ? value : `${value}T${boundary === 'end' ? '23:59' : '09:00'}`
-  const date = new Date(normalized)
-  return Number.isNaN(date.getTime()) ? null : date.getTime()
-}
-
-function toLocalInputValue(value: string | null) {
-  if (!value) return ''
-  return value.length === 10 ? `${value}T09:00` : value.slice(0, 16)
 }
 
 export default App
