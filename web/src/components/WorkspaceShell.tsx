@@ -4,14 +4,15 @@
  * layout composition, and all JSX rendering.
  * Pure refactor: no behavior changes.
  */
-import type { CalendarMode, Priority, Tag, Task, TaskAttachment } from '../types/domain'
+import type { CalendarMode, Priority, Tag, Task, TaskAttachment, TaskStatus } from '../types/domain'
 import type { MobileTab } from '../stores/mobileUiStore'
-import type { InlineCreateRequest, ProjectionSummaryMetric, ProjectionRecoveryItem } from '../utils/app-helpers'
-import { PRESET_COLORS } from '../utils/app-helpers'
-import { formatDateTime, getDateKey, addDays, shiftDateTimeByDays } from '../utils/dates'
+import type { InlineCreateRequest, CreateTaskPayload, ProjectionSummaryMetric, ProjectionRecoveryItem } from '../utils/app-helpers'
+import { PRESET_COLORS, makeId, upsertTaskInCache, resolveInlineCreateInitialPosition, viewMeta } from '../utils/app-helpers'
+import { formatDateTime, getDateKey, getNowIso, addDays, shiftDateTimeByDays } from '../utils/dates'
 import { formatTaskWindow } from '../utils/reminder-engine'
 import { requestAuthScreen } from '../utils/auth-events'
 import { getCalendarTaskAnchor, getProjectionAnchorDateKey, priorityMeta, addMonths, statusMeta } from '@taskflow/core'
+import { buildTimelineDraftWindow } from '@taskflow/core'
 import { parseSmartEntry } from '../utils/smart-entry'
 import { AppSidebar } from './AppSidebar'
 import { AppTopBar } from './AppTopBar'
@@ -29,7 +30,6 @@ import { PwaInstallBanner } from './PwaInstallBanner'
 import { ShortcutPanel } from './ShortcutPanel'
 import { ExportPanel } from './ExportPanel'
 import { CommandPalette } from './CommandPalette'
-import { viewMeta } from '../utils/app-helpers'
 
 export interface WorkspaceShellProps {
   // All state
@@ -62,7 +62,7 @@ export interface WorkspaceShellProps {
   quickEntry: string; setQuickEntry: (v: string) => void
   quickListId: string; setQuickListId: (v: string) => void
   quickPriority: Priority; setQuickPriority: (v: Priority) => void
-  quickTagIds: string[]; toggleQuickTag: (id: string) => void
+  quickTagIds: string[]; setQuickTagIds: (v: any) => void; toggleQuickTag: (id: string) => void
   quickCreateInputRef: any; searchInputRef: any
   searchInput: string; setSearchInput: (v: string) => void; searchKeyword: string
   toggleSelectedTag: (id: string) => void
@@ -141,15 +141,68 @@ export interface WorkspaceShellProps {
   createList: (name: string, folderId?: string | null, color?: string) => void; renameList: (id: string, name: string) => void
   updateListColor: (id: string, color: string) => void; updateListFolder: (id: string, folderId: string | null) => void
   deleteList: (id: string) => void
-  commitTask: (payload: any) => boolean
-  openInlineCreate: (req: InlineCreateRequest) => void
-  submitInlineCreate: () => void
-  createTask: () => void
+  setTasks: (v: any) => void
   selectionKind: string; selectionId: string; isToolSelection: boolean
   initialState: any; desktopMode: boolean
 }
 
 export function WorkspaceShell(p: WorkspaceShellProps) {
+  // ---- Task creation (moved from App.tsx) ----
+  const commitTask = ({ title, note = '', listId, priority, tagIds = [], status = 'todo' as TaskStatus, dueAt = null, startAt = null, deadlineAt = null, activityLabel }: CreateTaskPayload) => {
+    const cleanTitle = title.trim()
+    if (!cleanTitle) return false
+    const now = getNowIso()
+    const reminderAt = startAt ?? dueAt ?? null
+    const nextTask: Task = {
+      id: makeId('task'), title: cleanTitle, note: note.trim(), listId,
+      tagIds: Array.from(new Set(tagIds)), priority, status, startAt, dueAt, deadlineAt,
+      repeatRule: '\u4E0D\u91CD\u590D',
+      reminders: reminderAt ? [{ id: makeId('rem'), label: '\u5F00\u59CB\u65F6\u63D0\u9192', value: reminderAt, kind: 'absolute' as const }] : [],
+      subtasks: [], attachments: [], assignee: '\u6211', collaborators: [], comments: [],
+      activity: [{ id: makeId('act'), content: activityLabel, createdAt: now }],
+      estimatedPomodoros: 0, completedPomodoros: 0, focusMinutes: 0,
+      completed: status === 'done', deleted: false, createdAt: now, updatedAt: now,
+    }
+    const visibleInWorkspace = p.doesTaskMatchWorkspace(nextTask, p.currentView === 'calendar' ? p.calendarShowCompleted : false)
+    p.setTasks((items: Task[]) => upsertTaskInCache(items, nextTask, true))
+    p.setSelectedTaskId(nextTask.id)
+    p.setQuickListId(listId)
+    p.setQuickPriority(priority)
+    p.setCreateFeedback({ title: nextTask.title, listId, listName: p.lists.find((l: any) => l.id === listId)?.name ?? '\u672A\u77E5\u6E05\u5355', visibleInWorkspace, workspaceLabel: p.workspaceLabel })
+    if (p.isPhoneViewport) setTimeout(() => p.setCreateFeedback(null), 3000)
+    return true
+  }
+
+  const openInlineCreate = ({ view, anchorRect, dateKey = '', listId, priority, tagIds = [], status, guidance, time = '' }: InlineCreateRequest) => {
+    const fallbackListId = p.selectionKind === 'list' ? p.selectionId : p.quickListId
+    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect) })
+  }
+
+  const resolveTagIdsFromNames = (tagNames: string[]): string[] => {
+    if (!tagNames.length) return []
+    return tagNames.map(name => p.tags.find(t => t.name === name)?.id).filter((id): id is string => Boolean(id))
+  }
+
+  const submitInlineCreate = () => {
+    if (!p.inlineCreate) return
+    const parsed = parseSmartEntry(p.inlineCreate.title)
+    const explicitDueAt = p.inlineCreate.dateKey ? (p.inlineCreate.time ? `${p.inlineCreate.dateKey}T${p.inlineCreate.time}` : p.inlineCreate.dateKey) : null
+    const resolvedDueAt = explicitDueAt ?? parsed.dueAt
+    const schedule = p.inlineCreate.view === 'timeline' ? buildTimelineDraftWindow(resolvedDueAt) : { startAt: null, dueAt: resolvedDueAt }
+    const resolvedTagIds = Array.from(new Set([...p.inlineCreate.tagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
+    const created = commitTask({ title: parsed.title, note: p.inlineCreate.note, listId: p.inlineCreate.listId, priority: parsed.priority ?? p.inlineCreate.priority, tagIds: resolvedTagIds, status: p.inlineCreate.status, startAt: schedule.startAt, dueAt: schedule.dueAt, activityLabel: `\u901A\u8FC7${viewMeta.find((item) => item.id === p.inlineCreate.view)?.label ?? '\u5F53\u524D\u89C6\u56FE'}\u5185\u8054\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1` })
+    if (created) p.setInlineCreate(null)
+  }
+
+  const createTask = () => {
+    const raw = p.quickEntry.trim()
+    if (!raw) return
+    const parsed = parseSmartEntry(raw)
+    const resolvedTagIds = Array.from(new Set([...p.quickTagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
+    const created = commitTask({ title: parsed.title, listId: p.selectionKind === 'list' ? p.selectionId : p.quickListId, priority: parsed.priority ?? p.quickPriority, tagIds: resolvedTagIds, dueAt: parsed.dueAt, activityLabel: '\u901A\u8FC7\u5FEB\u901F\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1' })
+    if (created) { p.setQuickEntry(''); p.setQuickTagIds([]) }
+  }
+
   const sidebarProps = {
     folders: p.folders, lists: p.lists, tags: p.tags, filters: p.filters,
     countsBySelection: p.countsBySelection,
@@ -318,10 +371,10 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
         <section className="composer-bar panel" data-onboarding-anchor="quick-add">
           <div className="composer-bar__main">
-            <input ref={p.quickCreateInputRef} value={p.quickEntry} onChange={(e) => p.setQuickEntry(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') p.createTask() }} placeholder="\u4F8B\u5982\uFF1A\u660E\u5929\u4E0B\u5348 3 \u70B9\u4EA7\u54C1\u8BC4\u5BA1" />
+            <input ref={p.quickCreateInputRef} value={p.quickEntry} onChange={(e) => p.setQuickEntry(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') createTask() }} placeholder="\u4F8B\u5982\uFF1A\u660E\u5929\u4E0B\u5348 3 \u70B9\u4EA7\u54C1\u8BC4\u5BA1" />
             <select value={p.quickListId} onChange={(e) => p.setQuickListId(e.target.value)}>{p.lists.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}</select>
             <select value={p.quickPriority} onChange={(e) => p.setQuickPriority(e.target.value as Priority)}>{Object.entries(priorityMeta).map(([v, m]) => <option key={v} value={v}>{m.label}</option>)}</select>
-            <button className="primary-button" onClick={p.createTask}>{'\u7ACB\u5373\u521B\u5EFA'}</button>
+            <button className="primary-button" onClick={createTask}>{'\u7ACB\u5373\u521B\u5EFA'}</button>
           </div>
           <TagPicker title="\u6807\u7B7E" tags={p.tags} selectedTagIds={p.quickTagIds} onToggleTag={p.toggleQuickTag} onManageTags={() => p.setTagManagerOpen(true)} manageLabel="\u7BA1\u7406\u6807\u7B7E" />
         </section>
@@ -370,7 +423,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
           </section>
         )}
 
-        {p.inlineCreate && <InlineCreatePopover draft={p.inlineCreate} lists={p.lists} tags={p.tags} onClose={() => p.setInlineCreate(null)} onSubmit={p.submitInlineCreate} onChange={(patch: any) => p.setInlineCreate((c: any) => (c ? { ...c, ...patch } : c))} onToggleTag={p.toggleInlineCreateTag} onManageTags={() => p.setTagManagerOpen(true)} />}
+        {p.inlineCreate && <InlineCreatePopover draft={p.inlineCreate} lists={p.lists} tags={p.tags} onClose={() => p.setInlineCreate(null)} onSubmit={submitInlineCreate} onChange={(patch: any) => p.setInlineCreate((c: any) => (c ? { ...c, ...patch } : c))} onToggleTag={p.toggleInlineCreateTag} onManageTags={() => p.setTagManagerOpen(true)} />}
 
         {p.tagManagerOpen && (p.isPhoneViewport ? <MobileTagManagerSheet tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} /> : <TagManagementDialog tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} />)}
         {p.shortcutPanelOpen && <ShortcutPanel onClose={() => p.setShortcutPanelOpen(false)} />}
@@ -386,7 +439,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
             calendarShowCompleted={p.calendarShowCompleted} timelineScale={p.timelineScale}
             onSelectTask={selectTask} onUpdateTask={p.updateTask} onToggleComplete={p.toggleTaskComplete} onMobileToggleComplete={p.mobileToggleComplete}
             onChangeStatus={p.applyStatusChangeFeedback} onChangePriority={p.updateTaskPriority} onMoveToQuadrant={p.moveTaskToQuadrant}
-            onDropStatusChange={p.applyKanbanDropFeedback} onOpenInlineCreate={p.openInlineCreate} onMoveTaskToDate={p.moveTaskToDate}
+            onDropStatusChange={p.applyKanbanDropFeedback} onOpenInlineCreate={openInlineCreate} onMoveTaskToDate={p.moveTaskToDate}
             onRescheduleTask={p.rescheduleTask} onDelete={p.softDeleteTask} onRestore={p.restoreTask} onDuplicate={p.duplicateTask}
             onSetCalendarMode={p.setCalendarMode} onSetCalendarAnchor={p.setCalendarAnchor} onSetTimelineScale={p.setTimelineScale}
             onToggleSortMode={() => p.setMobileFocusSortMode((m: any) => m === 'planned' ? 'deadline' : 'planned')}
@@ -427,7 +480,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
       {p.isPhoneViewport && p.taskSheetOpen && p.selectedTask && <TaskBottomSheet key={p.selectedTask.id} onClose={() => p.setTaskSheetOpen(false)}><MobileTaskDetailContent task={p.selectedTask} lists={p.lists} tags={p.tags} onUpdateTask={p.updateTask} onToggleComplete={p.mobileToggleComplete} onClose={() => p.setTaskSheetOpen(false)} /></TaskBottomSheet>}
 
-      {p.isPhoneViewport && p.mobileQuickCreateOpen && <MobileQuickCreateSheet onClose={() => p.setMobileQuickCreateOpen(false)} onSubmit={(title: string, listId: string, startAt: any, dueAt: any, deadlineAt: any, priority: Priority, tagIds: string[]) => { if (!title.trim()) return; const parsed = parseSmartEntry(title); p.commitTask({ title: parsed.title, listId, priority: parsed.priority ?? priority, tagIds, startAt, dueAt, deadlineAt, activityLabel: '\u901A\u8FC7\u79FB\u52A8\u7AEF\u5FEB\u901F\u521B\u5EFA\u5F55\u5165' }); p.setMobileQuickCreateOpen(false) }} contextLabel={p.mobileTab === 'focus' ? '\u7126\u70B9 \u2192 \u4ECA\u5929' : p.mobileTab === 'calendar' ? `\u65E5\u5386 \u2192 ${p.calendarAnchor}` : p.mobileTab === 'matrix' ? '\u56DB\u8C61\u9650' : '\u6536\u4EF6\u7BB1'} lists={p.lists} tags={p.tags} defaultListId={p.mobileFocusScopeListId ?? 'inbox'} defaultDueAt={p.mobileTab === 'focus' ? getDateKey() : p.mobileTab === 'calendar' ? p.calendarAnchor : null} />}
+      {p.isPhoneViewport && p.mobileQuickCreateOpen && <MobileQuickCreateSheet onClose={() => p.setMobileQuickCreateOpen(false)} onSubmit={(title: string, listId: string, startAt: any, dueAt: any, deadlineAt: any, priority: Priority, tagIds: string[]) => { if (!title.trim()) return; const parsed = parseSmartEntry(title); commitTask({ title: parsed.title, listId, priority: parsed.priority ?? priority, tagIds, startAt, dueAt, deadlineAt, activityLabel: '\u901A\u8FC7\u79FB\u52A8\u7AEF\u5FEB\u901F\u521B\u5EFA\u5F55\u5165' }); p.setMobileQuickCreateOpen(false) }} contextLabel={p.mobileTab === 'focus' ? '\u7126\u70B9 \u2192 \u4ECA\u5929' : p.mobileTab === 'calendar' ? `\u65E5\u5386 \u2192 ${p.calendarAnchor}` : p.mobileTab === 'matrix' ? '\u56DB\u8C61\u9650' : '\u6536\u4EF6\u7BB1'} lists={p.lists} tags={p.tags} defaultListId={p.mobileFocusScopeListId ?? 'inbox'} defaultDueAt={p.mobileTab === 'focus' ? getDateKey() : p.mobileTab === 'calendar' ? p.calendarAnchor : null} />}
 
       {p.isPhoneViewport && p.mobileConfirmDialog && <MobileConfirmSheet message={p.mobileConfirmDialog.message} onConfirm={() => { p.mobileConfirmDialog.onConfirm(); p.setMobileConfirmDialog(null) }} onCancel={() => { p.mobileConfirmDialog.onCancel(); p.setMobileConfirmDialog(null) }} />}
 

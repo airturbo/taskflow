@@ -21,16 +21,8 @@ import type {
   Task,
 } from './types/domain'
 import { useReminderCenter } from './hooks/useReminderCenter'
-import { getNowIso } from './utils/dates'
 import { loadState, setCurrentUserId } from './utils/storage'
-import { parseSmartEntry } from './utils/smart-entry'
 import { ensureSpecialTags } from '@taskflow/core'
-import { buildTimelineDraftWindow } from '@taskflow/core'
-import {
-  viewMeta,
-  makeId, upsertTaskInCache, resolveInlineCreateInitialPosition,
-  type CreateTaskPayload, type InlineCreateRequest,
-} from './utils/app-helpers'
 
 
 function App() {
@@ -142,102 +134,41 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [pauseSync, resumeSync])
 
-  // 云同步不可用时将当前快照加入队列，确保后续仍可补同步
   useEffect(() => {
     if ((syncStatus === 'offline' || syncStatus === 'error') && user?.id) {
-      enqueueOfflineState(user.id, {
-        folders, lists, tags, filters, tasks, theme,
-        activeSelection, selectedTagIds, selectionTimeModes: selectionTimeModes ?? {},
-        currentView, calendarMode, calendarShowCompleted,
-        timelineScale, firedReminderKeys, onboarding: initialState.onboarding,
-      })
+      enqueueOfflineState(user.id, { folders, lists, tags, filters, tasks, theme, activeSelection, selectedTagIds, selectionTimeModes: selectionTimeModes ?? {}, currentView, calendarMode, calendarShowCompleted, timelineScale, firedReminderKeys, onboarding: initialState.onboarding })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [syncStatus])
-  // desktopMode 已废弃：App 端和 Web 端统一使用 localStorage 存储
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const desktopMode = false
 
-  // ---- Navigation ----
   const nav = useNavigationState(initialState)
   const { activeSelection, setActiveSelection, selectionKind, selectionId, isToolSelection } = nav
-
-  // ---- View Config ----
   const viewConfig = useViewConfig(initialState)
-  const {
-    currentView, setCurrentView, calendarMode, setCalendarMode,
-    calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale,
-    calendarAnchor, setCalendarAnchor, theme, setTheme,
-    selectionTimeModes, updateSelectionTimeMode,
-  } = viewConfig
-
-  // ---- Filter ----
+  const { currentView, setCurrentView, calendarMode, setCalendarMode, calendarShowCompleted, setCalendarShowCompleted, timelineScale, setTimelineScale, calendarAnchor, setCalendarAnchor, theme, setTheme, selectionTimeModes, updateSelectionTimeMode } = viewConfig
   const filterState = useFilterState(nav.migratedSelectedTagIds)
-  const {
-    selectedTagIds, setSelectedTagIds, searchInput, setSearchInput,
-    searchKeyword, searchInputRef, toggleSelectedTag,
-  } = filterState
-
-  // ---- Task Selection ----
-  const selection = useTaskSelection(
-    initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null,
-  )
-  const {
-    selectedTaskId, setSelectedTaskId, bulkSelectedIds,
-    bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect,
-  } = selection
-
-  // ---- UI Modals ----
+  const { selectedTagIds, setSelectedTagIds, searchInput, setSearchInput, searchKeyword, searchInputRef, toggleSelectedTag } = filterState
+  const selection = useTaskSelection(initialState.tasks.find((t: Task) => !t.deleted)?.id ?? null)
+  const { selectedTaskId, setSelectedTaskId, bulkSelectedIds, bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect } = selection
   const modals = useModalState()
-  const {
-    tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen,
-    commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen,
-    navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen,
-    taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded,
-    projectionInsightMode, setProjectionInsightMode,
-  } = modals
+  const { tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen, commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen, navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen, taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded, projectionInsightMode, setProjectionInsightMode } = modals
 
-  // ---- Data (stays inline — cross-domain) ----
   const [folders, setFolders] = useState(initialState.folders)
   const [lists, setLists] = useState(initialState.lists)
   const [tags, setTags] = useState(() => ensureSpecialTags(initialState.tags))
   const [filters, setFilters] = useState(initialState.filters)
   const [tasks, setTasks] = useState(initialState.tasks)
   const { resolvedTheme, cycleTheme, themeIcon, themeLabel } = useSystemTheme(theme, setTheme)
-
-  // ---- Quick Create + Inline Create ----
-  const {
-    quickEntry, setQuickEntry, quickListId, setQuickListId,
-    quickPriority, setQuickPriority, quickTagIds, setQuickTagIds,
-    quickCreateInputRef,
-    inlineCreate, setInlineCreate,
-    createFeedback, setCreateFeedback,
-    statusChangeFeedback, setStatusChangeFeedback,
-    toggleQuickTag, toggleInlineCreateTag,
-  } = useQuickCreate()
+  const { quickEntry, setQuickEntry, quickListId, setQuickListId, quickPriority, setQuickPriority, quickTagIds, setQuickTagIds, quickCreateInputRef, inlineCreate, setInlineCreate, createFeedback, setCreateFeedback, statusChangeFeedback, setStatusChangeFeedback, toggleQuickTag, toggleInlineCreateTag } = useQuickCreate()
   const [firedReminderKeys, setFiredReminderKeys] = useState(initialState.firedReminderKeys)
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
 
-  // ---- 移动端专属状态（通过 mobileUiStore Zustand store 管理，减少主组件 re-render）----
-  const {
-    mobileTab, setMobileTab,
-    mobileTabFading,
-    mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen,
-    mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed,
-    mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen,
-    quickCreateOpen: mobileQuickCreateOpen, openQuickCreate: _openQuickCreate, closeQuickCreate,
-    completionToast: mobileCompletionToast, showCompletionToast, hideCompletionToast,
-  } = useMobileUiStore()
-
-  // 代理函数（保持调用方接口不变）
+  const { mobileTab, setMobileTab, mobileTabFading, mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen, mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed, mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen, quickCreateOpen: mobileQuickCreateOpen, openQuickCreate: _openQuickCreate, closeQuickCreate, completionToast: mobileCompletionToast, showCompletionToast, hideCompletionToast } = useMobileUiStore()
   const setMobileQuickCreateOpen = (open: boolean) => open ? _openQuickCreate() : closeQuickCreate()
-  const setMobileCompletionToast = (toast: { taskId: string; title: string } | null) =>
-    toast ? showCompletionToast(toast) : hideCompletionToast()
-  const setMobileFocusScope = (scope: 'all' | 'today' | 'week' | 'list') =>
-    _setMobileFocusScopeStore(scope, mobileFocusScopeListId)
-  const setMobileFocusScopeListId = (listId: string | null) =>
-    _setMobileFocusScopeStore(mobileFocusScope, listId)
-  // completionToastTimerRef — toast timer managed by store; keep ref for compat with direct clearTimeout
+  const setMobileCompletionToast = (toast: { taskId: string; title: string } | null) => toast ? showCompletionToast(toast) : hideCompletionToast()
+  const setMobileFocusScope = (scope: 'all' | 'today' | 'week' | 'list') => _setMobileFocusScopeStore(scope, mobileFocusScopeListId)
+  const setMobileFocusScopeListId = (listId: string | null) => _setMobileFocusScopeStore(mobileFocusScope, listId)
   const completionToastTimerRef = useRef<number | null>(null)
   // Cleanup toast timer on unmount (UX-01)
   useEffect(() => {
@@ -350,160 +281,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   const { mobileConfirmDialog, setMobileConfirmDialog, mobilePromptDialog, setMobilePromptDialog, mobilePromptValue, setMobilePromptValue, mobileConfirm, mobilePrompt } = useMobileDialogs(isPhoneViewport)
 
-  const commitTask = ({
-    title,
-    note = '',
-    listId,
-    priority,
-    tagIds = [],
-    status = 'todo',
-    dueAt = null,
-    startAt = null,
-    deadlineAt = null,
-    activityLabel,
-  }: CreateTaskPayload) => {
-    const cleanTitle = title.trim()
-    if (!cleanTitle) return false
-
-    const now = getNowIso()
-    const reminderAt = startAt ?? dueAt ?? null
-    const nextTask: Task = {
-      id: makeId('task'),
-      title: cleanTitle,
-      note: note.trim(),
-      listId,
-      tagIds: Array.from(new Set(tagIds)),
-      priority,
-      status,
-      startAt,
-      dueAt,
-      deadlineAt,
-      repeatRule: '不重复',
-      reminders: reminderAt ? [{ id: makeId('rem'), label: '开始时提醒', value: reminderAt, kind: 'absolute' }] : [],
-      subtasks: [],
-      attachments: [],
-      assignee: '我',
-      collaborators: [],
-      comments: [],
-      activity: [{ id: makeId('act'), content: activityLabel, createdAt: now }],
-      estimatedPomodoros: 0,
-      completedPomodoros: 0,
-      focusMinutes: 0,
-      completed: status === 'done',
-      deleted: false,
-      createdAt: now,
-      updatedAt: now,
-    }
-
-    const visibleInWorkspace = doesTaskMatchWorkspace(nextTask, currentView === 'calendar' ? calendarShowCompleted : false)
-
-    setTasks((items) => upsertTaskInCache(items, nextTask, true))
-    setSelectedTaskId(nextTask.id)
-    setQuickListId(listId)
-    setQuickPriority(priority)
-    setCreateFeedback({
-      title: nextTask.title,
-      listId,
-      listName: lists.find((item) => item.id === listId)?.name ?? '未知清单',
-      visibleInWorkspace,
-      workspaceLabel,
-    })
-    // 手机端 3 秒后自动清除创建反馈
-    if (isPhoneViewport) {
-      setTimeout(() => setCreateFeedback(null), 3000)
-    }
-    return true
-  }
-
-  const openInlineCreate = ({
-    view,
-    anchorRect,
-    dateKey = '',
-    listId,
-    priority,
-    tagIds = [],
-    status,
-    guidance,
-    time = '',
-  }: InlineCreateRequest) => {
-    const fallbackListId = selectionKind === 'list' ? selectionId : quickListId
-
-    setInlineCreate({
-      view,
-      title: '',
-      note: '',
-      listId: listId ?? fallbackListId,
-      priority: priority ?? quickPriority,
-      tagIds,
-      status: status ?? 'todo',
-      dateKey,
-      time,
-      guidance: guidance ?? '',
-      position: resolveInlineCreateInitialPosition(anchorRect),
-    })
-  }
-
-  const resolveTagIdsFromNames = (tagNames: string[]): string[] => {
-    if (!tagNames.length) return []
-    return tagNames
-      .map(name => tags.find(t => t.name === name)?.id)
-      .filter((id): id is string => Boolean(id))
-  }
-
-  const submitInlineCreate = () => {
-    if (!inlineCreate) return
-    const parsed = parseSmartEntry(inlineCreate.title)
-    const explicitDueAt = inlineCreate.dateKey
-      ? inlineCreate.time
-        ? `${inlineCreate.dateKey}T${inlineCreate.time}`
-        : inlineCreate.dateKey
-      : null
-    const resolvedDueAt = explicitDueAt ?? parsed.dueAt
-    const schedule = inlineCreate.view === 'timeline' ? buildTimelineDraftWindow(resolvedDueAt) : { startAt: null, dueAt: resolvedDueAt }
-    // 合并：内联创建已选标签 + 自然语言识别标签
-    const resolvedTagIds = Array.from(new Set([...inlineCreate.tagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
-    const resolvedPriority = parsed.priority ?? inlineCreate.priority
-
-    const created = commitTask({
-      title: parsed.title,
-      note: inlineCreate.note,
-      listId: inlineCreate.listId,
-      priority: resolvedPriority,
-      tagIds: resolvedTagIds,
-      status: inlineCreate.status,
-      startAt: schedule.startAt,
-      dueAt: schedule.dueAt,
-      activityLabel: `通过${viewMeta.find((item) => item.id === inlineCreate.view)?.label ?? '当前视图'}内联创建录入任务`,
-      markOnboardingScheduleComplete:
-        Boolean(schedule.startAt || schedule.dueAt) && (inlineCreate.view === 'calendar' || inlineCreate.view === 'timeline'),
-    })
-
-    if (created) setInlineCreate(null)
-  }
-
-  const createTask = () => {
-    const raw = quickEntry.trim()
-    if (!raw) return
-
-    const parsed = parseSmartEntry(raw)
-    // 合并：快速创建已选标签 + 自然语言识别标签
-    const resolvedTagIds = Array.from(new Set([...quickTagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
-    const resolvedPriority = parsed.priority ?? quickPriority
-    const created = commitTask({
-      title: parsed.title,
-      listId: selectionKind === 'list' ? selectionId : quickListId,
-      priority: resolvedPriority,
-      tagIds: resolvedTagIds,
-      dueAt: parsed.dueAt,
-      activityLabel: '通过快速创建录入任务',
-    })
-
-    if (created) {
-      setQuickEntry('')
-      setQuickTagIds([])
-    }
-  }
-
   return (
     <WorkspaceShell
       user={user ?? null} signOut={signOut}
@@ -534,7 +311,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       quickEntry={quickEntry} setQuickEntry={setQuickEntry}
       quickListId={quickListId} setQuickListId={setQuickListId}
       quickPriority={quickPriority} setQuickPriority={setQuickPriority}
-      quickTagIds={quickTagIds} toggleQuickTag={toggleQuickTag}
+      quickTagIds={quickTagIds} setQuickTagIds={setQuickTagIds} toggleQuickTag={toggleQuickTag}
       quickCreateInputRef={quickCreateInputRef} searchInputRef={searchInputRef}
       searchInput={searchInput} setSearchInput={setSearchInput} searchKeyword={searchKeyword}
       toggleSelectedTag={toggleSelectedTag}
@@ -598,7 +375,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       createTagDefinition={createTagDefinition} updateTagDefinition={updateTagDefinition} deleteTagDefinition={deleteTagDefinition}
       createFolder={createFolder} renameFolder={renameFolder} updateFolderColor={updateFolderColor} deleteFolder={deleteFolder}
       createList={createList} renameList={renameList} updateListColor={updateListColor} updateListFolder={updateListFolder} deleteList={deleteList}
-      commitTask={commitTask} openInlineCreate={openInlineCreate} submitInlineCreate={submitInlineCreate} createTask={createTask}
+      setTasks={setTasks}
       selectionKind={selectionKind} selectionId={selectionId} isToolSelection={isToolSelection}
       initialState={initialState} desktopMode={desktopMode}
     />
