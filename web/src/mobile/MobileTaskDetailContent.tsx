@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-import type { Task, TodoList, Tag, Priority, TaskStatus, TaskAttachment } from '../types/domain'
+import { useState, useEffect } from 'react'
+import type { Task, TodoList, Tag, Priority, TaskStatus } from '../types/domain'
 import { statusMeta } from '@taskflow/core'
 import { getDateKey, addDays, shiftDateTimeByDays } from '../utils/dates'
 import { toLocalInputValue } from '../utils/workspace-helpers'
 import { supabase } from '../utils/supabase'
+import styles from './MobileTaskDetailContent.module.css'
 
 /**
  * MobileTaskDetailContent — 手机端任务详情内容
@@ -139,14 +140,14 @@ export function MobileTaskDetailContent({
   }
 
   return (
-    <div className="mobile-task-detail">
+    <div className={styles.mobileTaskDetail}>
       {/* ─── 核心层 ─── */}
-      <div className="mobile-task-detail__core">
+      <div className={styles.mobileTaskDetailCore}>
         {/* 标题（点击内联编辑） */}
         {editingTitle ? (
           <input
             autoFocus
-            className="mobile-task-detail__title-input"
+            className={styles.mobileTaskDetailTitleInput}
             value={titleDraft}
             onChange={e => setTitleDraft(e.target.value)}
             onBlur={handleTitleBlur}
@@ -154,17 +155,17 @@ export function MobileTaskDetailContent({
           />
         ) : (
           <h2
-            className={`mobile-task-detail__title ${task.completed ? 'is-completed' : ''}`}
+            className={`${styles.mobileTaskDetailTitle} ${task.completed ? 'is-completed' : ''}`}
             onClick={() => { setTitleDraft(task.title); setEditingTitle(true) }}
           >{task.title}</h2>
         )}
 
         {/* 所属清单（可切换） */}
-        <div className="mobile-task-detail__meta-row">
-          <div className="mobile-task-detail__list-select-wrap" style={{ borderColor: taskList?.color ?? 'var(--border)' }}>
-            {taskList && <span className="mobile-task-detail__list-dot" style={{ background: taskList.color }} />}
+        <div className={styles.mobileTaskDetailMetaRow}>
+          <div className={styles.mobileTaskDetailListSelectWrap} style={{ borderColor: taskList?.color ?? 'var(--border)' }}>
+            {taskList && <span className={styles.mobileTaskDetailListDot} style={{ background: taskList.color }} />}
             <select
-              className="mobile-task-detail__list-select"
+              className={styles.mobileTaskDetailListSelect}
               value={task.listId ?? ''}
               onChange={e => onUpdateTask(task.id, { listId: e.target.value })}
             >
@@ -176,11 +177,11 @@ export function MobileTaskDetailContent({
         </div>
 
         {/* 状态选择器 */}
-        <div className="mobile-task-detail__status-row">
+        <div className={styles.mobileTaskDetailStatusRow}>
           {(['todo', 'doing', 'done'] as TaskStatus[]).map(s => (
             <button
               key={s}
-              className={`mobile-task-detail__status-btn status-btn--${s} ${task.status === s ? 'is-active' : ''}`}
+              className={`${styles.mobileTaskDetailStatusBtn} status-btn--${s} ${task.status === s ? 'is-active' : ''}`}
               onClick={() => onUpdateTask(task.id, { status: s })}
             >{statusMeta[s]}</button>
           ))}
@@ -188,13 +189,13 @@ export function MobileTaskDetailContent({
       </div>
 
       {/* ─── 优先级选择器 ─── */}
-      <div className="mobile-task-detail__section">
-        <p className="mobile-task-detail__section-label">优先级</p>
-        <div className="mobile-task-detail__priority-row">
+      <div className={styles.mobileTaskDetailSection}>
+        <p className={styles.mobileTaskDetailSectionLabel}>优先级</p>
+        <div className={styles.mobileTaskDetailPriorityRow}>
           {priorities.map(p => (
             <button
               key={p.value}
-              className={`mobile-task-detail__priority-btn ${task.priority === p.value ? 'is-active' : ''}`}
+              className={`${styles.mobileTaskDetailPriorityBtn} ${task.priority === p.value ? 'is-active' : ''}`}
               style={task.priority === p.value ? { background: p.color, borderColor: p.color } : {}}
               onClick={() => onUpdateTask(task.id, { priority: p.value })}
             >{p.label}</button>
@@ -203,10 +204,10 @@ export function MobileTaskDetailContent({
       </div>
 
       {/* ─── 时间层 ─── */}
-      <div className="mobile-task-detail__section">
-        <p className="mobile-task-detail__section-label">时间</p>
-        <div className="mobile-task-detail__time-fields">
-          <label className="mobile-task-detail__time-field">
+      <div className={styles.mobileTaskDetailSection}>
+        <p className={styles.mobileTaskDetailSectionLabel}>时间</p>
+        <div className={styles.mobileTaskDetailTimeFields}>
+          <label className={styles.mobileTaskDetailTimeField}>
             <span>计划完成</span>
             <input
               type="datetime-local"
@@ -215,7 +216,7 @@ export function MobileTaskDetailContent({
               onChange={e => onUpdateTask(task.id, { dueAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
             />
           </label>
-          <label className="mobile-task-detail__time-field">
+          <label className={styles.mobileTaskDetailTimeField}>
             <span>最终期限</span>
             <input
               type="datetime-local"
@@ -224,7 +225,7 @@ export function MobileTaskDetailContent({
               onChange={e => onUpdateTask(task.id, { deadlineAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
             />
           </label>
-          <label className="mobile-task-detail__time-field">
+          <label className={styles.mobileTaskDetailTimeField}>
             <span>开始时间</span>
             <input
               type="datetime-local"
@@ -238,15 +239,15 @@ export function MobileTaskDetailContent({
 
       {/* ─── 标签 ─── */}
       {tags.length > 0 && (
-        <div className="mobile-task-detail__section">
-          <p className="mobile-task-detail__section-label">标签</p>
-          <div className="mobile-task-detail__tags">
+        <div className={styles.mobileTaskDetailSection}>
+          <p className={styles.mobileTaskDetailSectionLabel}>标签</p>
+          <div className={styles.mobileTaskDetailTags}>
             {tags.map(tag => {
               const active = (task.tagIds ?? []).includes(tag.id)
               return (
                 <button
                   key={tag.id}
-                  className={`mobile-task-detail__tag-chip ${active ? 'is-active' : ''}`}
+                  className={`${styles.mobileTaskDetailTagChip} ${active ? 'is-active' : ''}`}
                   style={active ? { background: tag.color, borderColor: tag.color } : {}}
                   onClick={() => {
                     const current = task.tagIds ?? []
@@ -262,10 +263,10 @@ export function MobileTaskDetailContent({
       )}
 
       {/* ─── 层 1：备注（始终可见）─── */}
-      <div className="mobile-task-detail__section">
-        <p className="mobile-task-detail__section-label">备注</p>
+      <div className={styles.mobileTaskDetailSection}>
+        <p className={styles.mobileTaskDetailSectionLabel}>备注</p>
         <textarea
-          className="mobile-task-detail__notes"
+          className={styles.mobileTaskDetailNotes}
           placeholder="添加备注…"
           value={notesDraft}
           onChange={e => setNotesDraft(e.target.value)}
@@ -275,17 +276,17 @@ export function MobileTaskDetailContent({
       </div>
 
       {/* ─── 扩展层：子任务 ─── */}
-      <div className="mobile-task-detail__section">
+      <div className={styles.mobileTaskDetailSection}>
         <button
-          className="mobile-task-detail__expand-toggle"
+          className={styles.mobileTaskDetailExpandToggle}
           onClick={() => setShowSubtasks(v => !v)}
         >
           {showSubtasks ? '▾' : '▸'} 子任务{(task.subtasks?.length ?? 0) > 0 ? ` (${task.subtasks?.filter(s => !s.completed).length}/${task.subtasks?.length})` : ''}
         </button>
         {showSubtasks && (
-          <div className="mobile-task-detail__subtasks">
+          <div className={styles.mobileTaskDetailSubtasks}>
             {(task.subtasks ?? []).map(sub => (
-              <div key={sub.id} className={`mobile-task-detail__subtask ${sub.completed ? 'is-done' : ''}`}>
+              <div key={sub.id} className={`${styles.mobileTaskDetailSubtask} ${sub.completed ? 'is-done' : ''}`}>
                 <button
                   className={`check-button ${sub.completed ? 'is-checked' : ''}`}
                   onClick={() => {
@@ -299,9 +300,9 @@ export function MobileTaskDetailContent({
                 <span>{sub.title}</span>
               </div>
             ))}
-            <div className="mobile-task-detail__subtask-add">
+            <div className={styles.mobileTaskDetailSubtaskAdd}>
               <input
-                className="mobile-task-detail__subtask-input"
+                className={styles.mobileTaskDetailSubtaskInput}
                 placeholder="添加子任务…"
                 value={subtaskDraft}
                 onChange={e => setSubtaskDraft(e.target.value)}
@@ -318,29 +319,29 @@ export function MobileTaskDetailContent({
       </div>
 
       {/* 附件 */}
-      <div className="mobile-detail__section">
-        <div className="mobile-detail__section-header">
-          <span className="mobile-detail__section-icon">📎</span>
-          <span className="mobile-detail__section-label">附件</span>
+      <div className={styles.mobileDetailSection}>
+        <div className={styles.mobileDetailSectionHeader}>
+          <span className={styles.mobileDetailSectionIcon}>📎</span>
+          <span className={styles.mobileDetailSectionLabel}>附件</span>
           {(task as any).attachments?.length ? (
-            <span className="mobile-detail__section-count">{(task as any).attachments.length}</span>
+            <span className={styles.mobileDetailSectionCount}>{(task as any).attachments.length}</span>
           ) : null}
         </div>
-        <div className="mobile-detail__attachments-list">
+        <div className={styles.mobileDetailAttachmentsList}>
           {(task as any).attachments?.map((a: any) => (
-            <div key={a.id} className="mobile-detail__attachment-item">
+            <div key={a.id} className={styles.mobileDetailAttachmentItem}>
               {a.mimeType?.startsWith('image/') ? (
-                <img src={a.dataUrl || a.path} alt={a.name} className="mobile-detail__attachment-thumb" />
+                <img src={a.dataUrl || a.path} alt={a.name} className={styles.mobileDetailAttachmentThumb} />
               ) : (
-                <span className="mobile-detail__attachment-file-icon">📄</span>
+                <span className={styles.mobileDetailAttachmentFileIcon}>📄</span>
               )}
-              <span className="mobile-detail__attachment-name">{a.name}</span>
+              <span className={styles.mobileDetailAttachmentName}>{a.name}</span>
             </div>
           ))}
         </div>
-        {uploading && <p className="mobile-detail__upload-status">上传中…</p>}
-        {uploadError && <p className="mobile-detail__upload-error">{uploadError}</p>}
-        <div className="mobile-detail__attach-actions">
+        {uploading && <p className={styles.mobileDetailUploadStatus}>上传中…</p>}
+        {uploadError && <p className={styles.mobileDetailUploadError}>{uploadError}</p>}
+        <div className={styles.mobileDetailAttachActions}>
           <label className="ghost-button small">
             📷 拍照
             <input
@@ -363,23 +364,23 @@ export function MobileTaskDetailContent({
             />
           </label>
         </div>
-        <span className="mobile-attach-hint">最大 5MB，支持图片和文档</span>
+        <span className={styles.mobileAttachHint}>最大 5MB，支持图片和文档</span>
       </div>
 
       {/* ─── 底部操作栏（固定）─── */}
-      <div className="mobile-task-detail__footer">
+      <div className={styles.mobileTaskDetailFooter}>
         <button
-          className={`mobile-task-detail__footer-btn mobile-detail-footer-btn mobile-task-detail__footer-complete ${task.completed ? 'is-done' : ''}`}
+          className={`${styles.mobileTaskDetailFooterBtn} ${styles.mobileTaskDetailFooterComplete} ${task.completed ? 'is-done' : ''}`}
           onClick={() => { onToggleComplete(task.id); onClose() }}
         >
           {task.completed ? '重新打开' : '✓ 完成'}
         </button>
         <button
-          className="mobile-task-detail__footer-btn mobile-detail-footer-btn mobile-task-detail__footer-snooze"
+          className={`${styles.mobileTaskDetailFooterBtn} ${styles.mobileTaskDetailFooterSnooze}`}
           onClick={handleSnooze}
         >明天再做</button>
         <button
-          className="mobile-task-detail__footer-btn mobile-detail-footer-btn mobile-task-detail__footer-delete"
+          className={`${styles.mobileTaskDetailFooterBtn} ${styles.mobileTaskDetailFooterDelete}`}
           onClick={handleDelete}
         >删除</button>
       </div>
