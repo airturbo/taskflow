@@ -13,6 +13,7 @@ import { addDays, getDateKey, buildWeek } from '../../utils/dates'
 import { formatTaskWindow } from '../../utils/reminder-engine'
 import { getDateTimeMs, MINUTE, DAY_MINUTES, WEEK_MINUTES } from '../../utils/workspace-helpers'
 import { EmptyState, StatusBadge, TaskDeadlineIndicators, getTaskDeadlineMarkerOffset } from '../shared'
+import styles from './TimelineView.module.css'
 
 export function TimelineView({
   tasks,
@@ -103,7 +104,7 @@ export function TimelineView({
   const startDrag = (event: React.PointerEvent<HTMLElement>, task: Task, mode: TimelineDragMode) => {
     if (event.button !== 0) return
 
-    const lane = (event.currentTarget.closest('.timeline-lane') as HTMLElement | null) ?? null
+    const lane = (event.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null) ?? null
     const range = getTaskTimelineRange(task)
     if (!lane || !range) return
 
@@ -168,13 +169,13 @@ export function TimelineView({
 
   return (
     <div className="view-stack">
-      <div className="timeline-toolbar panel">
-        <div className="timeline-toolbar__window">
+      <div className={`${styles.timelineToolbar} panel`}>
+        <div className={styles.timelineToolbarWindow}>
           <strong>{getTimelineWindowLabel(calendarAnchor, timelineScale)}</strong>
           <span>{isDayScale ? '按日聚焦' : '按周统筹'}</span>
         </div>
-        <div className="timeline-toolbar__actions">
-          <div className="calendar-modes timeline-modes">
+        <div className={styles.timelineToolbarActions}>
+          <div className={`calendar-modes ${styles.timelineModes}`}>
             {(['day', 'week'] as TimelineScale[]).map((scale) => (
               <button key={scale} className={timelineScale === scale ? 'is-active' : ''} onClick={() => onChangeScale(scale)}>
                 {scale === 'day' ? '日' : '周'}
@@ -189,30 +190,30 @@ export function TimelineView({
       </div>
 
       {isDayScale ? (
-        <div className="timeline-day-view">
-          <div className="timeline-day-scroll">
-            <div className="timeline-day-inner" style={{ height: `${DAY_TOTAL_HEIGHT}px` }}>
+        <div className={styles.timelineDayView}>
+          <div className={styles.timelineDayScroll}>
+            <div className={styles.timelineDayInner} style={{ height: `${DAY_TOTAL_HEIGHT}px` }}>
               {hourLabels.map((h) => (
                 <div
                   key={h}
-                  className="timeline-day-hour"
+                  className={styles.timelineDayHour}
                   style={{ top: `${h * DAY_HOUR_HEIGHT}px`, height: `${DAY_HOUR_HEIGHT}px` }}
                 >
-                  <span className="timeline-day-hour__label">{String(h).padStart(2, '0')}:00</span>
-                  <div className="timeline-day-hour__line" />
-                  <div className="timeline-day-hour__half-line" style={{ top: `${DAY_HOUR_HEIGHT / 2}px` }} />
+                  <span className={styles.timelineDayHourLabel}>{String(h).padStart(2, '0')}:00</span>
+                  <div className={styles.timelineDayHourLine} />
+                  <div className={styles.timelineDayHourHalfLine} style={{ top: `${DAY_HOUR_HEIGHT / 2}px` }} />
                 </div>
               ))}
 
               {nowInWindow && (
                 <div
-                  className="timeline-day-now"
+                  className={styles.timelineDayNow}
                   style={{ top: `${nowFrac * DAY_TOTAL_HEIGHT}px` }}
                   aria-hidden="true"
                 />
               )}
 
-              <div className="timeline-day-events">
+              <div className={styles.timelineDayEvents}>
                 {scheduledTasks.map(({ task, range }) => {
                   const preview = dragState?.taskId === task.id ? { start: dragState.previewStart, end: dragState.previewEnd } : range
                   const clippedStart = Math.max(preview.start, windowStart)
@@ -222,16 +223,16 @@ export function TimelineView({
                   return (
                     <button
                       key={task.id}
-                      className={`timeline-day-event priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}
+                      className={`${styles.timelineDayEvent} priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}
                       style={vStyle}
                       onClick={() => onSelectTask(task.id)}
                     >
-                      <span className="timeline-day-event__grip is-top" onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-start') }} />
-                      <div className="timeline-day-event__content">
+                      <span className={`${styles.timelineDayEventGrip} is-top`} onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-start') }} />
+                      <div className={styles.timelineDayEventContent}>
                         <strong>{task.title}</strong>
                         <small>{formatTimelineBarLabel(preview.start, preview.end)}</small>
                       </div>
-                      <span className="timeline-day-event__grip is-bottom" onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-end') }} />
+                      <span className={`${styles.timelineDayEventGrip} is-bottom`} onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-end') }} />
                     </button>
                   )
                 })}
@@ -240,7 +241,7 @@ export function TimelineView({
           </div>
 
           <button
-            className="timeline-day-add-btn"
+            className={styles.timelineDayAddBtn}
             onClick={(event) =>
               onOpenInlineCreate({
                 view: 'timeline',
@@ -260,11 +261,11 @@ export function TimelineView({
         </div>
       ) : (
         <>
-          <div className={`timeline-create-row`} style={createRowStyle}>
+          <div className={styles.timelineCreateRow} style={createRowStyle}>
             {createSlots.map((slot) => (
               <button
                 key={slot.key}
-                className={`timeline-create-slot ${slot.isToday ? 'is-today' : ''}`}
+                className={`${styles.timelineCreateSlot} ${slot.isToday ? 'is-today' : ''}`}
                 aria-label={`在${slot.label}创建任务`}
                 title={`在${slot.label}创建任务`}
                 onClick={(event) =>
@@ -285,16 +286,16 @@ export function TimelineView({
           {scheduledTasks.length === 0 ? (
             <EmptyState title="这周时间线还没有任务条。" description="点上方日期即可排一条任务。" />
           ) : (
-            <div className="timeline-view">
-              <header className="timeline-header">
+            <div className={styles.timelineView}>
+              <header className={styles.timelineHeader}>
                 <div>任务</div>
-                <div className="timeline-scale" style={timelineGridStyle}>
+                <div className={styles.timelineScale} style={timelineGridStyle}>
                   {scaleMarks.map((mark) => (
                     <span key={mark.key} className={mark.isToday ? 'is-today' : ''}>{mark.label}</span>
                   ))}
                 </div>
               </header>
-              <div className="timeline-body">
+              <div className={styles.timelineBody}>
                 {scheduledTasks.map(({ task, range }) => {
                   const preview = dragState?.taskId === task.id ? { start: dragState.previewStart, end: dragState.previewEnd } : range
                   const clippedStart = Math.max(preview.start, windowStart)
@@ -306,23 +307,23 @@ export function TimelineView({
                   const deadlineMarkerTone = getTaskDeadlineMarkerTone(task)
 
                   return (
-                    <div key={task.id} className={`timeline-row ${selectedTaskId === task.id ? 'is-selected' : ''}`}>
-                      <button className="timeline-title" onClick={() => onSelectTask(task.id)}>
+                    <div key={task.id} className={`${styles.timelineRow} ${selectedTaskId === task.id ? 'is-selected' : ''}`}>
+                      <button className={styles.timelineTitle} onClick={() => onSelectTask(task.id)}>
                         <strong>{task.title}</strong>
-                        <div className="timeline-title__meta">
+                        <div className={styles.timelineTitleMeta}>
                           <small>{formatTaskWindow(getDateTimeValueFromMs(preview.start), getDateTimeValueFromMs(preview.end))}</small>
                           <TaskDeadlineIndicators task={task} compact />
                         </div>
                       </button>
-                      <div className="timeline-lane">
-                        <div className="timeline-grid" style={timelineGridStyle}>
+                      <div className={styles.timelineLane} data-timeline-lane>
+                        <div className={styles.timelineGrid} style={timelineGridStyle}>
                           {scaleMarks.map((mark) => (
                             <span key={mark.key} className={mark.isToday ? 'is-today' : ''} />
                           ))}
                         </div>
                         {deadlineMarkerOffset != null && deadlineMarkerTone && (
                           <div
-                            className={`timeline-deadline-marker is-${deadlineMarkerTone}`}
+                            className={`${styles.timelineDeadlineMarker} is-${deadlineMarkerTone}`}
                             style={{ left: `calc(${deadlineMarkerOffset}% - 1px)` }}
                             aria-hidden="true"
                           >
@@ -330,20 +331,20 @@ export function TimelineView({
                           </div>
                         )}
                         <button
-                          className={`timeline-bar priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}
+                          className={`${styles.timelineBar} priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}
                           style={{ left: `${left}%`, width: `${width}%` }}
                           onPointerDown={(event) => handleTimelineBarPointerDown(event, task, 'move')}
                           onPointerUp={handleTimelineBarPointerUp}
                           onPointerCancel={handleTimelineBarPointerUp}
                           onClick={handleTimelineBarClick}
                         >
-                          <span className="timeline-bar__grip is-start" onPointerDown={(event) => { event.stopPropagation(); startDrag(event, task, 'resize-start') }} />
-                          <span className="timeline-bar__content">
+                          <span className={`${styles.timelineBarGrip} is-start`} onPointerDown={(event) => { event.stopPropagation(); startDrag(event, task, 'resize-start') }} />
+                          <span className={styles.timelineBarContent}>
                             <StatusBadge status={task.status} compact />
                             <strong>{task.title}</strong>
                             <small>{formatTimelineBarLabel(preview.start, preview.end)}</small>
                           </span>
-                          <span className="timeline-bar__grip is-end" onPointerDown={(event) => startDrag(event, task, 'resize-end')} />
+                          <span className={`${styles.timelineBarGrip} is-end`} onPointerDown={(event) => startDrag(event, task, 'resize-end')} />
                         </button>
                       </div>
                     </div>

@@ -777,16 +777,13 @@ button.projection-metric:disabled {
 
 /* calendar-chip, day-task, agenda-item drag/touch/cursor → CalendarView.module.css */
 /* kanban-card drag/touch/cursor → KanbanView.module.css */
-.matrix-card,
-.timeline-bar,
-.timeline-bar__grip {
+/* timeline-bar, timeline-bar__grip drag/touch/cursor → TimelineView.module.css */
+.matrix-card {
   -webkit-user-select: none;
   user-select: none;
 }
 
-.matrix-card,
-.timeline-bar,
-.timeline-bar__grip {
+.matrix-card {
   touch-action: none;
 }
 
@@ -800,11 +797,7 @@ button.projection-metric:disabled {
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
 }
 /* .kanban-card.is-dragging → KanbanView.module.css */
-
-.timeline-bar.is-selected,
-.timeline-bar.is-dragging {
-  cursor: grabbing;
-}
+/* .timeline-bar.is-selected/.is-dragging cursor → TimelineView.module.css */
 
 /* ---- Kanban → KanbanView.module.css ---- */
 .matrix-card__top .task-time-summary {
@@ -816,152 +809,7 @@ button.projection-metric:disabled {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* ---- Timeline ---- */
-.timeline-toolbar {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 16px; background: var(--surface-raised);
-}
-
-.timeline-toolbar__window { display: flex; flex-direction: column; gap: 2px; }
-.timeline-toolbar__window strong { font-size: 13px; font-weight: 600; }
-.timeline-toolbar__window span { font-size: 11px; color: var(--text-tertiary); }
-.timeline-toolbar__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.timeline-modes { gap: 4px; }
-
-.timeline-view { display: flex; flex-direction: column; gap: 0; }
-.timeline-view.is-day { border-radius: var(--radius-m); overflow: hidden; }
-
-.timeline-create-row {
-  display: grid; gap: 8px; margin-bottom: 14px;
-}
-
-.timeline-create-slot {
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px;
-  border-radius: var(--radius-s); border: 1px dashed var(--border);
-  background: transparent; color: var(--text-secondary); padding: 10px 12px;
-  transition: background var(--transition), border-color var(--transition); text-align: left;
-}
-
-.timeline-create-slot span { font-size: 12px; font-weight: 600; color: var(--text); }
-.timeline-create-slot small { font-size: 11px; color: var(--text-tertiary); }
-
-.timeline-create-slot:hover,
-.timeline-create-slot:focus-visible {
-  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
-}
-
-.timeline-create-slot.is-today {
-  background: var(--accent-soft); border-color: var(--border-focus); color: var(--text);
-}
-
-.timeline-create-row.is-day .timeline-create-slot {
-  min-height: 56px;
-}
-
-.timeline-header {
-  display: flex; align-items: center; gap: 0;
-  font-size: 11px; color: var(--text-tertiary); font-weight: 500;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-}
-
-.timeline-header > div:first-child { width: 30%; padding-left: 4px; }
-
-.timeline-scale {
-  --timeline-columns: 7;
-  display: grid; grid-template-columns: repeat(var(--timeline-columns), minmax(0, 1fr));
-  gap: 0; width: 70%; text-align: center;
-}
-.timeline-scale span { padding: 0 4px; }
-.timeline-scale span.is-today { color: var(--accent); }
-
-.timeline-body { display: flex; flex-direction: column; gap: 0; }
-
-.timeline-row {
-  display: flex; align-items: center; width: 100%;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-  border-radius: 0; background: transparent; transition: background var(--transition);
-}
-
-.timeline-row:hover,
-.timeline-row.is-selected { background: var(--surface-hover); }
-
-.timeline-title {
-  width: 30%; display: flex; flex-direction: column; gap: 4px; padding-left: 4px;
-  align-items: flex-start; background: transparent; border: none; color: inherit;
-}
-.timeline-title strong { font-size: 12px; font-weight: 600; }
-.timeline-title small { font-size: 10px; color: var(--text-tertiary); text-align: left; }
-.timeline-title__meta {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0;
-}
-
-.timeline-lane {
-  position: relative; width: 70%; min-height: 38px;
-  border-radius: 8px; background: var(--surface-raised); overflow: hidden;
-}
-
-.timeline-deadline-marker {
-  position: absolute; top: 4px; bottom: 4px; width: 2px; z-index: 1; pointer-events: none;
-  background: rgba(255, 107, 122, 0.72); box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.12);
-}
-.timeline-deadline-marker span {
-  position: absolute; top: -2px; left: 4px; padding: 1px 6px; border-radius: 999px;
-  background: rgba(255, 107, 122, 0.12); color: var(--red); font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
-}
-.timeline-deadline-marker.is-warning {
-  background: rgba(255, 180, 84, 0.84); box-shadow: 0 0 0 1px rgba(255, 180, 84, 0.16);
-}
-.timeline-deadline-marker.is-warning span {
-  background: rgba(255, 180, 84, 0.14); color: var(--amber);
-}
-.timeline-deadline-marker.is-danger {
-  background: rgba(255, 107, 122, 0.92); box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.22);
-}
-
-.timeline-grid {
-  --timeline-columns: 7;
-  position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--timeline-columns), minmax(0, 1fr)); pointer-events: none;
-}
-.timeline-grid span { border-left: 1px solid rgba(15, 23, 42, 0.06); }
-.timeline-grid span:first-child { border-left: none; }
-.timeline-grid span.is-today { background: rgba(124, 156, 255, 0.08); }
-
-.timeline-bar {
-  position: absolute; top: 4px; bottom: 4px; border-radius: 8px;
-  color: #fff; display: flex; align-items: stretch; overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 8px 16px rgba(15, 23, 42, 0.16);
-}
-
-.timeline-bar__content {
-  flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
-  padding: 0 10px; overflow: hidden;
-}
-.timeline-bar__content strong { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.timeline-bar__content small { font-size: 10px; opacity: 0.88; white-space: nowrap; }
-
-.timeline-bar__grip {
-  width: 10px; cursor: ew-resize; flex-shrink: 0; position: relative;
-}
-.timeline-bar__grip::after {
-  content: ''; position: absolute; top: 10px; bottom: 10px; width: 2px; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
-}
-.timeline-bar__grip.is-start::after { left: 3px; }
-.timeline-bar__grip.is-end::after { right: 3px; }
-
-.timeline-bar.priority-urgent { background: linear-gradient(135deg, #ff6b7a, #ff8f8f); }
-.timeline-bar.priority-high { background: linear-gradient(135deg, #ffb454, #ffc670); color: #1a1d23; }
-.timeline-bar.priority-normal { background: linear-gradient(135deg, #7c9cff, #97aeff); }
-.timeline-bar.priority-low { background: linear-gradient(135deg, #94a3b8, #b3bfd1); }
-
-.timeline-bar.status-done { opacity: 0.72; }
-.timeline-bar.is-selected { box-shadow: 0 10px 18px rgba(124, 156, 255, 0.24); }
-.timeline-bar.is-dragging {
-  z-index: 2;
-  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.22);
-}
-.timeline-bar.is-overdue { box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.3), 0 10px 18px rgba(255, 107, 122, 0.14); }
-.timeline-bar.is-dragging.is-overdue { box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.26), 0 16px 28px rgba(255, 107, 122, 0.18); }
+/* ---- Timeline → TimelineView.module.css ---- */
 
 /* ---- Matrix ---- */
 .matrix-grid {
@@ -1406,8 +1254,7 @@ button.projection-metric:disabled {
   /* .calendar-grid.month/week, .calendar-weekday-header, .calendar-create-strip @1280px → CalendarView.module.css */
   /* .kanban-grid @1280px → KanbanView.module.css */
   .matrix-grid { grid-template-columns: repeat(2, minmax(260px, 1fr)); overflow-x: auto; }
-  .timeline-view { overflow-x: auto; }
-  .timeline-header, .timeline-body { min-width: 760px; }
+  /* .timeline-view overflow-x, .timeline-header/.timeline-body min-width @1280px → TimelineView.module.css */
 }
 
 /* ---- 1200px 以下：侧边栏折叠（.app-shell grid → WorkspaceShell.module.css）---- */
@@ -1585,8 +1432,7 @@ button.projection-metric:disabled {
   }
   .workspace { padding: 16px; }
   /* .day-task, .agenda-item → CalendarView.module.css */
-  .timeline-row,
-  .timeline-toolbar,
+  /* .timeline-row, .timeline-toolbar flex-direction → TimelineView.module.css */
   .reminder-feed-item--featured,
   .inline-create-footer, .attachment-toolbar, .inline-create-mobility-row,
   .note-editor__templates, .note-editor__templates--secondary {
@@ -1599,12 +1445,8 @@ button.projection-metric:disabled {
   .note-editor__field-row {
     grid-template-columns: 1fr;
   }
-  .timeline-toolbar__actions {
-    width: 100%;
-    min-width: 0;
-    flex-wrap: wrap;
-  }
-  .search-input, .timeline-title, .timeline-lane, .timeline-scale {
+  /* .timeline-toolbar__actions, .timeline-title, .timeline-lane, .timeline-scale @960px → TimelineView.module.css */
+  .search-input {
     width: 100%;
     min-width: 0;
   }
@@ -1669,7 +1511,7 @@ button.projection-metric:disabled {
 }
 
 /* Bug 3 修复：手机端月历/周历强制等分 → CalendarView.module.css */
-.timeline-header, .timeline-body { min-width: 680px; }
+/* .timeline-header, .timeline-body min-width → TimelineView.module.css */
 
 /* ============================================================
    MOBILE-FIRST RESPONSIVE DESIGN SYSTEM
@@ -3444,77 +3286,8 @@ button.projection-metric:disabled {
 }
 
 /* ============================================================
-   需求4：时间线手机端纵向布局重构
+   需求4：时间线手机端纵向布局重构 → TimelineView.module.css
    ============================================================ */
-.is-phone .timeline-view {
-  overflow-x: hidden !important;
-  min-width: 0 !important;
-}
-
-.is-phone .timeline-header,
-.is-phone .timeline-body {
-  min-width: 0 !important;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 12px;
-}
-
-/* 纵向时间线左侧竖线 + 右侧卡片 */
-.is-phone .timeline-body {
-  position: relative;
-  padding-left: 32px;
-}
-
-.is-phone .timeline-body::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--border);
-}
-
-.is-phone .timeline-task-card {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 6px 10px;
-  margin-left: 8px;
-}
-
-.is-phone .timeline-task-card::before {
-  content: '';
-  position: absolute;
-  left: -14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--primary);
-  border: 2px solid var(--bg-subtle);
-}
-
-.is-phone .timeline-task-card h3 {
-  font-size: 13px;
-  margin: 0 0 4px 0;
-}
-
-.is-phone .timeline-task-card p {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin: 0;
-}
-
-/* 隐藏桌面端的横向网格结构 */
-.is-phone .timeline-header,
-.is-phone .timeline-grid {
-  display: block !important;
-  grid-template-columns: none !important;
-}
 
 /* ===== MobileTaskDetailContent ===== */
 .mobile-task-detail {
@@ -4372,177 +4145,7 @@ button.projection-metric:disabled {
   color: var(--text-secondary);
 }
 
-/* ---- 时间线日视图（纵向） ---- */
-.timeline-day-view {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  background: var(--bg);
-}
-.timeline-day-scroll {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-.timeline-day-inner {
-  position: relative;
-}
-.timeline-day-hour {
-  position: absolute;
-  left: 0;
-  right: 0;
-  box-sizing: border-box;
-}
-.timeline-day-hour__label {
-  position: absolute;
-  left: 10px;
-  top: -9px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-  pointer-events: none;
-  user-select: none;
-  width: 36px;
-  text-align: right;
-}
-.timeline-day-hour__line {
-  position: absolute;
-  left: 52px;
-  right: 0;
-  top: 0;
-  height: 1px;
-  background: var(--border);
-  opacity: 0.6;
-}
-.timeline-day-hour__half-line {
-  position: absolute;
-  left: 52px;
-  right: 0;
-  height: 1px;
-  background: var(--border);
-  opacity: 0.3;
-}
-.timeline-day-now {
-  position: absolute;
-  left: 48px;
-  right: 0;
-  height: 2px;
-  background: #ff3b30;
-  z-index: 5;
-  border-radius: 1px;
-  pointer-events: none;
-}
-.timeline-day-now::before {
-  content: '';
-  position: absolute;
-  left: -4px;
-  top: -3px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ff3b30;
-}
-.timeline-day-events {
-  position: absolute;
-  left: 56px;
-  right: 6px;
-  top: 0;
-  bottom: 0;
-}
-.timeline-day-event {
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-radius: 8px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  cursor: pointer;
-  border: none;
-  text-align: left;
-  min-height: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-  transition: box-shadow 0.12s, opacity 0.12s;
-}
-.timeline-day-event:active,
-.timeline-day-event.is-selected {
-  box-shadow: 0 2px 10px rgba(0,0,0,0.28);
-  z-index: 10;
-}
-.timeline-day-event.is-dragging {
-  opacity: 0.75;
-  z-index: 20;
-}
-.timeline-day-event.is-overdue {
-  filter: saturate(0.7) brightness(0.9);
-}
-.timeline-day-event.status-done {
-  opacity: 0.45;
-}
-.timeline-day-event.priority-urgent { background: #ff3b30cc; }
-.timeline-day-event.priority-high   { background: #ff9500cc; }
-.timeline-day-event.priority-normal { background: #007affcc; }
-.timeline-day-event.priority-low    { background: #8e8e93cc; }
-.timeline-day-event__grip {
-  flex-shrink: 0;
-  height: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: ns-resize;
-  opacity: 0.5;
-}
-.timeline-day-event__grip::after {
-  content: '';
-  display: block;
-  width: 24px;
-  height: 3px;
-  border-radius: 2px;
-  background: rgba(255,255,255,0.6);
-}
-.timeline-day-event__content {
-  flex: 1;
-  padding: 2px 8px 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 0;
-  overflow: hidden;
-}
-.timeline-day-event__content strong {
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.timeline-day-event__content time {
-  font-size: 10px;
-  color: rgba(255,255,255,0.75);
-}
-.timeline-day-add-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  background: none;
-  color: var(--accent, #007aff);
-  font-size: 15px;
-  cursor: pointer;
-  border-top: 1px solid var(--border);
-  margin-top: 8px;
-  flex-shrink: 0;
-}
-.timeline-day-add-btn:active { opacity: 0.6; }
+/* ---- 时间线日视图（纵向） → TimelineView.module.css ---- */
 
 /* ---- 移动端「我的」iOS 设置风格分区 ---- */
 .mobile-me-section {
