@@ -1,0 +1,447 @@
+/* MobileFocusView.module.css
+   Covers: MobileFocusView, VirtualFocusList, MobileFocusSection, MobileFocusCard
+   Globals kept: check-button (shared), priority-${p} border overrides (mobile-layout.css),
+                 mobile-focus-card__priority-badge (shared with MobileCalendarView + MobileMatrixView)
+   Dynamic class strings: mobile-focus-section--${tone}, mobile-focus-section__header--${tone}
+                          → kept as plain strings, targeted via :global() below
+*/
+
+/* ---- Focus View Container ---- */
+
+.mobileFocusView {
+  position: relative;
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 虚拟列表滚动容器 */
+.mobileFocusVirtualScroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 16px;
+}
+
+.mobileFocusHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+}
+
+.mobileFocusHeader h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.mobileFocusSortToggle {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+}
+
+.mobileFocusEmpty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+
+.mobileFocusEmpty h3 {
+  margin: 8px 0 4px;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.mobileFocusEmpty .eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Focus Section ---- */
+
+.mobileFocusSection {
+  margin-bottom: 12px;
+}
+
+.mobileFocusSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.mobileFocusSectionIcon { font-size: 14px; }
+
+.mobileFocusSectionCount {
+  font-weight: 400;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.mobileFocusSectionChevron {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+:global(.mobile-focus-section--danger) .mobileFocusSectionHeader,
+:global(.mobile-focus-section__header--danger) {
+  color: var(--danger, #ef4444);
+}
+
+:global(.mobile-focus-section--warning) .mobileFocusSectionHeader,
+:global(.mobile-focus-section__header--warning) {
+  color: var(--warning, #f59e0b);
+}
+
+/* ---- Focus Card ---- */
+
+.mobileFocusCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 6px;
+  border-radius: 14px;
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 1px solid var(--border);
+  min-height: 52px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.mobileFocusCard:active {
+  background: var(--surface-hover);
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.mobileFocusCard:global(.is-overdue) {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.mobileFocusCard:global(.is-completing) {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.2s ease;
+}
+
+.mobileFocusCard :global(.check-button) {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Compact override (v3 polish) */
+.mobileFocusCard {
+  padding: 8px 12px;
+  min-height: 44px;
+  margin-bottom: 4px;
+}
+
+.mobileFocusCard :global(.check-button) {
+  width: 18px;
+  height: 18px;
+}
+
+.mobileFocusCardContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mobileFocusCardTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.mobileFocusCardMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.mobileFocusCardPlan {
+  color: var(--accent, #6c63ff);
+}
+
+.mobileFocusCardDdl {
+  color: var(--warning, #f59e0b);
+}
+
+.mobileFocusCardDdl:global(.is-urgent) {
+  color: var(--danger, #ef4444);
+  font-weight: 700;
+}
+
+.mobileFocusCardNoDate {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+.mobileFocusCardMeta :global(.meta-icon) {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  margin-right: 2px;
+  position: relative;
+  top: -0.5px;
+}
+
+/* 清单小标签 */
+.mobileFocusCardListTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.mobileFocusCardListDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ---- Scope Menu (v3 UX polish) ---- */
+
+.mobileFocusScopeBtn {
+  font-size: 15px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mobileFocusScopeBtn:active { background: var(--surface-hover); }
+
+.mobileFocusScopeArrow { font-size: 10px; opacity: 0.5; }
+
+.mobileFocusSortBtn {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.mobileFocusScopeMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 6px;
+  min-width: 160px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.mobileFocusScopeMenu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.mobileFocusScopeMenu button:active,
+.mobileFocusScopeMenu button:global(.is-active) {
+  background: var(--surface-hover);
+}
+
+.mobileFocusScopeDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Focus header override (v3: header with relative positioning) */
+.mobileFocusHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+}
+
+/* ---- Swipe Actions ---- */
+
+.mobileFocusCardWrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  margin-bottom: 6px;
+}
+
+.mobileSwipeAction {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.mobileSwipeActionComplete {
+  left: 0;
+  right: 0;
+  padding: 0 20px;
+  background: #34c759;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  justify-content: flex-start;
+}
+
+.mobileSwipeActionActions {
+  right: 0;
+  gap: 0;
+}
+
+.mobileSwipeBtn {
+  height: 100%;
+  padding: 0 20px;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileSwipeBtn:active { opacity: 0.8; }
+.mobileSwipeBtnSnooze { background: #ff9500; }
+.mobileSwipeBtnDelete { background: #ff3b30; }
+
+/* ---- Emotional Empty State ---- */
+
+.mobileFocusEmptyEmotional {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.mobileFocusEmptyEmotional :global(.emoji) {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.mobileFocusEmptyEmotional h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.mobileFocusEmptyEmotional p {
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ---- Reorder FAB + Bar + Row ---- */
+
+.mobileFocusReorderFab {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+}
+
+.mobileFocusReorderFab:active { transform: scale(.93); }
+
+.mobileFocusReorderBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px 6px 16px;
+  background: var(--accent-soft, rgba(0,122,255,.08));
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.mobileFocusReorderBarDone {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent, #007aff);
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.mobileReorderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  cursor: default;
+}
+
+.mobileReorderHandle {
+  font-size: 18px;
+  color: var(--text-tertiary);
+  cursor: grab;
+  touch-action: none;
+}
+
+.mobileReorderTitle {
+  flex: 1;
+  font-size: 14px;
+}

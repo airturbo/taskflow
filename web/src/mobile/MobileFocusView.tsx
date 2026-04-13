@@ -13,6 +13,7 @@ import type { Task, TodoList, Tag } from '../types/domain'
 import { priorityMeta } from '@taskflow/core'
 import { formatDateTime, getDateKey, addDays, shiftDateTimeByDays } from '../utils/dates'
 import { useVirtualizer } from '@tanstack/react-virtual'
+import styles from './MobileFocusView.module.css'
 
 // ── VirtualFocusList — 虚拟化任务列表（@tanstack/react-virtual）─────────────
 type VirtualFocusItem =
@@ -79,7 +80,7 @@ function VirtualFocusList({
   })
 
   return (
-    <div ref={parentRef} className="mobile-focus-virtual-scroll">
+    <div ref={parentRef} className={styles.mobileFocusVirtualScroll}>
       <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
         {virtualizer.getVirtualItems().map((vItem) => {
           const item = items[vItem.index]
@@ -92,14 +93,14 @@ function VirtualFocusList({
             >
               {item.type === 'section-header' ? (
                 <header
-                  className={`mobile-focus-section__header mobile-focus-section__header--${item.tone}`}
+                  className={`${styles.mobileFocusSectionHeader} mobile-focus-section__header--${item.tone}`}
                   onClick={item.collapsible ? onToggleUpcoming : undefined}
                   role={item.collapsible ? 'button' : undefined}
                 >
-                  <span className="mobile-focus-section__icon">{item.icon}</span>
-                  <span className="mobile-focus-section__title">{item.title}</span>
-                  <span className="mobile-focus-section__count">{item.count}</span>
-                  {item.collapsible && <span className="mobile-focus-section__chevron">{item.collapsed ? '▸' : '▾'}</span>}
+                  <span className={styles.mobileFocusSectionIcon}>{item.icon}</span>
+                  <span>{item.title}</span>
+                  <span className={styles.mobileFocusSectionCount}>{item.count}</span>
+                  {item.collapsible && <span className={styles.mobileFocusSectionChevron}>{item.collapsed ? '▸' : '▾'}</span>}
                 </header>
               ) : (
                 <MobileFocusCard
@@ -121,13 +122,13 @@ function VirtualFocusList({
 }
 
 // ── SortableTaskRow — single draggable row used inside ReorderList ────────────
-function SortableTaskRow({ task, lists, onSelect }: { task: Task; lists: TodoList[]; onSelect: () => void }) {
+function SortableTaskRow({ task, lists: _lists, onSelect }: { task: Task; lists: TodoList[]; onSelect: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: task.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
   return (
-    <div ref={setNodeRef} style={style} className="mobile-reorder-row" {...attributes}>
-      <span className="mobile-reorder-handle" {...listeners}>⠿</span>
-      <span className="mobile-reorder-title" onClick={onSelect}>{task.title}</span>
+    <div ref={setNodeRef} style={style} className={styles.mobileReorderRow} {...attributes}>
+      <span className={styles.mobileReorderHandle} {...listeners}>⠿</span>
+      <span className={styles.mobileReorderTitle} onClick={onSelect}>{task.title}</span>
     </div>
   )
 }
@@ -166,7 +167,7 @@ function ReorderList({
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={items.map(t => t.id)} strategy={verticalListSortingStrategy}>
-        <div className="mobile-focus-virtual-scroll">
+        <div className={styles.mobileFocusVirtualScroll}>
           {items.map(task => (
             <SortableTaskRow
               key={task.id}
@@ -283,12 +284,12 @@ export function MobileFocusView({
   }
 
   return (
-    <div className="mobile-focus-view">
+    <div className={styles.mobileFocusView}>
       {/* #4 — scope header removed from here, now in topbar */}
 
       {/* #24 — 空状态情感化文案：区分「没有任务」和「全部完成」 */}
       {totalCount === 0 && (
-        <div className="mobile-focus-empty-emotional">
+        <div className={styles.mobileFocusEmptyEmotional}>
           {completedTodayCount > 0 ? (
             <>
               <div className="emoji">🎉</div>
@@ -309,9 +310,9 @@ export function MobileFocusView({
         <>
           {/* 排序提示条（仅排序模式显示） */}
           {reorderMode && (
-            <div className="mobile-focus-reorder-bar">
+            <div className={styles.mobileFocusReorderBar}>
               <span>拖动调整顺序</span>
-              <button className="mobile-focus-reorder-bar__done" onClick={() => setReorderMode(false)}>完成</button>
+              <button className={styles.mobileFocusReorderBarDone} onClick={() => setReorderMode(false)}>完成</button>
             </div>
           )}
           {reorderMode ? (
@@ -336,7 +337,7 @@ export function MobileFocusView({
           )}
           {/* 排序浮动按钮（右上角小图标，不占列表空间） */}
           {!reorderMode && (
-            <button className="mobile-focus-reorder-fab" onClick={() => setReorderMode(true)} aria-label="排序">
+            <button className={styles.mobileFocusReorderFab} onClick={() => setReorderMode(true)} aria-label="排序">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <rect x="2" y="3.5" width="12" height="1.5" rx=".75"/>
                 <rect x="2" y="7.25" width="12" height="1.5" rx=".75"/>
@@ -368,14 +369,14 @@ export function MobileFocusSection({
   onToggle?: () => void
 }) {
   return (
-    <section className={`mobile-focus-section mobile-focus-section--${tone}`}>
-      <header className="mobile-focus-section__header" onClick={onToggle} role={onToggle ? 'button' : undefined}>
-        <span className="mobile-focus-section__icon">{icon}</span>
-        <span className="mobile-focus-section__title">{title}</span>
-        <span className="mobile-focus-section__count">{count}</span>
-        {onToggle && <span className="mobile-focus-section__chevron">{collapsed ? '▸' : '▾'}</span>}
+    <section className={`${styles.mobileFocusSection} mobile-focus-section--${tone}`}>
+      <header className={styles.mobileFocusSectionHeader} onClick={onToggle} role={onToggle ? 'button' : undefined}>
+        <span className={styles.mobileFocusSectionIcon}>{icon}</span>
+        <span>{title}</span>
+        <span className={styles.mobileFocusSectionCount}>{count}</span>
+        {onToggle && <span className={styles.mobileFocusSectionChevron}>{collapsed ? '▸' : '▾'}</span>}
       </header>
-      <div className="mobile-focus-section__list">
+      <div>
         {children}
       </div>
     </section>
@@ -492,31 +493,31 @@ function MobileFocusCard({
   return (
     <div
       ref={cardRef}
-      className="mobile-focus-card-wrapper"
+      className={styles.mobileFocusCardWrapper}
       style={{ position: 'relative', overflow: 'hidden', borderRadius: 14, marginBottom: 6 }}
     >
       {/* 右滑背景：完成 — 仅在 swipeX > 0 时可见 */}
       {swipeX > 0 && (
-        <div className="mobile-swipe-action mobile-swipe-action--complete" aria-hidden="true">
+        <div className={`${styles.mobileSwipeAction} ${styles.mobileSwipeActionComplete}`} aria-hidden="true">
           <span>{swipeX >= COMPLETE_THRESHOLD ? '✓ 完成!' : '➜ 完成'}</span>
         </div>
       )}
       {/* 左滑背景：推迟 + 删除 — 仅在 swipeX < 0 时可见 */}
       {swipeX < 0 && (
-        <div className="mobile-swipe-action mobile-swipe-action--actions" aria-hidden="true">
+        <div className={`${styles.mobileSwipeAction} ${styles.mobileSwipeActionActions}`} aria-hidden="true">
           <button
-            className="mobile-swipe-btn mobile-swipe-btn--snooze"
+            className={`${styles.mobileSwipeBtn} ${styles.mobileSwipeBtnSnooze}`}
             onClick={e => { e.stopPropagation(); onSnooze?.(); resetSwipe() }}
           >明天</button>
           <button
-            className="mobile-swipe-btn mobile-swipe-btn--delete"
+            className={`${styles.mobileSwipeBtn} ${styles.mobileSwipeBtnDelete}`}
             onClick={e => { e.stopPropagation(); onDelete?.(); resetSwipe() }}
           >删除</button>
         </div>
       )}
       {/* 卡片主体 */}
       <div
-        className={`mobile-focus-card ${isOverdueTask ? 'is-overdue' : ''} priority-${task.priority} ${isCompleting ? 'is-completing' : ''}`}
+        className={`${styles.mobileFocusCard} ${isOverdueTask ? 'is-overdue' : ''} priority-${task.priority} ${isCompleting ? 'is-completing' : ''}`}
         style={{ ...cardStyle, marginBottom: 0, borderRadius: 14 }}
         onClick={() => { if (revealed) { resetSwipe(); return }; onSelect() }}
         onTouchStart={handleTouchStart}
@@ -530,11 +531,11 @@ function MobileFocusCard({
         >
           {task.completed ? '✓' : ''}
         </button>
-        <div className="mobile-focus-card__content">
-          <span className="mobile-focus-card__title">{task.title}</span>
-          <span className="mobile-focus-card__meta">
+        <div className={styles.mobileFocusCardContent}>
+          <span className={styles.mobileFocusCardTitle}>{task.title}</span>
+          <span className={styles.mobileFocusCardMeta}>
             {dueTime && (
-              <span className="mobile-focus-card__plan">
+              <span className={styles.mobileFocusCardPlan}>
                 <svg className="meta-icon" viewBox="0 0 16 16" fill="none" aria-label="计划时间">
                   <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2"/>
                   <path d="M8 5v3.5l2 1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
@@ -543,7 +544,7 @@ function MobileFocusCard({
               </span>
             )}
             {dlTime && (
-              <span className={`mobile-focus-card__ddl ${isDlUrgent ? 'is-urgent' : ''}`}>
+              <span className={`${styles.mobileFocusCardDdl} ${isDlUrgent ? 'is-urgent' : ''}`}>
                 <svg className="meta-icon" viewBox="0 0 16 16" fill="none" aria-label="截止时间">
                   <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
                   <path d="M5 2v3M11 2v3M2 7h12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
@@ -553,7 +554,7 @@ function MobileFocusCard({
               </span>
             )}
             {!dueTime && !dlTime && (
-              <span className="mobile-focus-card__no-date">
+              <span className={styles.mobileFocusCardNoDate}>
                 <svg className="meta-icon" viewBox="0 0 16 16" fill="none" aria-label="无排期">
                   <circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.2" strokeDasharray="2 2"/>
                 </svg>
@@ -562,9 +563,9 @@ function MobileFocusCard({
             )}
             {/* 所属清单小标签 */}
             {taskList && (
-              <span className="mobile-focus-card__list-tag">
+              <span className={styles.mobileFocusCardListTag}>
                 <span
-                  className="mobile-focus-card__list-dot"
+                  className={styles.mobileFocusCardListDot}
                   style={{ background: taskList.color }}
                   aria-hidden="true"
                 />
