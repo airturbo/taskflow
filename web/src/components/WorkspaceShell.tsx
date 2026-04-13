@@ -200,7 +200,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
   const openInlineCreate = ({ view, anchorRect, dateKey = '', listId, priority, tagIds = [], isUrgent = false, isImportant = false, status, guidance, time = '' }: InlineCreateRequest) => {
     const fallbackListId = p.selectionKind === 'list' ? p.selectionId : p.quickListId
-    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, isUrgent, isImportant, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect) })
+    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, isUrgent, isImportant, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect), anchorRect })
   }
 
   const resolveTagIdsFromNames = (tagNames: string[]): string[] => {

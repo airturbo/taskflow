@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { InlineCreateDraft, InlineCreatePosition } from '../types/workspace'
 import type { WorkspaceView, TodoList, Tag, Priority, TaskStatus } from '../types/domain'
+import { computePosition, flip, shift, offset as fuOffset } from '@floating-ui/dom'
 import { statusMeta, priorityMeta } from '@taskflow/core'
 import {
   clampInlineCreatePosition,
   getTopDockedInlineCreatePosition,
   normalizeInlineCreatePosition,
   persistInlineCreatePositionMemory,
+  readInlineCreatePositionMemory,
   INLINE_CREATE_MAX_WIDTH,
   INLINE_CREATE_ESTIMATED_HEIGHT,
   INLINE_CREATE_TOP_DOCK_THRESHOLD,
@@ -50,6 +52,29 @@ export function InlineCreatePopover({
   const positionRef = useRef<InlineCreatePosition>(draft.position)
   const [position, setPosition] = useState(draft.position)
   const [isDragging, setIsDragging] = useState(false)
+
+  // Use @floating-ui/dom to compute initial placement when no remembered position exists
+  useLayoutEffect(() => {
+    const anchorRect = draft.anchorRect
+    if (!anchorRect || !popoverRef.current) return
+    // If user has a remembered position, skip floating-ui (honor their preference)
+    if (readInlineCreatePositionMemory()) return
+    const virtualEl = {
+      getBoundingClientRect: () => anchorRect,
+    }
+    computePosition(virtualEl as Element, popoverRef.current, {
+      placement: 'bottom',
+      middleware: [
+        fuOffset(8),
+        flip({ padding: INLINE_CREATE_VIEWPORT_GUTTER }),
+        shift({ padding: INLINE_CREATE_VIEWPORT_GUTTER }),
+      ],
+    }).then(({ x, y }) => {
+      const clamped = clampInlineCreatePosition(x, y, popoverRef.current!.offsetWidth || INLINE_CREATE_MAX_WIDTH, popoverRef.current!.offsetHeight || INLINE_CREATE_ESTIMATED_HEIGHT)
+      updatePositionState({ ...clamped, mode: 'floating' })
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const updatePositionState = (nextPosition: InlineCreatePosition) => {
     positionRef.current = nextPosition

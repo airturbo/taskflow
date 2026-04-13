@@ -123,6 +123,7 @@ export type InlineCreateDraft = {
   time: string
   guidance: string
   position: InlineCreatePosition
+  anchorRect?: DOMRect | null
 }
 
 export type InlineCreateRequest = {
