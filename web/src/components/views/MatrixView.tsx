@@ -254,7 +254,7 @@ export function MatrixView({
                           </div>
                           <TaskTimeSummary task={task} compact />
                         </div>
-                        <strong className={styles.matrixCardTitle}>{task.title}</strong>
+                        <strong className={styles.matrixCardTitle}>{task.repeatRule && task.repeatRule !== '不重复' ? '🔄 ' : ''}{task.title}</strong>
                         <p>
                           <span className={styles.matrixCardListDot} style={{ background: list?.color || 'var(--text-3)' }} />
                           {list?.name ?? '未知清单'}

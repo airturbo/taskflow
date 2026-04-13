@@ -14,6 +14,9 @@ import { requestAuthScreen } from '../utils/auth-events'
 import { getCalendarTaskAnchor, getProjectionAnchorDateKey, priorityMeta, addMonths, statusMeta } from '@taskflow/core'
 import { buildTimelineDraftWindow } from '@taskflow/core'
 import { parseSmartEntry } from '../utils/smart-entry'
+import { useState } from 'react'
+import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
+import { KanbanOverlayCard, statusOptions } from './views/KanbanView'
 import { AppSidebar } from './AppSidebar'
 import { AppTopBar } from './AppTopBar'
 import { MobileTabBar } from './MobileTabBar'
@@ -84,7 +87,7 @@ export interface WorkspaceShellProps {
   meShowProjects: boolean; setMeShowProjects: (v: boolean) => void
   mobileProjectListId: string | null; setMobileProjectListId: (v: string | null) => void
   mobileQuickCreateOpen: boolean; setMobileQuickCreateOpen: (v: boolean) => void
-  mobileCompletionToast: { taskId: string; title: string } | null; setMobileCompletionToast: (v: any) => void
+  mobileCompletionToast: { taskId: string; title: string; nextDueLabel?: string } | null; setMobileCompletionToast: (v: any) => void
   completionToastTimerRef: any
   mobileConfirmDialog: any; setMobileConfirmDialog: (v: any) => void
   mobilePromptDialog: any; setMobilePromptDialog: (v: any) => void
@@ -145,9 +148,30 @@ export interface WorkspaceShellProps {
   setTasks: (v: any) => void
   selectionKind: string; selectionId: string; isToolSelection: boolean
   initialState: any; desktopMode: boolean
+  // Desktop completion animation + toast (UX-02)
+  completingTaskIds?: Set<string>
+  completionFeedback?: { taskId: string; title: string; nextDueLabel?: string } | null
+  hideCompletionFeedback?: () => void
 }
 
 export function WorkspaceShell(p: WorkspaceShellProps) {
+  // ---- Kanban DnD (shared DndContext for all views) ----
+  const [kanbanActiveTaskId, setKanbanActiveTaskId] = useState<string | null>(null)
+  const kanbanActiveTask = kanbanActiveTaskId ? p.tasks.find((t) => t.id === kanbanActiveTaskId) ?? null : null
+  const kanbanSensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  )
+  const handleKanbanDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setKanbanActiveTaskId(null)
+    if (!over) return
+    const taskId = String(active.id)
+    const targetStatus = String(over.id)
+    if (!statusOptions.includes(targetStatus as any)) return
+    p.applyKanbanDropFeedback(taskId, targetStatus as any)
+  }
+
   // ---- Task creation (moved from App.tsx) ----
   const commitTask = ({ title, note = '', listId, priority, tagIds = [], isUrgent = false, isImportant = false, status = 'todo' as TaskStatus, dueAt = null, startAt = null, deadlineAt = null, activityLabel }: CreateTaskPayload) => {
     const cleanTitle = title.trim()
@@ -296,6 +320,12 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
   )
 
   return (
+    <DndContext
+      sensors={kanbanSensors}
+      onDragStart={(event) => setKanbanActiveTaskId(String(event.active.id))}
+      onDragEnd={handleKanbanDragEnd}
+      onDragCancel={() => setKanbanActiveTaskId(null)}
+    >
     <div className={`${styles.appShell} ${p.isNavigationDrawerMode ? 'is-navigation-drawer' : ''} ${p.isNavigationDrawerMode && p.navigationDrawerOpen ? 'is-nav-open' : ''} ${p.isUtilityDrawerMode ? 'is-utility-drawer' : ''} ${p.isPhoneViewport ? 'is-phone' : ''} ${p.isCompactSidebar ? 'is-compact-sidebar' : ''} ${p.isCompactSidebar && p.sidebarExpanded ? 'has-expanded-sidebar' : ''}`}>
       {(!p.isNavigationDrawerMode || p.navigationDrawerOpen) && !p.isPhoneViewport && (
         <aside className={`sidebar panel ${p.isCompactSidebar ? `sidebar--compact ${p.sidebarExpanded ? 'is-expanded' : ''}` : ''} ${p.isNavigationDrawerMode ? 'sidebar--push' : ''}`}>
@@ -424,6 +454,17 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
           </section>
         )}
 
+        {p.completionFeedback && !p.isPhoneViewport && (
+          <section className={`${styles.actionToast} panel`} aria-live="polite">
+            <div>
+              <p className="eyebrow">task completed</p>
+              <strong>{'\u5DF2\u5B8C\u6210\u300C'}{p.completionFeedback.title}{'\u300D'}</strong>
+              {p.completionFeedback.nextDueLabel && <p>{'\u4E0B\u6B21\uFF1A'}{p.completionFeedback.nextDueLabel}</p>}
+            </div>
+            <button className="ghost-button small" onClick={() => { p.toggleTaskComplete(p.completionFeedback!.taskId); p.hideCompletionFeedback?.() }}>{'\u64A4\u9500'}</button>
+          </section>
+        )}
+
         {p.inlineCreate && <InlineCreatePopover draft={p.inlineCreate} lists={p.lists} tags={p.tags} onClose={() => p.setInlineCreate(null)} onSubmit={submitInlineCreate} onChange={(patch: any) => p.setInlineCreate((c: any) => (c ? { ...c, ...patch } : c))} onToggleTag={p.toggleInlineCreateTag} onManageTags={() => p.setTagManagerOpen(true)} />}
 
         {p.tagManagerOpen && (p.isPhoneViewport ? <MobileTagManagerSheet tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} /> : <TagManagementDialog tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} />)}
@@ -460,6 +501,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
             onCreateFolder={async () => { const n = await p.mobilePrompt('\u6587\u4EF6\u5939\u540D\u79F0'); if (n) p.createFolder(n) }}
             onMoveListToFolder={(listId: string, folderId: string | null) => p.updateListFolder(listId, folderId)}
             presetColors={PRESET_COLORS}
+            completingTaskIds={p.completingTaskIds}
           />
         </section>
 
@@ -489,7 +531,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
       {p.isPhoneViewport && p.mobileCompletionToast && (
         <div className={styles.mobileCompletionToast} role="status" aria-live="polite" aria-label="\u4EFB\u52A1\u5DF2\u5B8C\u6210">
-          <span className={styles.mobileCompletionToastLabel}>{'\u5DF2\u5B8C\u6210\u300C'}{p.mobileCompletionToast.title}{'\u300D'}</span>
+          <span className={styles.mobileCompletionToastLabel}>{'\u5DF2\u5B8C\u6210\u300C'}{p.mobileCompletionToast.title}{'\u300D'}{p.mobileCompletionToast.nextDueLabel ? ` \u00B7 \u4E0B\u6B21\uFF1A${p.mobileCompletionToast.nextDueLabel}` : ''}</span>
           <div className={styles.mobileCompletionToastActions}>
             <button className={styles.mobileCompletionToastSnooze} onClick={() => { const task = p.tasks.find(t => t.id === p.mobileCompletionToast!.taskId); if (task) { const newDueAt = task.dueAt ? shiftDateTimeByDays(task.dueAt, 1) : `${addDays(getDateKey(), 1)}T09:00:00`; if (task.completed) p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.updateTask(p.mobileCompletionToast!.taskId, { dueAt: newDueAt }) }; p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u660E\u5929\u518D\u505A'}</button>
             <button className={styles.mobileCompletionToastUndo} onClick={() => { p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u64A4\u9500'}</button>
@@ -501,5 +543,9 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
       <CommandPalette open={p.commandPaletteOpen} onClose={() => p.setCommandPaletteOpen(false)} tasks={p.tasks} lists={p.lists} tags={p.tags} onSelectTask={(id: string) => selectTask(id)} onSelectList={(id: string) => p.setActiveSelection(`list:${id}`)} />
     </div>
+    <DragOverlay dropAnimation={null}>
+      {kanbanActiveTask ? <KanbanOverlayCard task={kanbanActiveTask} /> : null}
+    </DragOverlay>
+    </DndContext>
   )
 }

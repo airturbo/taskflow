@@ -17,6 +17,7 @@ export type MobileFocusScope = 'all' | 'today' | 'week' | 'list'
 export interface MobileCompletionToast {
   taskId: string
   title: string
+  nextDueLabel?: string
 }
 
 interface MobileUiState {

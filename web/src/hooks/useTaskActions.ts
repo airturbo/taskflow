@@ -33,7 +33,7 @@ import {
   shiftDateTimeByDays,
 } from '../utils/dates'
 import { formatTaskWindow } from '../utils/reminder-engine'
-import { createNextRepeatTask, describeRepeatRule } from '../utils/repeat-rule'
+import { createNextRepeatTask, describeRepeatRule, nextDueDate } from '../utils/repeat-rule'
 import { openPath } from '@tauri-apps/plugin-opener'
 import {
   makeId,
@@ -72,6 +72,8 @@ export interface TaskActionsParams {
   setInlineCreate: Dispatch<SetStateAction<any>>
   markReminderSnoozed: (feedId: string) => void
   appendReminderFeed: (item: any) => void
+  /** Called when a task is being completed (not uncompleted). Used for desktop animation + toast. */
+  onTaskCompleting?: (taskId: string, title: string, nextDueLabel?: string) => void
 }
 
 const SYSTEM_TAG_IDS_LIST = Object.values(SPECIAL_TAG_IDS)
@@ -86,6 +88,7 @@ export function useTaskActions(params: TaskActionsParams) {
     setStatusChangeFeedback, statusChangeFeedback,
     setQuickTagIds, setInlineCreate,
     markReminderSnoozed, appendReminderFeed,
+    onTaskCompleting,
   } = params
 
   const getTaskByIdFromCache = (taskId: string) => tasks.find((task) => task.id === taskId) ?? null
@@ -120,6 +123,19 @@ export function useTaskActions(params: TaskActionsParams) {
         ],
       })
     })
+
+    // Notify caller (desktop animation + toast)
+    if (completing && onTaskCompleting) {
+      let nextDueLabel: string | undefined
+      if (currentTask.repeatRule && currentTask.dueAt) {
+        const nextIso = nextDueDate(currentTask.repeatRule, currentTask.dueAt)
+        if (nextIso) {
+          const d = new Date(nextIso)
+          nextDueLabel = `${d.getMonth() + 1}月${d.getDate()}日`
+        }
+      }
+      onTaskCompleting(taskId, currentTask.title, nextDueLabel)
+    }
 
     // Repeat task: auto-generate next cycle on completion
     if (completing && currentTask.repeatRule) {

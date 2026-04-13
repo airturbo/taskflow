@@ -102,6 +102,7 @@ export interface WorkspaceViewContentProps {
   onCreateFolder: () => Promise<void>
   onMoveListToFolder: (listId: string, folderId: string | null) => void
   presetColors: string[]
+  completingTaskIds?: Set<string>
 }
 
 export function WorkspaceViewContent(props: WorkspaceViewContentProps) {
@@ -278,6 +279,7 @@ function DesktopViewSwitch(props: WorkspaceViewContentProps) {
           bulkMode={props.bulkMode}
           bulkSelectedIds={props.bulkSelectedIds}
           onToggleBulkSelect={props.onToggleBulkSelect}
+          completingTaskIds={props.completingTaskIds}
         />
       </ViewErrorBoundary>
     )

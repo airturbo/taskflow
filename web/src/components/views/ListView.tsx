@@ -16,6 +16,7 @@ export function ListView({
   bulkMode = false,
   bulkSelectedIds = new Set(),
   onToggleBulkSelect,
+  completingTaskIds = new Set(),
 }: {
   tasks: Task[]
   lists: TodoList[]
@@ -29,6 +30,7 @@ export function ListView({
   bulkMode?: boolean
   bulkSelectedIds?: Set<string>
   onToggleBulkSelect?: (taskId: string) => void
+  completingTaskIds?: Set<string>
 }) {
   if (!tasks.length) return <EmptyState title="这个工作区现在很干净。" description="可以直接在顶部快速创建一条新任务。" />
 
@@ -39,11 +41,12 @@ export function ListView({
         const taskTags = task.tagIds.map((tagId) => tags.find((item) => item.id === tagId)).filter(Boolean) as Tag[]
         const subtaskDone = task.subtasks.filter((item) => item.completed).length
         const isBulkSelected = bulkSelectedIds.has(task.id)
+        const isCompleting = completingTaskIds.has(task.id)
 
         return (
           <article
             key={task.id}
-            className={`task-card ${selectedTaskId === task.id ? 'is-selected' : ''} ${isBulkSelected ? 'is-bulk-selected' : ''}`}
+            className={`task-card ${selectedTaskId === task.id ? 'is-selected' : ''} ${isBulkSelected ? 'is-bulk-selected' : ''} ${isCompleting ? 'is-completing' : ''}`}
             data-priority={task.priority}
             role="button"
             tabIndex={0}
@@ -62,7 +65,7 @@ export function ListView({
               />
             ) : (
               <button
-                className={`check-button ${task.completed ? 'is-checked' : ''}`}
+                className={`check-button ${task.completed ? 'is-checked' : ''} ${isCompleting ? 'is-completing' : ''}`}
                 onClick={(event) => {
                   event.stopPropagation()
                   onToggleTaskComplete(task.id)
@@ -79,6 +82,7 @@ export function ListView({
               {task.note && <p>{task.note}</p>}
               <div className="task-meta">
                 <span>{list?.name ?? '未知清单'}</span>
+                {task.repeatRule && task.repeatRule !== '不重复' && <span title={task.repeatRule}>🔄</span>}
                 <TaskTimeSummary task={task} compact />
                 {task.subtasks.length > 0 && (
                   <span>

@@ -385,6 +385,35 @@
 .check-button:hover { border-color: var(--green); }
 .check-button.is-checked { background: var(--green); border-color: var(--green); color: #fff; }
 
+/* ---- Task completion animation (UX-02) ---- */
+@keyframes check-bounce {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.4); }
+  65%  { transform: scale(0.85); }
+  85%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes task-slide-out {
+  0%   { opacity: 1; transform: translateX(0); max-height: 80px; padding-top: 10px; padding-bottom: 10px; margin-bottom: 1px; }
+  60%  { opacity: 0.3; }
+  100% { opacity: 0; transform: translateX(-28px); max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; overflow: hidden; }
+}
+
+.check-button.is-completing {
+  animation: check-bounce 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.task-card.is-completing .task-headline h3 {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.task-card.is-completing {
+  animation: task-slide-out 0.4s cubic-bezier(0.4, 0, 0.6, 1) 0.85s both;
+  pointer-events: none;
+}
+
 .task-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 
 .task-headline { display: flex; align-items: center; gap: 8px; }

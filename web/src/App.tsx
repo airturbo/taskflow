@@ -16,8 +16,10 @@ import { useWorkspaceComputed } from './hooks/useWorkspaceComputed'
 import { useWorkspaceEffects } from './hooks/useWorkspaceEffects'
 import { useRouterSync } from './hooks/useRouterSync'
 import { useMobileUiStore } from './stores/mobileUiStore'
+import { useDesktopUiStore } from './stores/desktopUiStore'
 import { WorkspaceShell } from './components/WorkspaceShell'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
+import { nextDueDate } from './utils/repeat-rule'
 import type {
   PersistedState,
   Task,
@@ -180,6 +182,8 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
 
   const { mobileTab, setMobileTab, mobileTabFading, mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen, mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed, mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen, quickCreateOpen: mobileQuickCreateOpen, openQuickCreate: _openQuickCreate, closeQuickCreate, completionToast: mobileCompletionToast, showCompletionToast, hideCompletionToast } = useMobileUiStore()
+
+  const { addCompletingTask, showCompletionFeedback, hideCompletionFeedback, completionFeedback, completingTaskIds } = useDesktopUiStore()
   const setMobileQuickCreateOpen = (open: boolean) => open ? _openQuickCreate() : closeQuickCreate()
   const setMobileCompletionToast = (toast: { taskId: string; title: string } | null) => toast ? showCompletionToast(toast) : hideCompletionToast()
   const setMobileFocusScope = (scope: 'all' | 'today' | 'week' | 'list') => _setMobileFocusScopeStore(scope, mobileFocusScopeListId)
@@ -308,6 +312,12 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     setStatusChangeFeedback, statusChangeFeedback,
     setQuickTagIds, setInlineCreate,
     markReminderSnoozed, appendReminderFeed,
+    onTaskCompleting: viewportWidth > 680 ? (taskId, title, nextDueLabel) => {
+      addCompletingTask(taskId)
+      showCompletionFeedback({ taskId, title, nextDueLabel })
+      // Auto-hide toast after 4s
+      window.setTimeout(() => hideCompletionFeedback(), 4000)
+    } : undefined,
   })
   const {
     updateTask, toggleTaskComplete, applyStatusChangeFeedback, applyKanbanDropFeedback,
@@ -329,7 +339,15 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const mobileToggleComplete = (taskId: string) => {
     const task = tasks.find(t => t.id === taskId)
     if (task && !task.completed) {
-      setMobileCompletionToast({ taskId, title: task.title })
+      let nextDueLabel: string | undefined
+      if (task.repeatRule && task.dueAt) {
+        const nextIso = nextDueDate(task.repeatRule, task.dueAt)
+        if (nextIso) {
+          const d = new Date(nextIso)
+          nextDueLabel = `${d.getMonth() + 1}月${d.getDate()}日`
+        }
+      }
+      setMobileCompletionToast({ taskId, title: task.title, nextDueLabel })
       if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
       completionToastTimerRef.current = window.setTimeout(() => setMobileCompletionToast(null), 3000)
     }
@@ -445,6 +463,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       setTasks={setTasks}
       selectionKind={selectionKind} selectionId={selectionId} isToolSelection={isToolSelection}
       initialState={initialState} desktopMode={desktopMode}
+      completingTaskIds={completingTaskIds}
+      completionFeedback={completionFeedback}
+      hideCompletionFeedback={hideCompletionFeedback}
     />
   )
 }
