@@ -1,0 +1,267 @@
+/* StatsView.module.css
+   Covers: tool-layout, projection-summary/recovery, stats-grid, stats-card,
+           chart-card, trend-*, progress-bar, stats-heatmap-*
+   Globals kept: panel-header (shared across TaskDetailPanel, ReminderCenterPanel, App, etc.),
+                 eyebrow, ghost-button (shared)
+   Responsive: @1280px, @960px, @680px projection/stats rules extracted here
+*/
+
+/* ---- Root layout ---- */
+
+.toolLayout {
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* ---- Projection Summary ---- */
+
+.projectionSummary {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 10px 12px; margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(124, 156, 255, 0.055), rgba(124, 156, 255, 0.012));
+}
+
+.projectionSummaryHeader {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+}
+
+.projectionSummaryIntro {
+  min-width: 0; flex: 1 1 320px;
+}
+
+.projectionSummaryToolbar {
+  display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center;
+  gap: 5px; flex: 0 1 340px;
+}
+
+.projectionSummaryToolbar :global(.search-input) {
+  flex: 1 1 200px;
+  max-width: 280px;
+  min-width: 160px;
+}
+
+.projectionSummaryHeader h3,
+.projectionRecoveryHeader h3 {
+  margin: 0; font-size: 13px; font-weight: 600;
+}
+
+.projectionSummaryHeader p,
+.projectionRecoveryHeader p {
+  margin: 2px 0 0; font-size: 11px; line-height: 1.35; color: var(--text-secondary);
+}
+
+.projectionSummaryScopes {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+
+.projectionScopeChip {
+  display: inline-flex; align-items: center;
+  padding: 3px 7px; border-radius: 999px;
+  border: 1px solid rgba(124, 156, 255, 0.12);
+  background: rgba(124, 156, 255, 0.045); color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.projectionSummaryMetrics {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); gap: 5px;
+}
+
+.projectionMetric {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  min-height: 60px; padding: 8px 9px; border-radius: 12px;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02);
+  color: var(--text); text-align: left; transition: background var(--transition), border-color var(--transition);
+}
+
+button.projectionMetric { cursor: pointer; }
+button.projectionMetric:hover,
+button.projectionMetric:focus-visible {
+  background: rgba(124, 156, 255, 0.08); border-color: rgba(124, 156, 255, 0.28);
+}
+
+button.projectionMetric:global(.is-active) {
+  border-color: rgba(124, 156, 255, 0.34); background: rgba(124, 156, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.12);
+}
+
+button.projectionMetric:disabled {
+  cursor: default; opacity: 0.72;
+}
+
+.projectionMetric span { font-size: 10px; color: var(--text-tertiary); }
+.projectionMetric strong { font-size: 16px; font-weight: 600; line-height: 1.02; }
+.projectionMetric small { font-size: 10px; color: var(--text-secondary); line-height: 1.25; }
+
+/* ---- Projection Recovery ---- */
+
+.projectionRecovery {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px 16px; margin-bottom: 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-m);
+  background: rgba(15, 23, 42, 0.22);
+}
+
+.projectionRecovery:global(.projection-recovery--unscheduled) {
+  border-color: rgba(255, 180, 84, 0.26);
+  background: rgba(255, 180, 84, 0.08);
+}
+
+.projectionRecovery:global(.projection-recovery--outside) {
+  border-color: rgba(124, 156, 255, 0.24);
+  background: rgba(124, 156, 255, 0.08);
+}
+
+.projectionRecoveryHeader,
+.projectionRecoveryItem,
+.projectionRecoveryFooter {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+
+.projectionRecoveryList {
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.projectionRecoveryItem {
+  padding: 10px 12px; border-radius: var(--radius-s);
+  border: 1px solid rgba(255, 255, 255, 0.04); background: rgba(255, 255, 255, 0.04);
+}
+
+.projectionRecoveryItem strong {
+  display: block; margin-bottom: 3px; font-size: 13px; font-weight: 600;
+}
+
+.projectionRecoveryItem p,
+.projectionRecoveryEmpty {
+  margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-secondary);
+}
+
+/* ---- Stats Grid + Cards ---- */
+
+.statsGrid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+
+.statsCard {
+  border-radius: var(--radius-m); border: 1px solid var(--border);
+  background: var(--surface-raised); padding: 14px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: auto;
+}
+.statsCard span { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+.statsCard strong { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+
+.statsCardHighlight {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-secondary));
+}
+
+/* ---- Chart Card ---- */
+
+.chartCard {
+  border-radius: var(--radius-m); border: 1px solid var(--border);
+  background: var(--surface-raised); padding: 16px;
+}
+
+/* ---- Trend bars (priority/tag distribution) ---- */
+
+.trendBars { display: flex; flex-direction: column; gap: 8px; }
+.trendRow { display: flex; align-items: center; gap: 8px; }
+.trendRow span:first-child { width: 80px; font-size: 12px; color: var(--text-secondary); }
+.trendRow .progressBar { flex: 1; }
+.trendRow strong { font-size: 12px; font-weight: 600; min-width: 24px; text-align: right; }
+
+/* ---- Progress bar ---- */
+
+.progressBar {
+  height: 6px; border-radius: 3px; background: var(--surface-hover); overflow: hidden;
+}
+.progressBar span { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+
+/* ---- 30-day trend chart ---- */
+
+.trendChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 80px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.trendBarCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.trendBarWrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.trendBarFill {
+  width: 100%;
+  min-height: 0;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent);
+  opacity: 0.55;
+  transition: height 0.3s ease;
+}
+
+.trendBarFill:global(.is-today) {
+  opacity: 1;
+  background: var(--accent);
+}
+
+.trendBarLabel {
+  position: absolute;
+  bottom: 0;
+  font-size: 9px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+/* ---- Heatmap ---- */
+
+.statsHeatmapWrapper { overflow-x: auto; padding-bottom: 8px; }
+.statsHeatmapSvg { display: block; }
+.statsHeatmapLegend { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11px; color: var(--text-tertiary); }
+.statsHeatmapEmptyHint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 8px;
+  padding: 4px 0 8px;
+}
+
+/* ---- @media 1280px ---- */
+@media (max-width: 1280px) {
+  .statsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .projectionSummaryHeader { flex-wrap: wrap; }
+  .projectionSummaryToolbar { width: 100%; justify-content: flex-start; flex-basis: 100%; }
+}
+
+/* ---- @media 960px ---- */
+@media (max-width: 960px) {
+  .statsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .projectionSummary,
+  .projectionRecovery { padding-left: 16px; padding-right: 16px; }
+  .projectionSummaryToolbar { width: 100%; justify-content: flex-start; }
+}
+
+/* ---- @media 680px ---- */
+@media (max-width: 680px) {
+  .statsGrid { grid-template-columns: 1fr; }
+}
+
+/* ---- is-phone overrides ---- */
+:global(.is-phone) .projectionSummary {
+  display: none;
+}

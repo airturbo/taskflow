@@ -607,125 +607,7 @@
 /* ---- Calendar ---- */
 .sparse-guide { display: none; }
 
-.projection-summary {
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 10px 12px; margin-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(124, 156, 255, 0.055), rgba(124, 156, 255, 0.012));
-}
-
-.projection-summary__header {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
-}
-
-.projection-summary__intro {
-  min-width: 0; flex: 1 1 320px;
-}
-
-.projection-summary__toolbar {
-  display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center;
-  gap: 5px; flex: 0 1 340px;
-}
-
-.projection-summary__toolbar .search-input {
-  flex: 1 1 200px;
-  max-width: 280px;
-  min-width: 160px;
-}
-
-.projection-summary__header h3,
-.projection-recovery__header h3 {
-  margin: 0; font-size: 13px; font-weight: 600;
-}
-
-.projection-summary__header p,
-.projection-recovery__header p {
-  margin: 2px 0 0; font-size: 11px; line-height: 1.35; color: var(--text-secondary);
-}
-
-.projection-summary__scopes {
-  display: flex; flex-wrap: wrap; gap: 5px;
-}
-
-.projection-scope-chip {
-  display: inline-flex; align-items: center;
-  padding: 3px 7px; border-radius: 999px;
-  border: 1px solid rgba(124, 156, 255, 0.12);
-  background: rgba(124, 156, 255, 0.045); color: var(--text-secondary);
-  font-size: 10px;
-  line-height: 1.2;
-}
-
-.projection-summary__metrics {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); gap: 5px;
-}
-
-.projection-metric {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
-  min-height: 60px; padding: 8px 9px; border-radius: 12px;
-  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02);
-  color: var(--text); text-align: left; transition: background var(--transition), border-color var(--transition);
-}
-
-button.projection-metric { cursor: pointer; }
-button.projection-metric:hover,
-button.projection-metric:focus-visible {
-  background: rgba(124, 156, 255, 0.08); border-color: rgba(124, 156, 255, 0.28);
-}
-
-button.projection-metric.is-active {
-  border-color: rgba(124, 156, 255, 0.34); background: rgba(124, 156, 255, 0.14);
-  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.12);
-}
-
-button.projection-metric:disabled {
-  cursor: default; opacity: 0.72;
-}
-
-.projection-metric span { font-size: 10px; color: var(--text-tertiary); }
-.projection-metric strong { font-size: 16px; font-weight: 600; line-height: 1.02; }
-.projection-metric small { font-size: 10px; color: var(--text-secondary); line-height: 1.25; }
-
-.projection-recovery {
-  display: flex; flex-direction: column; gap: 12px;
-  padding: 14px 16px; margin-bottom: 14px;
-  border: 1px solid var(--border); border-radius: var(--radius-m);
-  background: rgba(15, 23, 42, 0.22);
-}
-
-.projection-recovery--unscheduled {
-  border-color: rgba(255, 180, 84, 0.26);
-  background: rgba(255, 180, 84, 0.08);
-}
-
-.projection-recovery--outside {
-  border-color: rgba(124, 156, 255, 0.24);
-  background: rgba(124, 156, 255, 0.08);
-}
-
-.projection-recovery__header,
-.projection-recovery-item,
-.projection-recovery__footer {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-
-.projection-recovery__list {
-  display: flex; flex-direction: column; gap: 8px;
-}
-
-.projection-recovery-item {
-  padding: 10px 12px; border-radius: var(--radius-s);
-  border: 1px solid rgba(255, 255, 255, 0.04); background: rgba(255, 255, 255, 0.04);
-}
-
-.projection-recovery-item strong {
-  display: block; margin-bottom: 3px; font-size: 13px; font-weight: 600;
-}
-
-.projection-recovery-item p,
-.projection-recovery__empty {
-  margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-secondary);
-}
+/* ---- projection-summary, projection-recovery → StatsView.module.css ---- */
 
 /* .calendar-nav, .calendar-controls, .calendar-visibility-toggle, .calendar-window-label, .date-picker-input → WorkspaceShell.module.css */
 
@@ -790,7 +672,7 @@ button.projection-metric:disabled {
 /* ---- Matrix → MatrixView.module.css ---- */
 
 /* ---- Tools Layout ---- */
-.tool-layout { display: flex; flex-direction: column; gap: 16px; }
+/* .tool-layout → StatsView.module.css */
 .focus-layout { display: flex; flex-direction: column; gap: 16px; }
 
 .tool-panel, .hero-tool, .hero-focus {
@@ -801,11 +683,7 @@ button.projection-metric:disabled {
 .tool-panel h3, .hero-tool h3, .hero-focus h3 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
 .tool-panel .eyebrow, .hero-focus .eyebrow { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 4px; }
 
-.progress-bar {
-  height: 6px; border-radius: 3px; background: var(--surface-hover); overflow: hidden;
-}
-.progress-bar.large { height: 8px; }
-.progress-bar span { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+/* .progress-bar → StatsView.module.css */
 
 .sparkline { display: flex; align-items: flex-end; gap: 3px; height: 48px; }
 .sparkline span { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent); opacity: 0.6; }
@@ -824,78 +702,9 @@ button.projection-metric:disabled {
 .habit-card__top .eyebrow { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
 .habit-card p { font-size: 12px; color: var(--text-secondary); margin: 0 0 6px; }
 
-/* ---- Stats ---- */
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-
-.stats-card {
-  border-radius: var(--radius-m); border: 1px solid var(--border);
-  background: var(--surface-raised); padding: 14px;
-  display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: auto;
-}
-.stats-card span { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
-.stats-card strong { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
-
-.chart-card {
-  border-radius: var(--radius-m); border: 1px solid var(--border);
-  background: var(--surface-raised); padding: 16px;
-}
-
-.trend-bars { display: flex; flex-direction: column; gap: 8px; }
-.trend-row { display: flex; align-items: center; gap: 8px; }
-.trend-row span:first-child { width: 80px; font-size: 12px; color: var(--text-secondary); }
-.trend-row .progress-bar { flex: 1; }
-.trend-row strong { font-size: 12px; font-weight: 600; min-width: 24px; text-align: right; }
-
-/* 30天趋势柱状图 */
-.trend-chart {
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 80px;
-  padding-bottom: 18px;
-  position: relative;
-}
-.trend-bar-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  position: relative;
-}
-.trend-bar-wrap {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-}
-.trend-bar-fill {
-  width: 100%;
-  min-height: 0;
-  border-radius: 2px 2px 0 0;
-  background: var(--accent);
-  opacity: 0.55;
-  transition: height 0.3s ease;
-}
-.trend-bar-fill.is-today {
-  opacity: 1;
-  background: var(--accent);
-}
-.trend-bar-label {
-  position: absolute;
-  bottom: 0;
-  font-size: 9px;
-  color: var(--text-tertiary);
-  white-space: nowrap;
-  transform: translateX(-50%);
-  left: 50%;
-}
-
-/* Streak 高亮卡片 */
-.stats-card--highlight {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--bg-secondary));
-}
+/* ---- Stats → StatsView.module.css ---- */
+/* stats-grid, stats-card, stats-card--highlight, chart-card,
+   trend-bars, trend-row, trend-chart, trend-bar-col/wrap/fill/label → StatsView.module.css */
 
 
 /* ---- Right Rail ---- */
@@ -1148,9 +957,7 @@ button.projection-metric:disabled {
 /* ---- 1280px 以下：右侧 rail 变抽屉 ---- */
 /* .app-shell grid → WorkspaceShell.module.css */
 @media (max-width: 1280px) {
-  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .projection-summary__header { flex-wrap: wrap; }
-  .projection-summary__toolbar { width: 100%; justify-content: flex-start; flex-basis: 100%; }
+  /* .stats-grid, .projection-summary__header/.toolbar @1280px → StatsView.module.css */
   /* .calendar-grid.month/week, .calendar-weekday-header, .calendar-create-strip @1280px → CalendarView.module.css */
   /* .kanban-grid @1280px → KanbanView.module.css */
   /* .matrix-grid @1280px → MatrixView.module.css */
@@ -1350,9 +1157,7 @@ button.projection-metric:disabled {
     width: 100%;
     min-width: 0;
   }
-  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .projection-summary, .projection-recovery { padding-left: 16px; padding-right: 16px; }
-  .projection-summary__toolbar { width: 100%; justify-content: flex-start; }
+  /* .stats-grid, .projection-summary/.projection-recovery padding, .projection-summary__toolbar @960px → StatsView.module.css */
   .reminder-feed-item__toolbar { justify-content: flex-start; }
 }
 
@@ -1403,7 +1208,8 @@ button.projection-metric:disabled {
   }
   .workspace { padding: 14px; }
   .search-input { min-width: 0; }
-  .stats-grid, .two-col, .habit-grid, .inline-adder {
+  /* .stats-grid @680px → StatsView.module.css */
+  .two-col, .habit-grid, .inline-adder {
     grid-template-columns: 1fr;
   }
   /* .calendar-grid.week/month, .calendar-weekday-header, .calendar-create-strip @680px → CalendarView.module.css */
@@ -2320,10 +2126,10 @@ button.projection-metric:disabled {
 
 /* ---- 手机端隐藏桌面端特有元素 ---- */
 .is-phone .view-switcher,
-.is-phone .bulk-toolbar,
-.is-phone .projection-summary {
+.is-phone .bulk-toolbar {
   display: none;
 }
+/* .is-phone .projection-summary display:none → StatsView.module.css */
 
 /* ---- Phase 2: 手机端任务卡片降密度 ---- */
 .is-phone .task-card .task-main > p {
@@ -4341,10 +4147,7 @@ button.projection-metric:disabled {
 .mobile-detail__upload-error { font-size: 12px; color: #ef4444; margin: 4px 0; }
 .mobile-detail__attach-actions { display: flex; gap: 8px; margin-top: 4px; }
 
-/* ---- StatsView Heatmap ---- */
-.stats-heatmap-wrapper { overflow-x: auto; padding-bottom: 8px; }
-.stats-heatmap-svg { display: block; }
-.stats-heatmap-legend { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11px; color: var(--text-tertiary); }
+/* ---- StatsView Heatmap → StatsView.module.css ---- */
 
 /* ---- M-P1-2 Focus View Reorder ---- */
 /* FAB 浮动排序按钮 — 右上角小圆形，不占列表空间 */
@@ -4420,13 +4223,7 @@ button.projection-metric:disabled {
 }
 
 /* ── Stats + ListView polish ───────────────────────── */
-.stats-heatmap-empty-hint {
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-3);
-  margin-top: 8px;
-  padding: 4px 0 8px;
-}
+/* .stats-heatmap-empty-hint → StatsView.module.css */
 .task-tags-more {
   font-size: 11px;
   color: var(--text-3);

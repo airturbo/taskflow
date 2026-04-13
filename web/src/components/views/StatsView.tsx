@@ -4,6 +4,7 @@ import type { Task, Tag, Priority } from '../../types/domain'
 import type { ProjectionSummaryMetric, ProjectionInsightMode, ProjectionRecoveryItem } from '../../types/workspace'
 import { isTaskRiskOverdue, priorityMeta } from '@taskflow/core'
 import { getDateKey, addDays } from '../../utils/dates'
+import styles from './StatsView.module.css'
 
 function ProjectionSummary({
   eyebrow,
@@ -23,15 +24,15 @@ function ProjectionSummary({
   auxiliaryAction?: { label: string; onClick: () => void }
 }) {
   return (
-    <section className="projection-summary panel">
-      <div className="projection-summary__header">
-        <div className="projection-summary__intro">
+    <section className={`${styles.projectionSummary} panel`}>
+      <div className={styles.projectionSummaryHeader}>
+        <div className={styles.projectionSummaryIntro}>
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}
           <h3>{title}</h3>
           {description && <p>{description}</p>}
         </div>
         {(toolbar || auxiliaryAction) && (
-          <div className="projection-summary__toolbar">
+          <div className={styles.projectionSummaryToolbar}>
             {toolbar}
             {auxiliaryAction && (
               <button className="ghost-button small" onClick={auxiliaryAction.onClick}>
@@ -42,15 +43,15 @@ function ProjectionSummary({
         )}
       </div>
       {scopes.length > 0 && (
-        <div className="projection-summary__scopes">
+        <div className={styles.projectionSummaryScopes}>
           {scopes.map((scope) => (
-            <span key={scope} className="projection-scope-chip">
+            <span key={scope} className={styles.projectionScopeChip}>
               {scope}
             </span>
           ))}
         </div>
       )}
-      <div className="projection-summary__metrics">
+      <div className={styles.projectionSummaryMetrics}>
         {metrics.map((metric) => {
           const content = (
             <>
@@ -64,14 +65,14 @@ function ProjectionSummary({
             <button
               key={metric.label}
               type="button"
-              className={`projection-metric ${metric.active ? 'is-active' : ''}`}
+              className={`${styles.projectionMetric} ${metric.active ? 'is-active' : ''}`}
               onClick={metric.onClick}
               disabled={metric.disabled}
             >
               {content}
             </button>
           ) : (
-            <article key={metric.label} className="projection-metric is-static">
+            <article key={metric.label} className={`${styles.projectionMetric} is-static`}>
               {content}
             </article>
           )
@@ -97,8 +98,8 @@ function ProjectionRecoveryPanel({
   onClose: () => void
 }) {
   return (
-    <section className={`projection-recovery projection-recovery--${mode}`}>
-      <div className="projection-recovery__header">
+    <section className={`${styles.projectionRecovery} projection-recovery--${mode}`}>
+      <div className={styles.projectionRecoveryHeader}>
         <div>
           <p className="eyebrow">recovery path</p>
           <h3>{title}</h3>
@@ -108,10 +109,10 @@ function ProjectionRecoveryPanel({
           收起
         </button>
       </div>
-      <div className="projection-recovery__list">
+      <div className={styles.projectionRecoveryList}>
         {items.length > 0 ? (
           items.map((item) => (
-            <article key={item.id} className="projection-recovery-item">
+            <article key={item.id} className={styles.projectionRecoveryItem}>
               <div>
                 <strong>{item.title}</strong>
                 <p>{item.subtitle}</p>
@@ -122,11 +123,11 @@ function ProjectionRecoveryPanel({
             </article>
           ))
         ) : (
-          <div className="projection-recovery__empty">当前没有更多可回收的任务。</div>
+          <div className={styles.projectionRecoveryEmpty}>当前没有更多可回收的任务。</div>
         )}
       </div>
       {footerAction && (
-        <div className="projection-recovery__footer">
+        <div className={styles.projectionRecoveryFooter}>
           <button className="ghost-button small" onClick={footerAction.onClick}>
             {footerAction.label}
           </button>
@@ -281,20 +282,20 @@ export function StatsView({
   }
 
   return (
-    <div className="tool-layout">
+    <div className={styles.toolLayout}>
       {/* Completion Heatmap */}
-      <section className="stats-section chart-card">
+      <section className={styles.chartCard}>
         <div className="panel-header">
           <div>
             <p className="eyebrow">activity</p>
             <h3>完成热力图（过去一年）</h3>
           </div>
         </div>
-        <div className="stats-heatmap-wrapper">
+        <div className={styles.statsHeatmapWrapper}>
           <svg
             width={heatmapData.weeks.length * 13}
             height={7 * 13 + 20}
-            className="stats-heatmap-svg"
+            className={styles.statsHeatmapSvg}
           >
             {heatmapData.weeks.map((week, wi) =>
               week.map((day, di) => (
@@ -312,7 +313,7 @@ export function StatsView({
               ))
             )}
           </svg>
-          <div className="stats-heatmap-legend">
+          <div className={styles.statsHeatmapLegend}>
             <span>少</span>
             {(['#9be9a8', '#40c463', '#30a14e', '#216e39'] as const).map(c => (
               <span key={c} style={{ display: 'inline-block', width: 11, height: 11, background: c, borderRadius: 2 }} />
@@ -320,48 +321,48 @@ export function StatsView({
             <span>多</span>
           </div>
           {resolvedStats.completed === 0 && (
-            <p className="stats-heatmap-empty-hint">完成更多任务，解锁你的专属热力图 🔥</p>
+            <p className={styles.statsHeatmapEmptyHint}>完成更多任务，解锁你的专属热力图 🔥</p>
           )}
         </div>
       </section>
 
       {/* 核心指标 */}
-      <div className="stats-grid">
-        <article className="stats-card">
+      <div className={styles.statsGrid}>
+        <article className={styles.statsCard}>
           <span>已完成任务</span>
           <strong>
             {resolvedStats.completed}
             <small style={{ fontSize: 13, fontWeight: 400, opacity: 0.5 }}> / {resolvedStats.completed + resolvedStats.active}</small>
           </strong>
         </article>
-        <article className="stats-card">
+        <article className={styles.statsCard}>
           <span>活跃任务</span>
           <strong>
             {resolvedStats.active}
             <small style={{ fontSize: 13, fontWeight: 400, opacity: 0.5 }}> / {resolvedStats.completed + resolvedStats.active}</small>
           </strong>
         </article>
-        <article className="stats-card">
+        <article className={styles.statsCard}>
           <span>已逾期</span>
           <strong style={{ color: resolvedStats.overdue > 0 ? '#ff6b7a' : undefined }}>{resolvedStats.overdue}</strong>
         </article>
-        <article className="stats-card">
+        <article className={styles.statsCard}>
           <span>已排期</span>
           <strong>{resolvedStats.scheduled}</strong>
         </article>
-        <article className="stats-card stats-card--highlight">
+        <article className={`${styles.statsCard} ${styles.statsCardHighlight}`}>
           <span>连续完成</span>
           <strong>{streak.current} <small style={{ fontSize: 13, fontWeight: 400 }}>天</small></strong>
           <p style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>最长 {streak.longest} 天</p>
         </article>
-        <article className="stats-card">
+        <article className={styles.statsCard}>
           <span>累计专注</span>
           <strong>{focusHours > 0 ? `${focusHours}h ` : ''}{focusMins}m</strong>
         </article>
       </div>
 
       {/* 30天完成趋势 */}
-      <section className="chart-card">
+      <section className={styles.chartCard}>
         <div className="panel-header">
           <div>
             <p className="eyebrow">completion trend</p>
@@ -371,20 +372,20 @@ export function StatsView({
             共 {trendData.reduce((s, d) => s + d.count, 0)} 条
           </span>
         </div>
-        <div className="trend-chart">
+        <div className={styles.trendChart}>
           {trendData.map((day, idx) => {
             const heightPct = maxTrendCount > 0 ? (day.count / maxTrendCount) * 100 : 0
             const isToday = idx === trendData.length - 1
             return (
-              <div key={day.dateKey} className="trend-bar-col" title={`${day.dateKey}：${day.count} 条`}>
-                <div className="trend-bar-wrap">
+              <div key={day.dateKey} className={styles.trendBarCol} title={`${day.dateKey}：${day.count} 条`}>
+                <div className={styles.trendBarWrap}>
                   <div
-                    className={`trend-bar-fill ${isToday ? 'is-today' : ''}`}
+                    className={`${styles.trendBarFill} ${isToday ? 'is-today' : ''}`}
                     style={{ height: `${Math.max(heightPct, day.count > 0 ? 4 : 0)}%` }}
                   />
                 </div>
                 {(idx % 5 === 0 || isToday) && (
-                  <span className="trend-bar-label">{day.label}</span>
+                  <span className={styles.trendBarLabel}>{day.label}</span>
                 )}
               </div>
             )
@@ -393,20 +394,20 @@ export function StatsView({
       </section>
 
       {/* 优先级分布 */}
-      <section className="chart-card">
+      <section className={styles.chartCard}>
         <div className="panel-header">
           <div>
             <p className="eyebrow">priority distribution</p>
             <h3>优先级分布</h3>
           </div>
         </div>
-        <div className="trend-bars">
+        <div className={styles.trendBars}>
           {(['urgent', 'high', 'normal', 'low'] as Priority[]).map((priority) => {
             const count = resolvedPriorityDistribution[priority] ?? 0
             return (
-              <div key={priority} className="trend-row">
+              <div key={priority} className={styles.trendRow}>
                 <span>{priorityMeta[priority].label}</span>
-                <div className="progress-bar">
+                <div className={styles.progressBar}>
                   <span style={{ width: `${Math.min(100, count * 16)}%`, background: priorityMeta[priority].color }} />
                 </div>
                 <strong>{count}</strong>
@@ -418,18 +419,18 @@ export function StatsView({
 
       {/* 标签分布 */}
       {resolvedTagDistribution.length > 0 && (
-        <section className="chart-card">
+        <section className={styles.chartCard}>
           <div className="panel-header">
             <div>
               <p className="eyebrow">tag distribution</p>
               <h3>标签分布</h3>
             </div>
           </div>
-          <div className="trend-bars">
+          <div className={styles.trendBars}>
             {resolvedTagDistribution.map(({ tag, count }) => (
-              <div key={tag.id} className="trend-row">
+              <div key={tag.id} className={styles.trendRow}>
                 <span>#{tag.name}</span>
-                <div className="progress-bar">
+                <div className={styles.progressBar}>
                   <span style={{ width: `${Math.min(100, count * 18)}%`, background: tag.color }} />
                 </div>
                 <strong>{count}</strong>
