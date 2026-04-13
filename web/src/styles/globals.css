@@ -1,0 +1,326 @@
+/* globals.css — Design tokens, reset, shared utilities */
+
+/* ================================================================
+   DESIGN SYSTEM — Quiet Precision
+   Inspired by Todoist clarity + Things 3 restraint
+   ================================================================ */
+
+@keyframes sync-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ================================================================
+   全局滚动条 — 完全隐藏（Todoist / Things 3 风格）
+   内容仍可滚动，只是不显示轨道和滑块
+   ================================================================ */
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Webkit (Chrome / Safari / Tauri WebKit) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* 局部例外：需要可见滚动条的区域用此 class 显式启用 */
+.scrollbar-visible {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128,128,128,0.2) transparent;
+}
+.scrollbar-visible::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: rgba(128,128,128,0.2);
+  border-radius: 999px;
+}
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: rgba(128,128,128,0.4);
+}
+
+:root {
+  --bg: #101318;
+  --bg-subtle: #151a22;
+  --surface: rgba(21, 26, 34, 0.95);
+  --surface-raised: rgba(28, 35, 48, 0.9);
+  --surface-hover: rgba(35, 43, 58, 0.85);
+  --border: rgba(148, 163, 184, 0.1);
+  --border-focus: rgba(99, 132, 255, 0.4);
+  --text: #dce4f0;
+  --text-secondary: #8896ab;
+  --text-tertiary: #5e6b7f;
+  --accent: #6384ff;
+  --accent-soft: rgba(99, 132, 255, 0.1);
+  --accent-hover: rgba(99, 132, 255, 0.15);
+  --green: #34d399;
+  --green-soft: rgba(52, 211, 153, 0.1);
+  --amber: #fbbf24;
+  --amber-soft: rgba(251, 191, 36, 0.1);
+  --red: #f87171;
+  --red-soft: rgba(248, 113, 113, 0.1);
+  --violet: #a78bfa;
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 14px;
+  --shadow-s: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-m: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-l: 0 12px 40px rgba(0,0,0,0.28);
+  --transition: 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-theme='paper'] {
+  --bg: #fafaf8;
+  --bg-subtle: #f5f4f0;
+  --surface: rgba(255, 255, 255, 0.95);
+  --surface-raised: rgba(248, 247, 243, 0.92);
+  --surface-hover: rgba(240, 238, 232, 0.9);
+  --border: rgba(0, 0, 0, 0.07);
+  --border-focus: rgba(99, 132, 255, 0.35);
+  --text: #1a1d23;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --shadow-s: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-m: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-l: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+html, body, #root { min-height: 100vh; }
+
+body { background: var(--bg); color: var(--text); }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+button { border: 0; background: transparent; cursor: pointer; }
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-raised);
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(99,132,255,0.08);
+}
+
+/* ---- Buttons ---- */
+.primary-button {
+  background: var(--accent); color: #fff; border-radius: var(--radius-s);
+  padding: 7px 16px; font-size: 13px; font-weight: 500;
+  transition: background var(--transition);
+}
+.primary-button:hover { background: #5574ee; }
+
+.ghost-button {
+  background: var(--surface-raised); color: var(--text-secondary);
+  border: 1px solid var(--border); border-radius: var(--radius-s);
+  padding: 7px 14px; font-size: 13px; transition: background var(--transition), color var(--transition);
+}
+.ghost-button:hover { background: var(--surface-hover); color: var(--text); }
+
+.ghost-button.small, .primary-button.small { padding: 4px 10px; font-size: 12px; }
+.ghost-button.tiny, .primary-button.tiny { padding: 3px 8px; font-size: 11px; border-radius: 999px; }
+.ghost-button.is-pressed { background: var(--accent-soft); border-color: var(--border-focus); color: var(--accent); }
+.ghost-button.danger { color: var(--red); border-color: rgba(255, 107, 122, 0.24); }
+.ghost-button.danger:hover { background: rgba(255, 107, 122, 0.08); color: var(--red); }
+
+.action-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.action-row.center { justify-content: center; }
+
+/* ---- Tag Picker / Tag Manager (shared UI primitives) ---- */
+.tag-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tag-picker__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.tag-manager-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.tag-manager-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 18, 0.52);
+  backdrop-filter: blur(8px);
+}
+
+.tag-manager {
+  position: relative;
+  width: min(720px, calc(100vw - 48px));
+  max-height: min(78vh, 820px);
+  overflow: auto;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-l);
+}
+
+.tag-manager__header {
+  align-items: flex-start;
+}
+
+.tag-manager__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.tag-manager__section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.tag-manager__create-row,
+.tag-manager-item__editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.tag-manager__preset-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag-color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.tag-color-swatch.is-active {
+  border-color: var(--text);
+}
+
+.tag-manager__error {
+  margin: 0;
+  color: var(--red);
+  font-size: 12px;
+}
+
+.tag-manager__list {
+  gap: 12px;
+}
+
+.tag-manager-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+.tag-manager-item__identity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---- Panel (cross-component global utility, used by 9+ components) ---- */
+.panel { background: transparent; border: none; border-radius: 0; box-shadow: none; backdrop-filter: none; }
+
+/* ---- Empty State (shared primitive used by shared.tsx) ---- */
+.empty-state {
+  min-height: 160px; border-radius: var(--radius-m);
+  border: 1px dashed var(--border);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 24px; text-align: center;
+}
+.empty-state.is-compact { min-height: 120px; }
+.empty-state h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+.empty-state p { font-size: 12px; color: var(--text-tertiary); margin: 0; }
+.empty-state .eyebrow { display: none; }
+
+.center { justify-content: center; }
+
+/* ── ViewErrorBoundary fallback ── */
+.view-error-boundary-fallback {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 40px 24px; text-align: center; min-height: 200px;
+}
+.view-error-boundary-fallback h3 { font-size: 16px; color: var(--text); }
+.view-error-boundary-fallback p { font-size: 13px; color: var(--text-secondary); }
+.view-error-boundary-fallback button {
+  padding: 8px 16px; border-radius: var(--radius-s); font-size: 13px;
+  background: var(--surface-raised); border: 1px solid var(--border); color: var(--text);
+  cursor: pointer;
+}
+
+/* ---- MINOR-04: Main content area thin auto-hide scrollbar ---- */
+.main-stage {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128,128,128,0.2) transparent;
+}
+.main-stage::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+  height: 4px;
+}
+.main-stage::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main-stage::-webkit-scrollbar-thumb {
+  background: rgba(128,128,128,0);
+  border-radius: 999px;
+  transition: background 0.3s ease;
+}
+.main-stage:hover::-webkit-scrollbar-thumb {
+  background: rgba(128,128,128,0.2);
+}
+.main-stage:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(128,128,128,0.4);
+}
