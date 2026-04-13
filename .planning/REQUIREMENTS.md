@@ -3,7 +3,7 @@
 ## Active Requirements
 
 ### ARCH — 架构治理
-- [ ] **ARCH-01**: App.tsx 拆分至 <400 行，状态分域为 5+ 个独立 hooks
+- [x] **ARCH-01**: App.tsx 拆分至 <400 行，状态分域为 5+ 个独立 hooks
 - [ ] **ARCH-02**: CSS 从 6908 行单文件拆分为 CSS Modules 模块化结构
 - [x] **ARCH-03**: 每个视图有独立 React Error Boundary，崩溃不影响其他区域
 - [x] **ARCH-04**: 离线队列有 500 条容量上限和 7 天过期策略
@@ -90,7 +90,7 @@
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
 | ARCH-03, ARCH-04, ARCH-05, UX-01 | Phase 5 (安全网+速赢) | Pending |
-| ARCH-01 | Phase 6 (App.tsx 拆分) | Pending |
+| ARCH-01 | Phase 6 (App.tsx 拆分) | Complete |
 | ARCH-02, MINOR-04 | Phase 7 (CSS 架构) | Pending |
 | ROUTE-01..04 | Phase 8 (路由) | Pending |
 | MATRIX-01..04 | Phase 9 (四象限) | Pending |
