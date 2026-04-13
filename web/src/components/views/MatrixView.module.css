@@ -158,6 +158,40 @@
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
 }
 
+/* ---- Quadrant badge pill ---- */
+
+.matrixQuadrantBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.matrixQuadrantBadge[data-quadrant="q1"] {
+  background: color-mix(in srgb, #ff3b30 15%, transparent);
+  color: #ff3b30;
+}
+
+.matrixQuadrantBadge[data-quadrant="q2"] {
+  background: color-mix(in srgb, #007aff 15%, transparent);
+  color: #007aff;
+}
+
+.matrixQuadrantBadge[data-quadrant="q3"] {
+  background: color-mix(in srgb, #ff9500 15%, transparent);
+  color: #ff9500;
+}
+
+.matrixQuadrantBadge[data-quadrant="q4"] {
+  background: color-mix(in srgb, var(--text-3) 15%, transparent);
+  color: var(--text-3);
+}
+
 /* ---- @media 1280px: matrix scrollable ---- */
 @media (max-width: 1280px) {
   .matrixGrid { grid-template-columns: repeat(2, minmax(260px, 1fr)); overflow-x: auto; }

@@ -578,6 +578,8 @@ const hydrateTaskRows = async (db: Database, taskRows: TaskRow[]): Promise<Task[
       note,
       listId: list_id,
       tagIds: tagIdsByTaskId.get(id) ?? parseJson<string[]>(tag_ids_json, []),
+      isUrgent: false,
+      isImportant: false,
       priority,
       status,
       startAt: start_at,

@@ -89,13 +89,25 @@ const mergePersistedState = (parsed?: Partial<PersistedState> | null): Persisted
   return {
     ...seedState,
     ...parsed,
-    tasks: parsed.tasks.map((task) => ({
-      ...task,
-      deadlineAt: task.deadlineAt ?? null,
-      attachments: Array.isArray(task.attachments)
-        ? (task.attachments.map(normalizeAttachmentRecord).filter(Boolean) as TaskAttachment[])
-        : [],
-    } as Task)),
+    tasks: parsed.tasks.map((task) => {
+      // Migration: infer isUrgent/isImportant from legacy tagIds if fields absent
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const raw = task as any
+      const tagIds: string[] = Array.isArray(raw.tagIds) ? raw.tagIds : []
+      const isUrgent: boolean = raw.isUrgent !== undefined ? Boolean(raw.isUrgent) : tagIds.includes('tag-urgent')
+      const isImportant: boolean = raw.isImportant !== undefined ? Boolean(raw.isImportant) : tagIds.includes('tag-important')
+      const cleanTagIds = tagIds.filter((id) => id !== 'tag-urgent' && id !== 'tag-important')
+      return {
+        ...task,
+        isUrgent,
+        isImportant,
+        tagIds: cleanTagIds,
+        deadlineAt: task.deadlineAt ?? null,
+        attachments: Array.isArray(task.attachments)
+          ? (task.attachments.map(normalizeAttachmentRecord).filter(Boolean) as TaskAttachment[])
+          : [],
+      } as Task
+    }),
     selectedTagIds: Array.isArray(parsed.selectedTagIds) ? parsed.selectedTagIds : seedState.selectedTagIds,
     selectionTimeModes:
       parsed.selectionTimeModes && typeof parsed.selectionTimeModes === 'object'

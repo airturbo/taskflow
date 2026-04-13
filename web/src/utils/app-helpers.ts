@@ -134,6 +134,8 @@ export type CreateTaskPayload = {
   listId: string
   priority: Priority
   tagIds?: string[]
+  isUrgent?: boolean
+  isImportant?: boolean
   status?: TaskStatus
   dueAt?: string | null
   startAt?: string | null
@@ -149,6 +151,8 @@ export type InlineCreateRequest = {
   listId?: string
   priority?: Priority
   tagIds?: string[]
+  isUrgent?: boolean
+  isImportant?: boolean
   status?: TaskStatus
   guidance?: string
   time?: string

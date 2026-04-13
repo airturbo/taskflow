@@ -240,26 +240,28 @@ export function normalizeTaskPatch(task: Task, patch: Partial<Task>) {
 // ─── Matrix quadrant helpers ─────────────────────────────────────────
 
 export function getQuadrant(task: Task): MatrixQuadrantKey {
-  const urgent = task.tagIds.includes(SPECIAL_TAG_IDS.urgent)
-  const important = task.tagIds.includes(SPECIAL_TAG_IDS.important)
+  const urgent = task.isUrgent
+  const important = task.isImportant
   if (urgent && important) return 'q1'
   if (!urgent && important) return 'q2'
   if (urgent && !important) return 'q3'
   return 'q4'
 }
 
-export function getTagIdsForQuadrant(tagIds: string[], quadrant: MatrixQuadrantKey) {
-  const next = new Set(tagIds.filter((tagId) => !Object.values(SPECIAL_TAG_IDS).includes(tagId as (typeof SPECIAL_TAG_IDS)[keyof typeof SPECIAL_TAG_IDS])))
-
-  if (quadrant === 'q1' || quadrant === 'q3') {
-    next.add(SPECIAL_TAG_IDS.urgent)
+/** Returns the isUrgent/isImportant field values for a given quadrant. */
+export function getFieldsForQuadrant(quadrant: MatrixQuadrantKey): { isUrgent: boolean; isImportant: boolean } {
+  return {
+    isUrgent: quadrant === 'q1' || quadrant === 'q3',
+    isImportant: quadrant === 'q1' || quadrant === 'q2',
   }
+}
 
-  if (quadrant === 'q1' || quadrant === 'q2') {
-    next.add(SPECIAL_TAG_IDS.important)
-  }
-
-  return Array.from(next)
+/**
+ * @deprecated Use getFieldsForQuadrant instead.
+ * Kept for backward compatibility — strips special tags from tagIds but no longer adds them.
+ */
+export function getTagIdsForQuadrant(tagIds: string[], _quadrant: MatrixQuadrantKey) {
+  return tagIds.filter((tagId) => !Object.values(SPECIAL_TAG_IDS).includes(tagId as (typeof SPECIAL_TAG_IDS)[keyof typeof SPECIAL_TAG_IDS]))
 }
 
 export function getQuadrantLabel(quadrant: MatrixQuadrantKey) {

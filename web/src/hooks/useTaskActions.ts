@@ -14,7 +14,7 @@ import type {
 import type { MatrixQuadrantKey } from '@taskflow/core'
 import {
   normalizeTaskPatch,
-  getTagIdsForQuadrant,
+  getFieldsForQuadrant,
   getQuadrantLabel,
   getTaskDisplayTimeValue,
   priorityMeta,
@@ -180,12 +180,13 @@ export function useTaskActions(params: TaskActionsParams) {
 
   const moveTaskToQuadrant = (taskId: string, quadrant: MatrixQuadrantKey) => {
     applyTaskMutation(taskId, (task) => {
-      const nextTagIds = getTagIdsForQuadrant(task.tagIds, quadrant)
-      if (nextTagIds.length === task.tagIds.length && nextTagIds.every((tagId, index) => tagId === task.tagIds[index])) {
+      const { isUrgent, isImportant } = getFieldsForQuadrant(quadrant)
+      if (task.isUrgent === isUrgent && task.isImportant === isImportant) {
         return task
       }
       return normalizeTaskPatch(task, {
-        tagIds: nextTagIds,
+        isUrgent,
+        isImportant,
         activity: [{ id: makeId('act'), content: `\u901A\u8FC7\u56DB\u8C61\u9650\u62D6\u52A8\u8C03\u6574\u4E3A${getQuadrantLabel(quadrant)}`, createdAt: getNowIso() }, ...task.activity],
       })
     })

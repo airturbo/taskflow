@@ -149,14 +149,14 @@ export interface WorkspaceShellProps {
 
 export function WorkspaceShell(p: WorkspaceShellProps) {
   // ---- Task creation (moved from App.tsx) ----
-  const commitTask = ({ title, note = '', listId, priority, tagIds = [], status = 'todo' as TaskStatus, dueAt = null, startAt = null, deadlineAt = null, activityLabel }: CreateTaskPayload) => {
+  const commitTask = ({ title, note = '', listId, priority, tagIds = [], isUrgent = false, isImportant = false, status = 'todo' as TaskStatus, dueAt = null, startAt = null, deadlineAt = null, activityLabel }: CreateTaskPayload) => {
     const cleanTitle = title.trim()
     if (!cleanTitle) return false
     const now = getNowIso()
     const reminderAt = startAt ?? dueAt ?? null
     const nextTask: Task = {
       id: makeId('task'), title: cleanTitle, note: note.trim(), listId,
-      tagIds: Array.from(new Set(tagIds)), priority, status, startAt, dueAt, deadlineAt,
+      tagIds: Array.from(new Set(tagIds)), isUrgent, isImportant, priority, status, startAt, dueAt, deadlineAt,
       repeatRule: '\u4E0D\u91CD\u590D',
       reminders: reminderAt ? [{ id: makeId('rem'), label: '\u5F00\u59CB\u65F6\u63D0\u9192', value: reminderAt, kind: 'absolute' as const }] : [],
       subtasks: [], attachments: [], assignee: '\u6211', collaborators: [], comments: [],
@@ -174,9 +174,9 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
     return true
   }
 
-  const openInlineCreate = ({ view, anchorRect, dateKey = '', listId, priority, tagIds = [], status, guidance, time = '' }: InlineCreateRequest) => {
+  const openInlineCreate = ({ view, anchorRect, dateKey = '', listId, priority, tagIds = [], isUrgent = false, isImportant = false, status, guidance, time = '' }: InlineCreateRequest) => {
     const fallbackListId = p.selectionKind === 'list' ? p.selectionId : p.quickListId
-    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect) })
+    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, isUrgent, isImportant, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect) })
   }
 
   const resolveTagIdsFromNames = (tagNames: string[]): string[] => {
@@ -191,7 +191,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
     const resolvedDueAt = explicitDueAt ?? parsed.dueAt
     const schedule = p.inlineCreate.view === 'timeline' ? buildTimelineDraftWindow(resolvedDueAt) : { startAt: null, dueAt: resolvedDueAt }
     const resolvedTagIds = Array.from(new Set([...p.inlineCreate.tagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
-    const created = commitTask({ title: parsed.title, note: p.inlineCreate.note, listId: p.inlineCreate.listId, priority: parsed.priority ?? p.inlineCreate.priority, tagIds: resolvedTagIds, status: p.inlineCreate.status, startAt: schedule.startAt, dueAt: schedule.dueAt, activityLabel: `\u901A\u8FC7${viewMeta.find((item) => item.id === p.inlineCreate.view)?.label ?? '\u5F53\u524D\u89C6\u56FE'}\u5185\u8054\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1` })
+    const created = commitTask({ title: parsed.title, note: p.inlineCreate.note, listId: p.inlineCreate.listId, priority: parsed.priority ?? p.inlineCreate.priority, tagIds: resolvedTagIds, isUrgent: p.inlineCreate.isUrgent ?? false, isImportant: p.inlineCreate.isImportant ?? false, status: p.inlineCreate.status, startAt: schedule.startAt, dueAt: schedule.dueAt, activityLabel: `\u901A\u8FC7${viewMeta.find((item) => item.id === p.inlineCreate.view)?.label ?? '\u5F53\u524D\u89C6\u56FE'}\u5185\u8054\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1` })
     if (created) p.setInlineCreate(null)
   }
 

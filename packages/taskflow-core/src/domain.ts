@@ -74,6 +74,8 @@ export interface Task {
   note: string
   listId: string
   tagIds: string[]
+  isUrgent: boolean
+  isImportant: boolean
   priority: Priority
   status: TaskStatus
   startAt: string | null

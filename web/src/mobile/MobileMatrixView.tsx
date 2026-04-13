@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Task, TodoList, Tag, Priority, TaskStatus } from '../types/domain'
 import type { MatrixQuadrantKey } from '@taskflow/core'
 import type { InlineCreateRequest } from '../types/workspace'
-import { getQuadrant, priorityMeta } from '@taskflow/core'
+import { getQuadrant, getFieldsForQuadrant, priorityMeta } from '@taskflow/core'
 import { formatDateTime } from '../utils/dates'
 import styles from './MobileMatrixView.module.css'
 
@@ -65,6 +65,8 @@ export function MobileMatrixView(props: {
             props.onOpenInlineCreate({
               view: 'matrix',
               anchorRect: { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0 } as DOMRect,
+              ...getFieldsForQuadrant(activeQ),
+              guidance: m.title,
             })
           }
           aria-label="添加任务"

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Task, TodoList, Tag, TaskStatus, Priority } from '../../types/domain'
 import type { PointerDragPreviewState, InlineCreateRequest, PointerDragSession } from '../../types/workspace'
-import { getQuadrant, getQuadrantLabel, formatTaskDualTimeSummary, SPECIAL_TAG_IDS, type MatrixQuadrantKey } from '@taskflow/core'
+import { getQuadrant, getQuadrantLabel, getFieldsForQuadrant, formatTaskDualTimeSummary, type MatrixQuadrantKey } from '@taskflow/core'
 import { POINTER_DRAG_THRESHOLD, buildPointerDragPreviewState, buildTaskDragPreview, getPointerDragStyle, markClickSuppressed, resolveDropZoneValueFromPoint, shouldIgnorePointerDragStart, getTagToneStyle, handleCardKeyboardActivation } from '../../utils/workspace-helpers'
 import { DragPreviewLayer, StatusSelectBadge, PrioritySelectBadge, TaskTimeSummary } from '../shared'
 import styles from './MatrixView.module.css'
@@ -61,11 +61,11 @@ export function MatrixView({
   }
   tasks.forEach((task) => quadrants[getQuadrant(task)].push(task))
 
-  const meta: Record<MatrixQuadrantKey, { title: string; hint: string; emptyHint: string; priority: Priority; tagIds: string[] }> = {
-    q1: { title: '紧急且重要', hint: '立即处理', emptyHint: '重要且紧急 — 立即处理', priority: 'urgent', tagIds: [SPECIAL_TAG_IDS.urgent, SPECIAL_TAG_IDS.important] },
-    q2: { title: '重要不紧急', hint: '规划安排', emptyHint: '重要不紧急 — 规划时间', priority: 'high', tagIds: [SPECIAL_TAG_IDS.important] },
-    q3: { title: '紧急不重要', hint: '委派或压缩', emptyHint: '紧急不重要 — 考虑委托', priority: 'normal', tagIds: [SPECIAL_TAG_IDS.urgent] },
-    q4: { title: '不紧急不重要', hint: '放弃或推迟', emptyHint: '不重要不紧急 — 可以放下', priority: 'low', tagIds: [] },
+  const meta: Record<MatrixQuadrantKey, { title: string; hint: string; emptyHint: string; priority: Priority; isUrgent: boolean; isImportant: boolean }> = {
+    q1: { title: '紧急且重要', hint: '立即处理', emptyHint: '重要且紧急 — 立即处理', priority: 'urgent', ...getFieldsForQuadrant('q1') },
+    q2: { title: '重要不紧急', hint: '规划安排', emptyHint: '重要不紧急 — 规划时间', priority: 'high', ...getFieldsForQuadrant('q2') },
+    q3: { title: '紧急不重要', hint: '委派或压缩', emptyHint: '紧急不重要 — 考虑委托', priority: 'normal', ...getFieldsForQuadrant('q3') },
+    q4: { title: '不紧急不重要', hint: '放弃或推迟', emptyHint: '不重要不紧急 — 可以放下', priority: 'low', ...getFieldsForQuadrant('q4') },
   }
 
   const resetDragState = () => {
@@ -183,7 +183,8 @@ export function MatrixView({
                       view: 'matrix',
                       anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
                       priority: meta[key].priority,
-                      tagIds: meta[key].tagIds,
+                      isUrgent: meta[key].isUrgent,
+                      isImportant: meta[key].isImportant,
                       guidance: meta[key].title,
                     })
                   }}
@@ -219,7 +220,8 @@ export function MatrixView({
                         view: 'matrix',
                         anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
                         priority: meta[key].priority,
-                        tagIds: meta[key].tagIds,
+                        isUrgent: meta[key].isUrgent,
+                      isImportant: meta[key].isImportant,
                         guidance: meta[key].title,
                       })
                     }
@@ -258,6 +260,13 @@ export function MatrixView({
                           {list?.name ?? '未知清单'}
                         </p>
                         <div className="chip-wrap dense">
+                          <span
+                            className={styles.matrixQuadrantBadge}
+                            data-quadrant={key}
+                            title={task.isUrgent && task.isImportant ? '紧急且重要' : task.isImportant ? '重要，不紧急' : task.isUrgent ? '紧急，不重要' : '待分类'}
+                          >
+                            {task.isUrgent && task.isImportant ? 'Q1' : task.isImportant ? 'Q2' : task.isUrgent ? 'Q3' : 'Q4'}
+                          </span>
                           {taskTags.slice(0, 3).map((tag) => (
                             <span key={tag.id} className="mini-tag" style={getTagToneStyle(tag.color)}>
                               <i style={{ background: tag.color }} />#{tag.name}
@@ -277,7 +286,8 @@ export function MatrixView({
                         view: 'matrix',
                         anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
                         priority: meta[key].priority,
-                        tagIds: meta[key].tagIds,
+                        isUrgent: meta[key].isUrgent,
+                      isImportant: meta[key].isImportant,
                         guidance: meta[key].title,
                       })
                     }}
