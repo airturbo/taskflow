@@ -63,3 +63,33 @@ Date: 2026-04-13
 - **Week view**: red vertical "now" line appears in every lane when today is in the window
 - Dot indicator at the top of the now line (matches day-view style)
 - Files: `TimelineView.tsx`, `TimelineView.module.css`
+
+---
+
+# Phase 15 Verification — PERF + SYNC (v2.0 Milestone)
+
+Date: 2026-04-13
+
+## Build
+
+```
+✓ vite build — built in 359ms (no errors)
+```
+
+## Tasks
+
+| ID | Requirement | Status | Key Artifact |
+|----|-------------|--------|--------------|
+| PERF-01 | React.memo KanbanCard/KanbanColumn | ✅ | `KanbanView.tsx` — memo + custom comparator |
+| PERF-02 | React.lazy code splitting all views | ✅ | `WorkspaceViewContent.tsx` — 11 lazy chunks |
+| PERF-03 | IndexedDB offline queue + exponential backoff | ✅ | `offline-queue.ts` — idb, retryCount, nextRetryAt |
+| SYNC-01 | Field-level merge engine | ✅ | `field-merge.ts` — mergeTaskList, stampFieldVersions |
+| SYNC-02 | Conflict resolution UI | ✅ | `ConflictResolutionDialog.tsx` — per-field local/remote picker |
+| SYNC-03 | fieldVersions JSONB column | ✅ | `domain.ts` + `002_field_versions.sql` |
+
+## Architecture notes
+
+- `normalizeTaskPatch` (taskflow-core) now auto-stamps `fieldVersions` on every mutation — zero call-site changes needed
+- Array fields (subtasks, reminders, attachments, comments, activity) excluded from field-level merge; fall back to `updatedAt`
+- `fieldVersions` lives in `workspace_states.state_json` JSONB blob — no DDL migration required
+- Conflict dialog defaults all choices to "local" — safe default preserves user's work
