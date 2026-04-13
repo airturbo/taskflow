@@ -16,7 +16,7 @@ import { useNavigationState } from './hooks/useNavigationState'
 import { useQuickCreate, type InlineCreateDraft, type InlineCreatePosition, type InlineCreatePositionMode, type QuickCreateFeedback, type StatusChangeFeedback } from './hooks/useQuickCreate'
 import { useMobileDialogs } from './hooks/useMobileDialogs'
 import { isSupabaseEnabled } from './utils/supabase'
-import { useMobileUiStore } from './stores/mobileUiStore'
+import { useMobileUiStore, type MobileTab } from './stores/mobileUiStore'
 import { SyncIndicator } from './components/SyncIndicator'
 import { ShortcutPanel } from './components/ShortcutPanel'
 import { ExportPanel } from './components/ExportPanel'
@@ -24,6 +24,7 @@ import { CommandPalette } from './components/CommandPalette'
 import { FolderListItem, SidebarSection, NavButton } from './components/WorkspaceSidebar'
 import { AppSidebar } from './components/AppSidebar'
 import { AppTopBar } from './components/AppTopBar'
+import { MobileTabBar } from './components/MobileTabBar'
 import { StatusBadge, StatusSelectBadge, PrioritySelectBadge, DragPreviewLayer, EmptyState } from './components/shared'
 import { ReminderCenterPanel } from './components/ReminderCenterPanel'
 import { ListView } from './components/views/ListView'
@@ -666,7 +667,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
 
   // ---- 移动端专属状态（通过 mobileUiStore Zustand store 管理，减少主组件 re-render）----
-  type MobileTab = 'focus' | 'calendar' | 'matrix' | 'me'
   const {
     mobileTab, setMobileTab,
     mobileTabFading, setMobileTabFading,
@@ -1907,6 +1907,16 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   const shouldShowProjectionSummary = !isToolSelection && (currentView === 'calendar' || currentView === 'timeline')
 
+  // ---- 移动端 Tab 切换 ----
+  const handleMobileTabChange = (tab: MobileTab) => {
+    setMobileTab(tab)
+    if (tab === 'me') { setMeShowProjects(false) }
+    if (tab === 'calendar') {
+      setCurrentView('calendar')
+      if (activeSelection === 'tool:stats') setActiveSelection('system:all')
+    }
+  }
+
   // ---- 统一任务选中逻辑 ----
   // 按设备尺寸自动触发正确的详情展示方式：
   //   手机（≤680px）   → 底部 Sheet
@@ -2661,49 +2671,11 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
       {/* 移动端底部标签栏 — 4 Tab + FAB */}
       {isPhoneViewport && (
-        <>
-          <nav className="mobile-tab-bar" aria-label="主导航">
-            {([
-              { id: 'focus' as MobileTab, icon: '◎', label: '焦点' },
-              { id: 'calendar' as MobileTab, icon: '📅', label: '日历' },
-              { id: 'matrix' as MobileTab, icon: '⊞', label: '象限' },
-              { id: 'me' as MobileTab, icon: '👤', label: '我的' },
-            ]).map(tab => (
-              <button
-                key={tab.id}
-                className={`mobile-tab-item ${mobileTab === tab.id ? 'is-active' : ''}`}
-                onClick={() => {
-                  if (mobileTab !== tab.id) {
-                    // #19 — Tab 切换淡入淡出
-                    setMobileTabFading(true)
-                    setTimeout(() => {
-                      setMobileTab(tab.id)
-                      if (tab.id === 'me') { setMeShowProjects(false) }
-                      if (tab.id === 'calendar') {
-                        setCurrentView('calendar')
-                        if (activeSelection === 'tool:stats') setActiveSelection('system:all')
-                      }
-                      setMobileTabFading(false)
-                    }, 150)
-                  }
-                }}
-              >
-                <span className="mobile-tab-item__icon">{tab.icon}</span>
-                <span className="mobile-tab-item__label">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-          {/* FAB — 快速创建 */}
-          <button
-            className="mobile-fab"
-            onClick={() => setMobileQuickCreateOpen(true)}
-            aria-label="快速创建任务"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-            </svg>
-          </button>
-        </>
+        <MobileTabBar
+          mobileTab={mobileTab}
+          onChangeTab={handleMobileTabChange}
+          onOpenQuickCreate={() => setMobileQuickCreateOpen(true)}
+        />
       )}
 
       {/* 手机端：导航仍使用抽屉 */}
