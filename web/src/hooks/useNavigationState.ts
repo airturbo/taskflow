@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { PersistedState } from '../types/domain'
+import { pathToSelection } from './useRouterSync'
 
 /** Migrate legacy activeSelection values to current format */
 function migrateActiveSelection(initialState: PersistedState): {
@@ -22,9 +23,26 @@ function migrateActiveSelection(initialState: PersistedState): {
   return { activeSelection, selectedTagIds }
 }
 
+/**
+ * Get initial activeSelection from URL hash path (if present),
+ * falling back to localStorage-persisted value.
+ * URL takes priority so that direct links and refreshes restore exact state.
+ */
+function getInitialSelection(migratedFromStorage: string): string {
+  // Read current hash path (e.g. "#/list/abc" → "/list/abc")
+  const hash = window.location.hash
+  const pathname = hash.startsWith('#') ? hash.slice(1).split('?')[0] : ''
+  if (pathname && pathname !== '/') {
+    const fromUrl = pathToSelection(pathname)
+    if (fromUrl) return fromUrl
+  }
+  return migratedFromStorage
+}
+
 export function useNavigationState(initialState: PersistedState) {
   const migrated = migrateActiveSelection(initialState)
-  const [activeSelection, setActiveSelection] = useState(migrated.activeSelection)
+  const initialSelection = getInitialSelection(migrated.activeSelection)
+  const [activeSelection, setActiveSelection] = useState(initialSelection)
 
   // Derived: parsed selection parts
   const selectionParts = activeSelection.split(':')

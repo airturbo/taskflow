@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import { useRealtimeSync } from './hooks/useRealtimeSync'
 import { useSystemTheme } from './hooks/useSystemTheme'
@@ -13,6 +14,7 @@ import { useMobileDialogs } from './hooks/useMobileDialogs'
 import { useTaskActions } from './hooks/useTaskActions'
 import { useWorkspaceComputed } from './hooks/useWorkspaceComputed'
 import { useWorkspaceEffects } from './hooks/useWorkspaceEffects'
+import { useRouterSync } from './hooks/useRouterSync'
 import { useMobileUiStore } from './stores/mobileUiStore'
 import { WorkspaceShell } from './components/WorkspaceShell'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
@@ -65,7 +67,12 @@ function App() {
     )
   }
 
-  return <WorkspaceApp key={authScopeKey} initialState={initialState} />
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/focus" replace />} />
+      <Route path="/*" element={<WorkspaceApp key={authScopeKey} initialState={initialState} />} />
+    </Routes>
+  )
 }
 
 function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
@@ -193,6 +200,58 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     clearReminderFeed,
     markReminderSnoozed,
   } = useReminderCenter()
+
+  // ---- Router Sync (URL ↔ state) ----
+  const { navigateTo, syncToUrl } = useRouterSync(
+    {
+      setActiveSelection,
+      setCurrentView,
+      setSearchInput,
+      setCalendarMode,
+      setCalendarAnchor,
+      setTimelineScale,
+      setSelectedTagIds,
+      setSelectedTaskId,
+      setCalendarShowCompleted,
+    },
+    {
+      activeSelection,
+      currentView,
+      searchKeyword,
+      calendarMode,
+      calendarAnchor,
+      timelineScale,
+      selectedTagIds,
+      selectedTaskId,
+      calendarShowCompleted,
+    },
+  )
+
+  // Sync state → URL whenever relevant state changes (replaceState)
+  useEffect(() => {
+    syncToUrl({
+      activeSelection,
+      currentView,
+      searchKeyword,
+      calendarMode,
+      calendarAnchor,
+      timelineScale,
+      selectedTagIds,
+      selectedTaskId,
+      calendarShowCompleted,
+    }, false)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSelection, currentView, searchKeyword, calendarMode, calendarAnchor, timelineScale, selectedTagIds, selectedTaskId, calendarShowCompleted])
+
+  // On activeSelection change, push a new history entry (major navigation)
+  const prevActiveSelectionRef = useRef(activeSelection)
+  useEffect(() => {
+    if (prevActiveSelectionRef.current !== activeSelection) {
+      prevActiveSelectionRef.current = activeSelection
+      navigateTo(activeSelection)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSelection])
 
   // ---- Effects (extracted to useWorkspaceEffects) ----
   useWorkspaceEffects({
