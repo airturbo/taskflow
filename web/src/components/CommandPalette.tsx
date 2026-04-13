@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Command } from 'cmdk'
 import type { Tag, Task, TodoList } from '../types/domain'
-import './CommandPalette.css'
+import styles from './CommandPalette.module.css'
 
 interface CommandPaletteProps {
   open: boolean
@@ -116,19 +116,19 @@ export function CommandPalette({
 
   return (
     <div
-      className="command-palette-overlay"
+      className={styles.commandPaletteOverlay}
       onClick={onClose}
       // prevent clicks from bubbling outside the portal
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div
-        className="command-palette-panel"
+        className={styles.commandPalettePanel}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <Command>
           <Command.Input
-            className="command-palette-input"
+            className={styles.commandPaletteInput}
             placeholder="搜索任务、清单、标签… (#标签 @清单 !urgent due:today status:doing)"
             value={search}
             onValueChange={setSearch}
@@ -141,39 +141,39 @@ export function CommandPalette({
               }
             }}
           />
-          <Command.List className="command-palette-list">
-            <Command.Empty className="command-palette-empty">
+          <Command.List className={styles.commandPaletteList}>
+            <Command.Empty className={styles.commandPaletteEmpty}>
               没有找到匹配的结果
             </Command.Empty>
 
             {filteredTasks.length > 0 && (
-              <Command.Group heading="任务" className="command-palette-section">
+              <Command.Group heading="任务" className={styles.commandPaletteSection}>
                 {filteredTasks.map((task) => {
                   const list = lists.find((l) => l.id === task.listId)
                   return (
                     <Command.Item
                       key={task.id}
                       value={`task-${task.id}-${task.title}`}
-                      className="command-palette-item"
+                      className={styles.commandPaletteItem}
                       onSelect={() => {
                         onSelectTask(task.id)
                         onClose()
                       }}
                     >
                       <span
-                        className="cp-priority-dot"
+                        className={styles.cpPriorityDot}
                         style={{ background: PRIORITY_COLOR[task.priority ?? 'normal'] }}
                       />
-                      <span className={`cp-task-title${task.completed ? ' is-completed' : ''}`}>
+                      <span className={`${styles.cpTaskTitle}${task.completed ? ` ${styles.isCompleted}` : ''}`}>
                         {task.title}
                       </span>
-                      <span className="cp-task-meta">
+                      <span className={styles.cpTaskMeta}>
                         {list && (
-                          <span className="cp-list-badge" style={{ color: list.color }}>
+                          <span className={styles.cpListBadge} style={{ color: list.color }}>
                             {list.name}
                           </span>
                         )}
-                        <span className="cp-status-badge">
+                        <span className={styles.cpStatusBadge}>
                           {STATUS_LABEL[task.status] ?? task.status}
                         </span>
                       </span>
@@ -184,7 +184,7 @@ export function CommandPalette({
             )}
 
             {filteredLists.length > 0 && (
-              <Command.Group heading="清单" className="command-palette-section">
+              <Command.Group heading="清单" className={styles.commandPaletteSection}>
                 {filteredLists.map((list) => {
                   const count = tasks.filter(
                     (t) => t.listId === list.id && !t.deleted && !t.completed,
@@ -193,15 +193,15 @@ export function CommandPalette({
                     <Command.Item
                       key={list.id}
                       value={`list-${list.id}-${list.name}`}
-                      className="command-palette-item"
+                      className={styles.commandPaletteItem}
                       onSelect={() => {
                         onSelectList(list.id)
                         onClose()
                       }}
                     >
-                      <span className="cp-list-dot" style={{ background: list.color }} />
+                      <span className={styles.cpListDot} style={{ background: list.color }} />
                       <span>{list.name}</span>
-                      <span className="cp-count">{count} 个任务</span>
+                      <span className={styles.cpCount}>{count} 个任务</span>
                     </Command.Item>
                   )
                 })}
@@ -209,7 +209,7 @@ export function CommandPalette({
             )}
 
             {filteredTags.length > 0 && (
-              <Command.Group heading="标签" className="command-palette-section">
+              <Command.Group heading="标签" className={styles.commandPaletteSection}>
                 {filteredTags.map((tag) => {
                   const count = tasks.filter(
                     (t) => (t.tagIds ?? []).includes(tag.id) && !t.deleted,
@@ -218,12 +218,12 @@ export function CommandPalette({
                     <Command.Item
                       key={tag.id}
                       value={`tag-${tag.id}-${tag.name}`}
-                      className="command-palette-item"
+                      className={styles.commandPaletteItem}
                       onSelect={() => setSearch(`#${tag.name}`)}
                     >
-                      <span className="cp-tag-dot" style={{ background: tag.color }} />
+                      <span className={styles.cpTagDot} style={{ background: tag.color }} />
                       <span>#{tag.name}</span>
-                      <span className="cp-count">{count} 个任务</span>
+                      <span className={styles.cpCount}>{count} 个任务</span>
                     </Command.Item>
                   )
                 })}
