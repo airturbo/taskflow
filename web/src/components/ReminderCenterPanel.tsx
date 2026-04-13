@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Task } from '../types/domain'
 import type { ReminderFeedItem } from '../hooks/useReminderCenter'
 import { formatDateTime } from '../utils/dates'
+import styles from './ReminderCenterPanel.module.css'
 
 /** 按 taskId 分组，同一任务的多条提醒合并 */
 function groupByTask(feed: ReminderFeedItem[]): { taskId: string | null; items: ReminderFeedItem[] }[] {
@@ -44,13 +45,13 @@ export function ReminderCenterPanel({
     : '当前环境不支持系统提醒'
 
   return (
-    <section className="panel reminder-center reminder-center--compact">
-      <div className="panel-header reminder-center__header">
+    <section className={`panel ${styles.reminderCenter} ${styles.reminderCenterCompact}`}>
+      <div className={`panel-header ${styles.header}`}>
         <div>
           <p className="eyebrow">到期与提醒</p>
-          <h3>提醒 {reminderFeed.length > 0 && <span className="reminder-center__count">{reminderFeed.length}</span>}</h3>
+          <h3>提醒 {reminderFeed.length > 0 && <span className={styles.count}>{reminderFeed.length}</span>}</h3>
         </div>
-        <div className="reminder-center__header-actions">
+        <div className={styles.headerActions}>
           {permission !== 'granted' && permission !== 'unsupported' && (
             <button className="ghost-button small" onClick={() => void onRequestPermission()}>开启</button>
           )}
@@ -60,17 +61,17 @@ export function ReminderCenterPanel({
         </div>
       </div>
 
-      <div className="reminder-center__summary">
-        <span className={`reminder-center__permission is-${permission}`}>{permissionLabel}</span>
+      <div className={styles.summary}>
+        <span className={`${styles.permission} is-${permission}`}>{permissionLabel}</span>
       </div>
 
       {groups.length === 0 ? (
-        <div className="reminder-empty reminder-empty--compact">
+        <div className={styles.emptyCompact}>
           <strong>暂时没有新提醒</strong>
           <span>DDL 到期或提醒触发后会在这里显示。</span>
         </div>
       ) : (
-        <div className="reminder-group-list">
+        <div className={styles.groupList}>
           {groups.map(({ taskId, items }) => {
             const lead = items[0]
             const isExpanded = expandedId === lead.id
@@ -78,30 +79,30 @@ export function ReminderCenterPanel({
             return (
               <div
                 key={lead.id}
-                className={`reminder-group ${isLinked ? 'is-linked' : ''} is-${lead.tone}`}
+                className={`${styles.group} ${isLinked ? 'is-linked' : ''} is-${lead.tone}`}
               >
                 {/* 折叠头 — 单行摘要 */}
                 <button
-                  className="reminder-group__head"
+                  className={styles.groupHead}
                   onClick={() => setExpandedId(isExpanded ? null : lead.id)}
                 >
-                  <span className={`reminder-group__tone-dot tone-${lead.tone}`} />
-                  <span className="reminder-group__title">{lead.title}</span>
+                  <span className={`${styles.toneDot} tone-${lead.tone}`} />
+                  <span className={styles.groupTitle}>{lead.title}</span>
                   {items.length > 1 && (
-                    <span className="reminder-group__badge">{items.length}</span>
+                    <span className={styles.groupBadge}>{items.length}</span>
                   )}
-                  <span className="reminder-group__time">{formatDateTime(lead.createdAt)}</span>
-                  <span className="reminder-group__chevron">{isExpanded ? '▲' : '▼'}</span>
+                  <span className={styles.groupTime}>{formatDateTime(lead.createdAt)}</span>
+                  <span className={styles.groupChevron}>{isExpanded ? '▲' : '▼'}</span>
                 </button>
 
                 {/* 展开详情 */}
                 {isExpanded && (
-                  <div className="reminder-group__body">
+                  <div className={styles.groupBody}>
                     {items.map((item, idx) => (
-                      <div key={item.id} className="reminder-group__item">
-                        {idx > 0 && <p className="reminder-group__item-title">{item.title}</p>}
-                        <p className="reminder-group__item-body">{item.body}</p>
-                        <div className="reminder-group__item-actions">
+                      <div key={item.id} className={styles.groupItem}>
+                        {idx > 0 && <p className={styles.groupItemTitle}>{item.title}</p>}
+                        <p className={styles.groupItemBody}>{item.body}</p>
+                        <div className={styles.groupItemActions}>
                           {item.allowSnooze && item.taskId && (
                             <>
                               <button className="ghost-button small" onClick={() => onSnooze(item.id, item.taskId!, 10)}>10分钟后</button>

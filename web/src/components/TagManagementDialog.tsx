@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Tag } from '../types/domain'
 import { TAG_COLOR_PRESETS, SPECIAL_TAG_IDS } from '@taskflow/core'
 import { isSystemTagId } from '../utils/workspace-helpers'
+import styles from './TagManagementDialog.module.css'
 
 type TagMutationResult =
   | { ok: true; tagId: string }
@@ -23,9 +24,9 @@ export function TagPicker({
   manageLabel?: string
 }) {
   return (
-    <div className="tag-picker">
+    <div className={styles.tagPicker}>
       {(title || tags.length > 0) && (
-        <div className="tag-picker__header">
+        <div className={styles.tagPickerHeader}>
           <span>{title ?? '标签'}</span>
           <button className="ghost-button small" onClick={onManageTags}>
             {manageLabel}
@@ -113,10 +114,10 @@ export function TagManagementDialog({
   }
 
   return (
-    <div className="tag-manager-layer" role="dialog" aria-modal="true" aria-label="标签管理">
-      <button className="tag-manager-backdrop" aria-label="关闭标签管理" onClick={onClose} />
-      <section className="tag-manager panel">
-        <div className="panel-header tag-manager__header">
+    <div className={styles.layer} role="dialog" aria-modal="true" aria-label="标签管理">
+      <button className={styles.backdrop} aria-label="关闭标签管理" onClick={onClose} />
+      <section className={`${styles.manager} panel`}>
+        <div className={`panel-header ${styles.managerHeader}`}>
           <div>
             <p className="eyebrow">tag system</p>
             <h3>管理标签</h3>
@@ -127,45 +128,45 @@ export function TagManagementDialog({
           </button>
         </div>
 
-        <section className="tag-manager__section">
-          <div className="tag-manager__section-title">
+        <section className={styles.section}>
+          <div className={styles.sectionTitle}>
             <strong>新建标签</strong>
             <span>{tags.length} 个标签</span>
           </div>
-          <div className="tag-manager__create-row">
+          <div className={styles.createRow}>
             <input value={newTagName} onChange={(event) => setNewTagName(event.target.value)} placeholder="例如：设计 / 家庭 / 复盘" />
             <input type="color" value={newTagColor} onChange={(event) => setNewTagColor(event.target.value)} aria-label="选择标签颜色" />
             <button className="primary-button small" onClick={handleCreate}>
               新建
             </button>
           </div>
-          <div className="tag-manager__preset-row">
+          <div className={styles.presetRow}>
             {TAG_COLOR_PRESETS.map((color) => (
               <button
                 key={color}
-                className={`tag-color-swatch ${newTagColor === color ? 'is-active' : ''}`}
+                className={`${styles.colorSwatch} ${newTagColor === color ? 'is-active' : ''}`}
                 style={{ background: color }}
                 aria-label={`选择颜色 ${color}`}
                 onClick={() => setNewTagColor(color)}
               />
             ))}
           </div>
-          {error && <p className="tag-manager__error">{error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
         </section>
 
-        <section className="tag-manager__section tag-manager__list">
+        <section className={`${styles.section} ${styles.list}`}>
           {tags.map((tag) => {
             const draft = drafts[tag.id] ?? { name: tag.name, color: tag.color }
             const locked = isSystemTagId(tag.id, Object.values(SPECIAL_TAG_IDS))
             return (
-              <article key={tag.id} className="tag-manager-item">
-                <div className="tag-manager-item__identity">
+              <article key={tag.id} className={styles.item}>
+                <div className={styles.itemIdentity}>
                   <span className={`tag-chip ${locked ? 'tag-chip--primary' : ''} is-active`} style={{ borderColor: `${draft.color}55` }}>
                     <i style={{ background: draft.color }} />#{draft.name}
                   </span>
                   {locked && <span className="mini-tag">系统标签</span>}
                 </div>
-                <div className="tag-manager-item__editor">
+                <div className={styles.itemEditor}>
                   <input
                     value={draft.name}
                     disabled={locked}

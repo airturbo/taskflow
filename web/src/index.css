@@ -338,81 +338,9 @@
 /* ---- Workspace ---- */
 .workspace { padding: 16px 24px; flex: 1; min-height: 0; }
 
-.inline-create-backdrop {
-  position: fixed; inset: 0; background: rgba(10, 12, 18, 0.1); z-index: 19;
-  backdrop-filter: blur(6px);
-}
+/* .inline-create-* → InlineCreatePopover.module.css */
 
-.inline-create-popover {
-  position: fixed; z-index: 20; width: min(460px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 32px));
-  display: flex; flex-direction: column;
-  padding: 18px 18px 14px; border-radius: 20px; border: 1px solid rgba(136, 150, 171, 0.18);
-  background: color-mix(in srgb, var(--surface) 92%, rgba(124, 156, 255, 0.08) 8%);
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18); backdrop-filter: blur(20px);
-  overflow: hidden;
-}
-
-.inline-create-popover.is-top-docked {
-  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16);
-}
-
-.inline-create-popover.is-dragging {
-  cursor: grabbing;
-  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
-}
-
-.inline-create-popover__hero {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-  padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid rgba(136, 150, 171, 0.14);
-  cursor: grab; user-select: none; touch-action: none;
-}
-
-.inline-create-popover__hero h3 { margin: 0; font-size: 18px; }
-.inline-create-popover__body {
-  flex: 1; min-height: 0;
-  display: flex; flex-direction: column; gap: 14px;
-  overflow-y: auto; padding-right: 4px; margin-right: -6px;
-}
-.inline-create-popover__body::-webkit-scrollbar-thumb {
-  background: rgba(136, 150, 171, 0.28); border-radius: 999px;
-}
-.inline-create-title-field input { font-size: 15px; font-weight: 600; }
-.inline-create-guidance { margin: 4px 0 0; }
-.inline-create-mobility-row {
-  margin-top: 6px;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-}
-.inline-create-mobility-hint {
-  margin: 0; font-size: 11px; line-height: 1.5; color: var(--text-tertiary); flex: 1; min-width: 220px;
-}
-.inline-create-grid {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
-}
-.inline-create-grid__time { grid-column: span 2; }
-.inline-create-footer {
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
-  padding-top: 12px; margin-top: 12px;
-  border-top: 1px solid rgba(136, 150, 171, 0.14);
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, color-mix(in srgb, var(--surface) 94%, rgba(124, 156, 255, 0.04) 6%) 34%);
-}
-.inline-create-actions { justify-content: flex-end; }
-
-.note-editor-field { gap: 6px; }
-.note-editor__label-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-  color: var(--text-secondary);
-}
-.note-editor__label-row small { font-size: 11px; color: var(--text-tertiary); }
-.note-editor {
-  border: 1px solid var(--border); border-radius: var(--radius-s); background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
-  overflow: hidden;
-}
-.note-editor--minimal { border-radius: var(--radius-s); }
-.note-editor__textarea {
-  min-height: 56px; resize: none; border: none; background: transparent; box-shadow: none;
-  padding: 10px 12px; line-height: 1.68; font-size: 12px; width: 100%;
-}
-.note-editor__textarea:focus { outline: none; }
+/* .note-editor* → TaskDetailPanel.module.css */
 
 /* ---- Task List ---- */
 .view-stack, .task-list { display: flex; flex-direction: column; gap: 1px; }
@@ -1585,17 +1513,7 @@ button.projection-metric:disabled {
 
 /* ---- Right Rail ---- */
 /* .detail-card → TaskDetailPanel.module.css */
-.reminder-center {
-  display: flex; flex-direction: column; gap: 12px; padding: 16px;
-  border-bottom: 1px solid var(--border);
-  flex: 0 0 auto;
-}
-
-.reminder-center--compact {
-  gap: 10px;
-  padding: 12px 16px;
-  background: color-mix(in srgb, var(--surface) 82%, var(--accent-soft) 18%);
-}
+/* .reminder-center, .reminder-center--compact → ReminderCenterPanel.module.css */
 
 .drawer-layer {
   position: fixed; inset: 0; z-index: 150;
@@ -1679,28 +1597,12 @@ button.projection-metric:disabled {
 .panel-header h3 { font-size: 14px; font-weight: 600; margin: 0; }
 .panel-header .eyebrow { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
 
-.reminder-center__header { align-items: flex-start; }
-.reminder-center__header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.reminder-center__summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.reminder-center__permission,
-.reminder-center__selection {
-  font-size: 11px; color: var(--text-secondary);
-  padding: 4px 8px; border-radius: 999px; background: var(--surface-raised);
-}
-.reminder-center__permission.is-granted { color: var(--green); background: var(--green-soft); }
-.reminder-center__permission.is-denied { color: var(--red); background: var(--red-soft); }
-.reminder-center__permission.is-default { color: var(--amber); background: var(--amber-soft); }
+/* .reminder-center*, .reminder-group*, .reminder-empty--compact → ReminderCenterPanel.module.css */
 
 .reminder-empty {
   padding: 10px 12px; border-radius: var(--radius-s);
   border: 1px dashed var(--border); color: var(--text-tertiary); font-size: 12px; line-height: 1.6;
 }
-.reminder-empty--compact {
-  display: flex; flex-direction: column; gap: 4px;
-  min-height: auto;
-}
-.reminder-empty--compact strong { font-size: 12px; color: var(--text); }
-.reminder-empty--compact span { font-size: 11px; }
 
 .reminder-feed-item {
   border-radius: var(--radius-s); padding: 10px; border: 1px solid var(--border);
@@ -2126,8 +2028,7 @@ button.projection-metric:disabled {
   }
   .workspace { padding: 14px; }
   .search-input { min-width: 0; }
-  .stats-grid, .two-col, .habit-grid, .inline-adder,
-  .tag-manager__create-row, .tag-manager-item__editor {
+  .stats-grid, .two-col, .habit-grid, .inline-adder {
     grid-template-columns: 1fr;
   }
   .calendar-grid.week, .calendar-create-strip {
@@ -2591,12 +2492,7 @@ button.projection-metric:disabled {
   .drawer-panel__header {
     padding: 16px 20px;
   }
-  .reminder-center--compact {
-    border-radius: 0;
-  }
-  .reminder-center, .detail-card {
-    padding: 16px 20px;
-  }
+  /* .reminder-center--compact border-radius + .reminder-center/.detail-card padding → component modules */
   .reminder-anchor-grid {
     grid-template-columns: 1fr;
   }
@@ -5661,27 +5557,7 @@ button.projection-metric:disabled {
 .mobile-me-weekly-bar__label { font-size: 10px; color: var(--text-tertiary); position: absolute; bottom: 0; }
 .mobile-me-weekly-bar__count { font-size: 10px; color: var(--text-secondary); position: absolute; top: -2px; }
 
-/* ---- #76 ReminderCenterPanel 分组折叠 ---- */
-.reminder-center__count { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 9px; background: var(--accent, #007aff); color: #fff; font-size: 11px; font-weight: 700; margin-left: 6px; vertical-align: middle; }
-.reminder-group-list { display: flex; flex-direction: column; gap: 1px; }
-.reminder-group { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 6px; }
-.reminder-group.is-linked { border-color: var(--accent, #007aff); }
-.reminder-group__head { width: 100%; display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--surface); cursor: pointer; text-align: left; border: none; font-size: 13px; }
-.reminder-group__head:hover { background: var(--hover); }
-.reminder-group__tone-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.tone-warning .reminder-group__tone-dot, .reminder-group.is-warning .reminder-group__tone-dot { background: #ff9500; }
-.tone-overdue .reminder-group__tone-dot, .reminder-group.is-overdue .reminder-group__tone-dot { background: #ff3b30; }
-.tone-info .reminder-group__tone-dot, .reminder-group.is-info .reminder-group__tone-dot { background: #007aff; }
-.reminder-group__title { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.reminder-group__badge { background: var(--accent, #007aff); color: #fff; border-radius: 8px; padding: 1px 5px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
-.reminder-group__time { font-size: 11px; color: var(--text-tertiary); flex-shrink: 0; }
-.reminder-group__chevron { font-size: 10px; color: var(--text-tertiary); flex-shrink: 0; }
-.reminder-group__body { padding: 8px 12px 10px; background: var(--surface-alt, var(--surface)); border-top: 1px solid var(--border); }
-.reminder-group__item { padding: 4px 0; }
-.reminder-group__item + .reminder-group__item { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
-.reminder-group__item-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 2px; }
-.reminder-group__item-body { font-size: 13px; color: var(--text-primary); margin-bottom: 6px; }
-.reminder-group__item-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+/* ---- #76 ReminderCenterPanel 分组折叠 → ReminderCenterPanel.module.css ---- */
 
 /* ── Matrix view polish ────────────────────────────── */
 .matrix-card__title {

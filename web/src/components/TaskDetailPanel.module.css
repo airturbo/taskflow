@@ -137,3 +137,49 @@
   font-size: 12px;
   color: var(--red);
 }
+
+/* ---- NoteEditorField (defined in this file) ---- */
+.noteEditorField {
+  gap: 6px;
+}
+
+.noteEditorLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+}
+
+.noteEditorLabelRow small {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.noteEditor {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  overflow: hidden;
+}
+
+.noteEditorMinimal {
+  border-radius: var(--radius-s);
+}
+
+.noteEditorTextarea {
+  min-height: 56px;
+  resize: none;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 10px 12px;
+  line-height: 1.68;
+  font-size: 12px;
+  width: 100%;
+}
+
+.noteEditorTextarea:focus {
+  outline: none;
+}

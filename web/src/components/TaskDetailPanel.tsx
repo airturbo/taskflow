@@ -48,16 +48,16 @@ export function NoteEditorField({
   const charCount = value.trim().length
 
   return (
-    <div className="field note-editor-field">
-      <div className="note-editor__label-row">
+    <div className={`field ${styles.noteEditorField}`}>
+      <div className={styles.noteEditorLabelRow}>
         <span>{label}</span>
         {charCount > 0 && <small>{charCount} 字</small>}
       </div>
-      <div className="note-editor note-editor--minimal">
+      <div className={`${styles.noteEditor} ${styles.noteEditorMinimal}`}>
         <textarea
           ref={textareaRef}
           rows={minRows}
-          className="note-editor__textarea"
+          className={styles.noteEditorTextarea}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}

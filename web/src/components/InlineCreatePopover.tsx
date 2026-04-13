@@ -15,6 +15,7 @@ import {
 } from '../utils/workspace-helpers'
 import { NoteEditorField } from './TaskDetailPanel'
 import { TagPicker } from './TagManagementDialog'
+import styles from './InlineCreatePopover.module.css'
 
 const viewMeta: { id: WorkspaceView; label: string }[] = [
   { id: 'calendar', label: '日历' },
@@ -158,20 +159,20 @@ export function InlineCreatePopover({
 
   return (
     <>
-      <button className="inline-create-backdrop" aria-label="关闭创建小窗" onClick={onClose} />
+      <button className={styles.backdrop} aria-label="关闭创建小窗" onClick={onClose} />
       <section
         ref={popoverRef}
-        className={`inline-create-popover panel${isDragging ? ' is-dragging' : ''}${position.mode === 'top-docked' ? ' is-top-docked' : ''}`}
+        className={`${styles.popover} panel${isDragging ? ' is-dragging' : ''}${position.mode === 'top-docked' ? ' is-top-docked' : ''}`}
         style={{ left: position.x, top: position.y }}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="inline-create-popover__hero" onPointerDown={handleHeaderPointerDown}>
+        <div className={styles.hero} onPointerDown={handleHeaderPointerDown}>
           <div>
             <p className="eyebrow">精致创建</p>
             <h3>新任务</h3>
-            <p className="muted inline-create-guidance">{draft.guidance || viewLabel}</p>
-            <div className="inline-create-mobility-row">
-              <p className="inline-create-mobility-hint">顶部可拖动；拖到顶部会自动吸附，并记住你上次停放的位置。</p>
+            <p className={`muted ${styles.guidance}`}>{draft.guidance || viewLabel}</p>
+            <div className={styles.mobilityRow}>
+              <p className={styles.mobilityHint}>顶部可拖动；拖到顶部会自动吸附，并记住你上次停放的位置。</p>
               <button className="ghost-button tiny" type="button" onClick={position.mode === 'top-docked' ? handleRestoreFloating : handleTopDock}>
                 {position.mode === 'top-docked' ? '恢复浮动' : '吸附顶部'}
               </button>
@@ -182,8 +183,8 @@ export function InlineCreatePopover({
           </button>
         </div>
 
-        <div className="inline-create-popover__body">
-          <label className="field inline-create-title-field">
+        <div className={styles.body}>
+          <label className={`field ${styles.titleFieldInput}`}>
             <span>任务标题</span>
             <input
               autoFocus
@@ -205,7 +206,7 @@ export function InlineCreatePopover({
             maxRows={8}
           />
 
-          <div className="inline-create-grid">
+          <div className={styles.grid}>
             <label className="field">
               <span>清单</span>
               <select value={draft.listId} onChange={(event) => onChange({ listId: event.target.value })}>
@@ -240,7 +241,7 @@ export function InlineCreatePopover({
               <span>日期</span>
               <input type="date" value={draft.dateKey} onChange={(event) => onChange({ dateKey: event.target.value })} />
             </label>
-            <label className="field inline-create-grid__time">
+            <label className={`field ${styles.gridTime}`}>
               <span>时间</span>
               <input type="time" value={draft.time} onChange={(event) => onChange({ time: event.target.value })} />
             </label>
@@ -256,9 +257,9 @@ export function InlineCreatePopover({
           />
         </div>
 
-        <div className="inline-create-footer">
+        <div className={styles.footer}>
           <p className="muted">创建后会直接选中这条任务，你可以继续补提醒、附件和更细的排期。</p>
-          <div className="action-row inline-create-actions">
+          <div className={`action-row ${styles.actions}`}>
             <button className="ghost-button small" onClick={onClose}>
               取消
             </button>
