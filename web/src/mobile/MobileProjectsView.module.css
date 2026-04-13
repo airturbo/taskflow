@@ -1,0 +1,262 @@
+/* MobileProjectsView.module.css
+   Covers: MobileProjectsView component
+   Dynamic class strings: mobile-color-swatch.is-active → kept as plain string, targeted via :global()
+*/
+
+/* ---- Projects View Container ---- */
+
+.mobileProjectsView {
+  padding: 0 16px 16px;
+}
+
+.mobileProjectsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+}
+
+.mobileProjectsHeader h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ---- Folder ---- */
+
+.mobileProjectsFolder {
+  margin-bottom: 8px;
+}
+
+.mobileProjectsFolderHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ---- List Item ---- */
+
+.mobileProjectsListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 4px;
+  border-radius: 14px;
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 1px solid var(--border);
+  cursor: pointer;
+  min-height: 48px;
+  transition: background 0.12s ease;
+  position: relative;
+}
+
+.mobileProjectsListItem:active {
+  background: var(--surface-hover);
+}
+
+.mobileProjectsDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mobileProjectsListName {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.mobileProjectsListCount {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Inbox section */
+.mobileProjectsInbox {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+/* ---- Create Row ---- */
+
+.mobileProjectsCreateRow {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.mobileProjectsCreateBtn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mobileProjectsCreateBtn:active {
+  background: var(--surface-hover);
+}
+
+/* ---- More Button ---- */
+
+.mobileProjectsMoreBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobileProjectsMoreBtn:active {
+  background: var(--surface-hover);
+}
+
+/* ---- List Actions ---- */
+
+.mobileProjectsListActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+/* ---- Action Menu ---- */
+
+.mobileProjectsActionMenuOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: rgba(10, 12, 18, 0.32);
+}
+
+.mobileProjectsActionMenu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 260;
+  background: var(--bg-subtle);
+  border-radius: 20px 20px 0 0;
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+  animation: sheet-slide-up-task-spring 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mobileProjectsActionMenu h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  padding: 4px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobileProjectsActionMenu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.mobileProjectsActionMenu button:active {
+  background: var(--surface-hover);
+}
+
+.mobileProjectsActionMenu button:global(.danger) {
+  color: #ef4444;
+}
+
+/* ---- Color Picker ---- */
+
+.mobileColorPicker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 20px 12px;
+}
+
+.mobileColorSwatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mobileColorSwatch:global(.is-active) {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--bg-subtle);
+}
+
+/* ---- Empty State ---- */
+
+.mobileProjectsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: var(--text-3);
+  text-align: center;
+}
+
+.mobileProjectsEmpty svg {
+  opacity: 0.35;
+  margin-bottom: 4px;
+}
+
+.mobileProjectsEmpty p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin: 0;
+}
+
+.mobileProjectsEmpty span {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ---- Safe area + touch target ---- */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .mobileProjectsView {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 680px) {
+  .mobileProjectsListItem {
+    min-height: 44px;
+    min-width: 44px;
+    border-radius: 14px;
+  }
+}

@@ -1,0 +1,298 @@
+/* MobileMeView.module.css
+   Covers: MobileMeView component + WeeklyBar subcomponent
+   Dynamic class strings: mobile-me-weekly-bar__bar.is-today → :global()
+                          mobile-me-stat--highlight, --overdue, mobile-me-row--account/danger/accent → kept as module classes
+*/
+
+/* ---- Me View Container ---- */
+
+.mobileMeView {
+  padding: 0 16px 16px;
+}
+
+.mobileMeView h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  padding: 12px 0 16px;
+}
+
+/* ---- Stats Grid ---- */
+
+.mobileMeStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mobileMeStat {
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobileMeStat strong {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mobileMeStat span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.mobileMeStatHighlight {
+  background: rgba(52, 199, 89, 0.1);
+  border-color: rgba(52, 199, 89, 0.35);
+}
+
+.mobileMeStatHighlight strong {
+  color: #34c759;
+}
+
+.mobileMeStatOverdue strong {
+  color: #ff3b30;
+}
+
+/* ---- Section ---- */
+
+.mobileMeSection {
+  margin-bottom: 24px;
+}
+
+.mobileMeSectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px 4px;
+  padding: 0;
+}
+
+/* ---- Card ---- */
+
+.mobileMeCard {
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.mobileMeCardChart {
+  padding: 12px 16px 8px;
+}
+
+/* ---- Row ---- */
+
+.mobileMeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  margin-bottom: 4px;
+  border-radius: 14px;
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 1px solid var(--border);
+  cursor: pointer;
+  min-height: 48px;
+  font-size: 15px;
+  color: var(--text);
+  transition: background 0.12s ease;
+}
+
+.mobileMeRow:active {
+  background: var(--surface-hover);
+}
+
+.mobileMeRow span:last-child {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* Row inside card overrides */
+.mobileMeCard .mobileMeRow {
+  border-radius: 0;
+  border: none;
+  background: none;
+  margin-bottom: 0;
+  padding: 13px 14px;
+}
+
+.mobileMeRowDivider {
+  height: 1px;
+  background: var(--border);
+  margin-left: 44px;
+  opacity: 0.7;
+}
+
+.mobileMeRowIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--accent, #007aff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  margin-right: 12px;
+}
+
+.mobileMeRowLabel {
+  flex: 1;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.mobileMeRowValue {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin-right: 4px;
+}
+
+.mobileMeRowArrow {
+  font-size: 18px;
+  color: var(--text-tertiary);
+  line-height: 1;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* Account row variant */
+.mobileMeRowAccount {
+  align-items: center;
+  gap: 0;
+}
+
+.mobileMeRowAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent, #007aff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.mobileMeRowAccountInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobileMeRowAccountInfo strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mobileMeRowEmail {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Danger / accent row variants */
+.mobileMeRowDanger {
+  color: #ff3b30 !important;
+}
+
+.mobileMeRowDanger .mobileMeRowLabel {
+  color: #ff3b30;
+}
+
+.mobileMeRowAccent {
+  color: var(--accent, #007aff) !important;
+}
+
+.mobileMeRowAccent .mobileMeRowLabel {
+  color: var(--accent, #007aff);
+}
+
+/* ---- Weekly Bar ---- */
+
+.mobileMeWeeklyBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 64px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.mobileMeWeeklyBarCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  position: relative;
+}
+
+.mobileMeWeeklyBarWrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.mobileMeWeeklyBarBar {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--text-tertiary);
+  transition: height 0.3s ease;
+}
+
+.mobileMeWeeklyBarBar:global(.is-today) {
+  background: var(--accent, #007aff);
+}
+
+.mobileMeWeeklyBarLabel {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  position: absolute;
+  bottom: 0;
+}
+
+.mobileMeWeeklyBarCount {
+  font-size: 10px;
+  color: var(--text-secondary);
+  position: absolute;
+  top: -2px;
+}
+
+/* ---- Safe area + touch target ---- */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .mobileMeView {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 680px) {
+  .mobileMeRow {
+    min-height: 44px;
+    min-width: 44px;
+    border-radius: 14px;
+  }
+  .mobileMeStat {
+    border-radius: 14px;
+  }
+}
