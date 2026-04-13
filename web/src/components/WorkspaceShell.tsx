@@ -430,7 +430,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         {p.shortcutPanelOpen && <ShortcutPanel onClose={() => p.setShortcutPanelOpen(false)} />}
         {p.exportPanelOpen && <ExportPanel state={{ folders: p.folders, lists: p.lists, tags: p.tags, filters: p.filters, tasks: p.tasks, theme: p.theme, activeSelection: p.activeSelection, selectedTagIds: p.selectedTagIds, selectionTimeModes: p.selectionTimeModes ?? {}, currentView: p.currentView as any, calendarMode: p.calendarMode, calendarShowCompleted: p.calendarShowCompleted, timelineScale: p.timelineScale, firedReminderKeys: p.initialState.firedReminderKeys, onboarding: p.initialState.onboarding }} onClose={() => p.setExportPanelOpen(false)} />}
 
-        <section className={`workspace panel ${p.isPhoneViewport ? 'is-phone' : ''} ${p.mobileTabFading ? 'is-fading' : ''}`}>
+        <section className={`workspace panel ${styles.workspacePanel} ${p.isPhoneViewport ? 'is-phone' : ''} ${p.mobileTabFading ? 'is-fading' : ''}`}>
           <WorkspaceViewContent isPhoneViewport={p.isPhoneViewport} isToolSelection={p.isToolSelection} currentView={p.currentView} mobileTab={p.mobileTab} mobileMatrixViewMode={p.mobileMatrixViewMode} meShowProjects={p.meShowProjects}
             tasks={p.tasks} visibleTasks={p.visibleTasks} calendarTasks={p.calendarTasks} mobileCalendarTasks={p.mobileCalendarTasks} mobileVisibleTasks={p.mobileVisibleTasks} contextTasks={p.contextTasks}
             mobileFocusSegments={p.mobileFocusSegments} mobileFocusSortMode={p.mobileFocusSortMode} mobileFocusUpcomingCollapsed={p.mobileFocusUpcomingCollapsed} mobileCompletedTodayCount={p.mobileCompletedTodayCount}

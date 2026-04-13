@@ -3511,13 +3511,7 @@ button.projection-metric:disabled {
 /* #18 — 快速创建 Sheet 输入框已是 16px，确认一下 */
 .mobile-quick-create-input { font-size: 16px !important; }
 
-/* #19 — Tab 切换淡入淡出 */
-.workspace.panel {
-  transition: opacity 0.15s ease;
-}
-.workspace.panel.is-fading {
-  opacity: 0.3;
-}
+/* #19 — Tab 切换淡入淡出 → WorkspaceShell.module.css (.workspacePanel + :global(.is-fading)) */
 
 /* #20 — 象限页 FAB 避让 */
 .is-phone .matrix-view { padding-bottom: 80px; }

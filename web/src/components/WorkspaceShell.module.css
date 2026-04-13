@@ -323,3 +323,12 @@
 :global(.is-phone) .mainStage {
   padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
 }
+
+/* ---- Workspace section (tab fade transition) ---- */
+.workspacePanel {
+  transition: opacity 0.15s ease;
+}
+
+.workspacePanel:global(.is-fading) {
+  opacity: 0.3;
+}
