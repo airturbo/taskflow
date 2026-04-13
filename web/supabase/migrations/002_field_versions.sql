@@ -1,0 +1,61 @@
+-- ============================================================
+-- TaskFlow Phase 15 — SYNC-03: field_versions support
+-- ============================================================
+--
+-- ARCHITECTURE NOTE:
+-- The current TaskFlow architecture stores all task data inside the
+-- `workspace_states.state_json` JSONB column (one blob per user/device).
+-- There is no dedicated `tasks` table in Supabase.
+--
+-- Therefore, `fieldVersions` (a Record<string, string> per task) is stored
+-- as part of the task object within the JSON blob — NO DDL change is needed
+-- to workspace_states for field-level merge to work today.
+--
+-- This file documents:
+--   1. The field_versions semantics
+--   2. The DDL you would run IF a dedicated tasks table is created in future
+--
+-- ============================================================
+-- SEMANTICS
+-- ============================================================
+--
+-- fieldVersions: Record<fieldName, ISO 8601 timestamp>
+--
+-- Example task JSON (inside state_json):
+--   {
+--     "id": "task-abc",
+--     "title": "Write report",
+--     "status": "doing",
+--     "updatedAt": "2026-04-13T12:00:00Z",
+--     "fieldVersions": {
+--       "title":  "2026-04-12T09:00:00Z",
+--       "status": "2026-04-13T12:00:00Z",
+--       "dueAt":  "2026-04-12T09:00:00Z"
+--     }
+--   }
+--
+-- Merge rule (SYNC-01 field-merge.ts):
+--   - If only local has a newer fieldVersions[f]: local value wins (no conflict)
+--   - If only remote has a newer fieldVersions[f]: remote value wins (no conflict)
+--   - If both changed (different timestamps, different values): CONFLICT → UI
+--   - If neither changed (same timestamp or both absent): keep current (no conflict)
+--
+-- ============================================================
+-- FUTURE: Dedicated tasks table (run manually when migrating)
+-- ============================================================
+--
+-- If you ever migrate from workspace_states JSON blob to a normalized tasks
+-- table, include this column:
+--
+-- ALTER TABLE public.tasks
+--   ADD COLUMN IF NOT EXISTS field_versions JSONB NOT NULL DEFAULT '{}';
+--
+-- COMMENT ON COLUMN public.tasks.field_versions IS
+--   'Per-field write timestamps (field_name → ISO 8601). Used by field-level merge engine.';
+--
+-- CREATE INDEX IF NOT EXISTS tasks_field_versions_gin
+--   ON public.tasks USING GIN (field_versions);
+--
+-- ============================================================
+-- NO STATEMENTS TO EXECUTE — this file is documentation only
+-- ============================================================

@@ -97,6 +97,10 @@ export interface Task {
   sortOrder?: number
   createdAt: string
   updatedAt: string
+  /** SYNC-03: Per-field write timestamps for field-level merge.
+   *  Maps field name → ISO 8601 timestamp of the last write to that field.
+   *  Optional for backward compatibility; absence means "unknown version". */
+  fieldVersions?: Record<string, string>
 }
 
 export interface SavedFilter {
