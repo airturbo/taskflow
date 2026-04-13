@@ -307,10 +307,16 @@ export function formatTaskDualTimeSummary(task: Task, options?: { mode?: TimeFie
   return emptyLabel
 }
 
+export function formatDueAtBadge(task: Task) {
+  const planned = getTaskPlannedAt(task)
+  if (!planned) return null
+  return formatDateTime(planned)
+}
+
 export function formatTaskDeadlineBadge(task: Task) {
   const deadline = getTaskDeadlineAt(task)
   if (!deadline) return null
-  return `DDL ${formatDateTime(deadline)}`
+  return formatDateTime(deadline)
 }
 
 export function getTaskDeadlineMarkerTone(task: Task): TaskDeadlineMarkerTone | null {

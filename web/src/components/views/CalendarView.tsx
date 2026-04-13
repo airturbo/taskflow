@@ -218,6 +218,8 @@ export function CalendarView({
         <div className={`${styles.calendarGrid} month`}>
           {monthDates.map((dateKey) => {
             const dayTasks = tasks.filter((task) => getCalendarTaskDateKey(task) === dateKey)
+            const deadlineCount = tasks.filter((task) => !task.deleted && !task.completed && task.deadlineAt?.slice(0, 10) === dateKey).length
+            const dueCount = tasks.filter((task) => !task.deleted && !task.completed && task.dueAt?.slice(0, 10) === dateKey).length
             const lunar = getLunarDate(dateKey)
             const isCurrentMonth = dateKey.slice(0, 7) === currentMonth
             const isFocusedDay = focusedDateKey === dateKey
@@ -233,6 +235,12 @@ export function CalendarView({
                 <header>
                   <span className={styles.calDay}>{dayNum.replace(/^0/, '')}</span>
                   <span className={styles.calLunar}>{lunar.display}</span>
+                  {(dueCount > 0 || deadlineCount > 0) && (
+                    <span className={styles.calDualDots} aria-hidden="true">
+                      {dueCount > 0 && <span className={styles.calDueDot} title={`${dueCount} 个计划完成`} />}
+                      {deadlineCount > 0 && <span className={styles.calDeadlineDot} title={`${deadlineCount} 个截止`} />}
+                    </span>
+                  )}
                 </header>
                 <div className={styles.calendarStack}>
                   {dayTasks.slice(0, 3).map((task) => (

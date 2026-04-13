@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom'
 import type { TaskStatus, Priority, Task } from '../types/domain'
 import type { PointerDragPreviewState } from '../types/workspace'
 import { priorityMeta, statusMeta, statusUiMeta } from '@taskflow/core'
-import { formatTaskDualTimeSummary, formatTaskDeadlineBadge, isTaskRiskOverdue, isTaskPlannedAfterDeadline, getTaskDeadlineMarkerTone, getTaskDeadlineMarkerTitle } from '@taskflow/core'
+import { formatTaskDualTimeSummary, formatDueAtBadge, formatTaskDeadlineBadge, isTaskRiskOverdue, isTaskPlannedAfterDeadline, getTaskDeadlineMarkerTone, getTaskDeadlineMarkerTitle } from '@taskflow/core'
 import { getTimelinePercent } from '@taskflow/core'
 import { getDateTimeMs } from '../utils/workspace-helpers'
 
@@ -19,7 +19,7 @@ export function TaskDeadlineIndicators({ task, compact = false }: { task: Task; 
   return (
     <div className={`task-deadline-indicators ${compact ? 'is-compact' : ''}`}>
       <span className={`time-badge ${tone === 'danger' ? 'is-danger' : tone === 'warning' ? 'is-warning' : 'is-deadline'}`} title={title} aria-label={title}>
-        {compact ? 'DDL' : deadlineBadge}
+        {compact ? 'DDL' : `⚡ ${deadlineBadge}`}
       </span>
       {plannedAfterDeadline && <span className="time-badge is-warning">{compact ? '晚于 DDL' : '计划晚于 DDL'}</span>}
     </div>
@@ -40,15 +40,27 @@ export function getTaskDeadlineMarkerOffset(task: Task, windowStart: number, win
 }
 
 export function TaskTimeSummary({ task, compact = false }: { task: Task; compact?: boolean }) {
+  const dueBadge = formatDueAtBadge(task)
   const deadlineBadge = formatTaskDeadlineBadge(task)
   const overdue = isTaskRiskOverdue(task)
   const plannedAfterDeadline = isTaskPlannedAfterDeadline(task)
+  const hasDeadline = Boolean(deadlineBadge)
 
   return (
     <div className={`task-time-summary ${compact ? 'is-compact' : ''}`}>
-      <span className={`task-time-summary__primary ${overdue ? 'is-danger' : ''}`}>{formatTaskDualTimeSummary(task, { emptyLabel: '未排期' })}</span>
-      {deadlineBadge && <span className={`time-badge ${overdue ? 'is-danger' : 'is-deadline'}`}>{deadlineBadge}</span>}
-      {plannedAfterDeadline && <span className="time-badge is-warning">计划晚于 DDL</span>}
+      {dueBadge ? (
+        <span className={`time-badge time-badge--due ${overdue && !hasDeadline ? 'is-danger' : ''}`} title="计划完成" aria-label={`计划完成 ${dueBadge}`}>
+          {compact ? dueBadge : `📅 ${dueBadge}`}
+        </span>
+      ) : !hasDeadline ? (
+        <span className="task-time-summary__primary">{formatTaskDualTimeSummary(task, { emptyLabel: '未排期' })}</span>
+      ) : null}
+      {deadlineBadge && (
+        <span className={`time-badge time-badge--deadline ${overdue ? 'is-danger' : ''}`} title="硬性截止" aria-label={`截止 ${deadlineBadge}`}>
+          {compact ? `⚡${deadlineBadge}` : `⚡ ${deadlineBadge}`}
+        </span>
+      )}
+      {plannedAfterDeadline && !compact && <span className="time-badge is-warning">计划晚于截止</span>}
     </div>
   )
 }

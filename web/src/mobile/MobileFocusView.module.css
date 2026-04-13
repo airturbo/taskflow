@@ -81,7 +81,27 @@
   color: var(--text-secondary);
 }
 
-.mobileFocusSectionIcon { font-size: 14px; }
+.mobileFocusSectionIcon { font-size: 14px; flex-shrink: 0; }
+
+.mobileFocusSectionTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.mobileFocusSectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.mobileFocusSectionSubtitle {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  line-height: 1.2;
+}
 
 .mobileFocusSectionCount {
   font-weight: 400;

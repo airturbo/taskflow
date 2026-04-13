@@ -52,6 +52,7 @@ export function InlineCreatePopover({
   const positionRef = useRef<InlineCreatePosition>(draft.position)
   const [position, setPosition] = useState(draft.position)
   const [isDragging, setIsDragging] = useState(false)
+  const [deadlineExpanded, setDeadlineExpanded] = useState(false)
 
   // Use @floating-ui/dom to compute initial placement when no remembered position exists
   useLayoutEffect(() => {
@@ -263,7 +264,7 @@ export function InlineCreatePopover({
               </select>
             </label>
             <label className="field">
-              <span>日期</span>
+              <span>计划完成</span>
               <input type="date" value={draft.dateKey} onChange={(event) => onChange({ dateKey: event.target.value })} />
             </label>
             <label className={`field ${styles.gridTime}`}>
@@ -271,6 +272,29 @@ export function InlineCreatePopover({
               <input type="time" value={draft.time} onChange={(event) => onChange({ time: event.target.value })} />
             </label>
           </div>
+
+          {!deadlineExpanded ? (
+            <button type="button" className={styles.addDeadlineBtn} onClick={() => setDeadlineExpanded(true)}>
+              + 添加截止日期
+            </button>
+          ) : (
+            <div className={styles.deadlineSection}>
+              <div className={styles.deadlineSectionHeader}>
+                <span>截止日期</span>
+                <button type="button" className={styles.removeDeadlineBtn} onClick={() => { setDeadlineExpanded(false); onChange({ deadlineDateKey: '', deadlineTime: '' }) }}>✕</button>
+              </div>
+              <div className={styles.deadlineFields}>
+                <label className="field">
+                  <span>日期</span>
+                  <input type="date" value={draft.deadlineDateKey} onChange={(event) => onChange({ deadlineDateKey: event.target.value })} />
+                </label>
+                <label className="field">
+                  <span>时间</span>
+                  <input type="time" value={draft.deadlineTime} onChange={(event) => onChange({ deadlineTime: event.target.value })} />
+                </label>
+              </div>
+            </div>
+          )}
 
           <TagPicker
             title="标签"

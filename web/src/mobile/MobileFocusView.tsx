@@ -17,7 +17,7 @@ import styles from './MobileFocusView.module.css'
 
 // ── VirtualFocusList — 虚拟化任务列表（@tanstack/react-virtual）─────────────
 type VirtualFocusItem =
-  | { type: 'section-header'; icon: string; title: string; count: number; tone: string; key: string; collapsible?: boolean; collapsed?: boolean }
+  | { type: 'section-header'; icon: string; title: string; subtitle: string; count: number; tone: string; key: string; collapsible?: boolean; collapsed?: boolean }
   | { type: 'task'; task: Task; key: string }
 
 function VirtualFocusList({
@@ -47,23 +47,23 @@ function VirtualFocusList({
   const items = useMemo<VirtualFocusItem[]>(() => {
     const list: VirtualFocusItem[] = []
     if (segments.overdue.length > 0) {
-      list.push({ type: 'section-header', key: 'hdr-overdue', icon: '🔴', title: '逾期', count: segments.overdue.length, tone: 'danger' })
+      list.push({ type: 'section-header', key: 'hdr-overdue', icon: '🔴', title: '逾期', subtitle: '计划完成或截止已过', count: segments.overdue.length, tone: 'danger' })
       segments.overdue.forEach(t => list.push({ type: 'task', task: t, key: t.id }))
     }
     if (segments.todayPlanned.length > 0) {
-      list.push({ type: 'section-header', key: 'hdr-today-planned', icon: '📌', title: '今天计划', count: segments.todayPlanned.length, tone: 'primary' })
+      list.push({ type: 'section-header', key: 'hdr-today-planned', icon: '📌', title: '今天计划', subtitle: '计划今天完成', count: segments.todayPlanned.length, tone: 'primary' })
       segments.todayPlanned.forEach(t => list.push({ type: 'task', task: t, key: t.id }))
     }
     if (segments.todayDeadline.length > 0) {
-      list.push({ type: 'section-header', key: 'hdr-today-deadline', icon: '⚡', title: '今天到期', count: segments.todayDeadline.length, tone: 'warning' })
+      list.push({ type: 'section-header', key: 'hdr-today-deadline', icon: '⚡', title: '今天截止', subtitle: '硬性截止日期为今天', count: segments.todayDeadline.length, tone: 'warning' })
       segments.todayDeadline.forEach(t => list.push({ type: 'task', task: t, key: t.id }))
     }
     if (segments.inbox.length > 0) {
-      list.push({ type: 'section-header', key: 'hdr-inbox', icon: '📥', title: '待处理', count: segments.inbox.length, tone: 'muted' })
+      list.push({ type: 'section-header', key: 'hdr-inbox', icon: '📥', title: '待处理', subtitle: '收件箱未排期任务', count: segments.inbox.length, tone: 'muted' })
       segments.inbox.forEach(t => list.push({ type: 'task', task: t, key: t.id }))
     }
     if (segments.upcoming.length > 0) {
-      list.push({ type: 'section-header', key: 'hdr-upcoming', icon: '📅', title: '明后天', count: segments.upcoming.length, tone: 'muted', collapsible: true, collapsed: upcomingCollapsed })
+      list.push({ type: 'section-header', key: 'hdr-upcoming', icon: '📅', title: '明后天', subtitle: '未来 7 天内计划', count: segments.upcoming.length, tone: 'muted', collapsible: true, collapsed: upcomingCollapsed })
       if (!upcomingCollapsed) {
         segments.upcoming.forEach(t => list.push({ type: 'task', task: t, key: t.id }))
       }
@@ -98,7 +98,10 @@ function VirtualFocusList({
                   role={item.collapsible ? 'button' : undefined}
                 >
                   <span className={styles.mobileFocusSectionIcon}>{item.icon}</span>
-                  <span>{item.title}</span>
+                  <span className={styles.mobileFocusSectionTitleGroup}>
+                    <span className={styles.mobileFocusSectionTitle}>{item.title}</span>
+                    <span className={styles.mobileFocusSectionSubtitle}>{item.subtitle}</span>
+                  </span>
                   <span className={styles.mobileFocusSectionCount}>{item.count}</span>
                   {item.collapsible && <span className={styles.mobileFocusSectionChevron}>{item.collapsed ? '▸' : '▾'}</span>}
                 </header>

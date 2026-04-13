@@ -372,7 +372,16 @@ export function TaskDetailPanel({
       <div className={styles.detailScheduleNote}>
         <TaskTimeSummary task={task} />
         <p className="muted">日历与时间线继续跟随开始时间 / 计划完成；DDL 只作为风险约束与到期判断。</p>
-        {isTaskPlannedAfterDeadline(task) && <p className={styles.detailScheduleWarning}>当前计划完成时间晚于 DDL，建议立即重排计划或调整承诺。</p>}
+        {isTaskPlannedAfterDeadline(task) && (
+          <div className={styles.detailScheduleWarningBanner}>
+            <p className={styles.detailScheduleWarning}>当前计划完成时间晚于 DDL，建议立即重排计划或调整承诺。</p>
+            <button
+              className={styles.detailScheduleFixBtn}
+              onClick={() => onUpdateTask(task.id, { dueAt: task.deadlineAt })}
+              title="将计划完成时间设为截止时间"
+            >一键修正</button>
+          </div>
+        )}
       </div>
 
       <div className="field">

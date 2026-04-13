@@ -121,6 +121,8 @@ export type InlineCreateDraft = {
   status: TaskStatus
   dateKey: string
   time: string
+  deadlineDateKey: string
+  deadlineTime: string
   guidance: string
   position: InlineCreatePosition
   anchorRect?: DOMRect | null

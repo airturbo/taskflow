@@ -43,6 +43,20 @@
 .calLunar { font-size: 10px; color: var(--text-tertiary); }
 .calMore { font-size: 10px; color: var(--text-tertiary); padding: 2px 0; }
 
+.calDualDots {
+  display: inline-flex; align-items: center; gap: 3px; margin-left: auto;
+}
+
+.calDueDot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); opacity: 0.72;
+}
+
+.calDeadlineDot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--red); opacity: 0.82;
+}
+
 .calendarCell:global(.is-other-month) {
   opacity: 0.58;
   background: color-mix(in srgb, var(--surface) 82%, transparent);

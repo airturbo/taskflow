@@ -200,7 +200,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
   const openInlineCreate = ({ view, anchorRect, dateKey = '', listId, priority, tagIds = [], isUrgent = false, isImportant = false, status, guidance, time = '' }: InlineCreateRequest) => {
     const fallbackListId = p.selectionKind === 'list' ? p.selectionId : p.quickListId
-    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, isUrgent, isImportant, status: status ?? 'todo', dateKey, time, guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect), anchorRect })
+    p.setInlineCreate({ view, title: '', note: '', listId: listId ?? fallbackListId, priority: priority ?? p.quickPriority, tagIds, isUrgent, isImportant, status: status ?? 'todo', dateKey, time, deadlineDateKey: '', deadlineTime: '', guidance: guidance ?? '', position: resolveInlineCreateInitialPosition(anchorRect), anchorRect })
   }
 
   const resolveTagIdsFromNames = (tagNames: string[]): string[] => {
@@ -213,9 +213,10 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
     const parsed = parseSmartEntry(p.inlineCreate.title)
     const explicitDueAt = p.inlineCreate.dateKey ? (p.inlineCreate.time ? `${p.inlineCreate.dateKey}T${p.inlineCreate.time}` : p.inlineCreate.dateKey) : null
     const resolvedDueAt = explicitDueAt ?? parsed.dueAt
+    const explicitDeadlineAt = p.inlineCreate.deadlineDateKey ? (p.inlineCreate.deadlineTime ? `${p.inlineCreate.deadlineDateKey}T${p.inlineCreate.deadlineTime}` : p.inlineCreate.deadlineDateKey) : null
     const schedule = p.inlineCreate.view === 'timeline' ? buildTimelineDraftWindow(resolvedDueAt) : { startAt: null, dueAt: resolvedDueAt }
     const resolvedTagIds = Array.from(new Set([...p.inlineCreate.tagIds, ...resolveTagIdsFromNames(parsed.tagNames)]))
-    const created = commitTask({ title: parsed.title, note: p.inlineCreate.note, listId: p.inlineCreate.listId, priority: parsed.priority ?? p.inlineCreate.priority, tagIds: resolvedTagIds, isUrgent: p.inlineCreate.isUrgent ?? false, isImportant: p.inlineCreate.isImportant ?? false, status: p.inlineCreate.status, startAt: schedule.startAt, dueAt: schedule.dueAt, activityLabel: `\u901A\u8FC7${viewMeta.find((item) => item.id === p.inlineCreate.view)?.label ?? '\u5F53\u524D\u89C6\u56FE'}\u5185\u8054\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1` })
+    const created = commitTask({ title: parsed.title, note: p.inlineCreate.note, listId: p.inlineCreate.listId, priority: parsed.priority ?? p.inlineCreate.priority, tagIds: resolvedTagIds, isUrgent: p.inlineCreate.isUrgent ?? false, isImportant: p.inlineCreate.isImportant ?? false, status: p.inlineCreate.status, startAt: schedule.startAt, dueAt: schedule.dueAt, deadlineAt: explicitDeadlineAt, activityLabel: `\u901A\u8FC7${viewMeta.find((item) => item.id === p.inlineCreate.view)?.label ?? '\u5F53\u524D\u89C6\u56FE'}\u5185\u8054\u521B\u5EFA\u5F55\u5165\u4EFB\u52A1` })
     if (created) p.setInlineCreate(null)
   }
 

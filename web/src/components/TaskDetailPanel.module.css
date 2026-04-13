@@ -93,11 +93,38 @@
   border: 1px solid var(--border);
 }
 
+.detailScheduleWarningBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.24);
+}
+
 .detailScheduleWarning {
   margin: 0;
   font-size: 12px;
   color: var(--red);
+  flex: 1;
 }
+
+.detailScheduleFixBtn {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity var(--transition);
+}
+
+.detailScheduleFixBtn:hover { opacity: 1; }
 
 .detailSection {
   display: flex;
