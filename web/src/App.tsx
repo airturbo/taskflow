@@ -12,6 +12,7 @@ import { useNavigationState } from './hooks/useNavigationState'
 import { useQuickCreate } from './hooks/useQuickCreate'
 import { useMobileDialogs } from './hooks/useMobileDialogs'
 import { useTaskActions } from './hooks/useTaskActions'
+import { useWorkspaceComputed } from './hooks/useWorkspaceComputed'
 import { useMobileUiStore, type MobileTab } from './stores/mobileUiStore'
 import { ShortcutPanel } from './components/ShortcutPanel'
 import { ExportPanel } from './components/ExportPanel'
@@ -34,19 +35,13 @@ import type {
   CalendarMode,
   PersistedState,
   Priority,
-  Tag,
   Task,
-  TimeFieldMode,
 } from './types/domain'
 import { useReminderCenter } from './hooks/useReminderCenter'
 import {
   addDays,
   addMonths,
-  buildMonthMatrix,
-  buildWeek,
   formatDateTime,
-  formatMonthLabel,
-  formatWeekRange,
   getDateKey,
   getNowIso,
   shiftDateTimeByDays,
@@ -56,24 +51,13 @@ import { requestAuthScreen } from './utils/auth-events'
 import { loadState, saveState, setCurrentUserId } from './utils/storage'
 import { parseSmartEntry } from './utils/smart-entry'
 import {
-  priorityMeta, statusMeta,
-  SPECIAL_TAG_IDS,
+  priorityMeta, statusMeta, ensureSpecialTags,
+  getCalendarTaskAnchor, getProjectionAnchorDateKey,
 } from '@taskflow/core'
+import { buildTimelineDraftWindow } from '@taskflow/core'
 import {
-  getTasksForSelection, matchesSearch, matchesSelectedTags,
-  buildTaskStats, ensureSpecialTags,
-  hasTaskSchedule, isTaskVisibleInCalendarWindow,
-  getCalendarTaskAnchor,
-  compareTasksByProjectionDistance, getProjectionAnchorDateKey,
-  getTaskPrimaryScheduleAt,
-} from '@taskflow/core'
-import {
-  buildTimelineDraftWindow, getTimelineWindowLabel, isTaskVisibleInTimelineWindow,
-} from '@taskflow/core'
-import {
-  viewMeta, timeFieldModeLabel, PRESET_COLORS,
-  makeId, upsertTaskInCache,
-  getDateTimeMs, getTaskDeadlineAt, resolveInlineCreateInitialPosition,
+  viewMeta, PRESET_COLORS,
+  makeId, upsertTaskInCache, resolveInlineCreateInitialPosition,
   type CreateTaskPayload, type InlineCreateRequest,
   type ProjectionSummaryMetric, type ProjectionRecoveryItem,
 } from './utils/app-helpers'
@@ -451,34 +435,29 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }, [firedReminderKeys, notifySurface, tasks])
 
-  const currentSelectionTimeMode: TimeFieldMode =
-    selectionKind === 'system' && (selectionId === 'today' || selectionId === 'upcoming')
-      ? selectionTimeModes?.[selectionId] ?? 'planned'
-      : 'planned'
-
-  const doesTaskMatchWorkspace = (task: Task, includeCompleted = false) => {
-    const inSelection = getTasksForSelection({ tasks: [task], selectionKind, selectionId, filters, selectionTimeModes, includeCompleted }).some((item) => item.id === task.id)
-    if (!inSelection) return false
-    if (!matchesSelectedTags(task, selectedTagIds)) return false
-    const keyword = searchKeyword.trim().toLowerCase()
-    return matchesSearch(task, keyword, tags)
-  }
-
-  const compareTaskCards = (left: Task, right: Task) => {
-    if (left.completed !== right.completed) return Number(left.completed) - Number(right.completed)
-    const priorityRank = { urgent: 0, high: 1, normal: 2, low: 3 }
-    const priorityDiff = priorityRank[left.priority] - priorityRank[right.priority]
-    if (priorityDiff !== 0) return priorityDiff
-    const leftDate = getTaskPrimaryScheduleAt(left) ?? getTaskDeadlineAt(left) ?? '9999-12-31'
-    const rightDate = getTaskPrimaryScheduleAt(right) ?? getTaskDeadlineAt(right) ?? '9999-12-31'
-    const dateDiff = leftDate.localeCompare(rightDate)
-    if (dateDiff !== 0) return dateDiff
-    const updatedDiff = right.updatedAt.localeCompare(left.updatedAt)
-    if (updatedDiff !== 0) return updatedDiff
-    return left.id.localeCompare(right.id)
-  }
-
-  const sortVisibleTasks = (items: Task[]) => [...items].sort(compareTaskCards)
+  // ---- Computed/Derived State (extracted to useWorkspaceComputed) ----
+  const computed = useWorkspaceComputed({
+    tasks, tags, lists, filters,
+    selectionKind, selectionId, isToolSelection,
+    selectedTagIds, searchKeyword, selectionTimeModes,
+    calendarShowCompleted, calendarMode, calendarAnchor,
+    timelineScale, currentView,
+    mobileFocusScope, mobileFocusScopeListId,
+  })
+  const {
+    doesTaskMatchWorkspace,
+    countsBySelection, visibleTasks, calendarTasks, mobileCalendarTasks,
+    mobileVisibleTasks, mobileFocusSegments, mobileCompletedTodayCount,
+    selectedTagObjects, primaryTags, secondaryTags,
+    workspaceLabel, weekDates, monthDates, calendarNavLabel,
+    contextTasks,
+    projectionUnscheduledTasks, projectionOutsideTasksSorted,
+    projectionWindowLabel, projectionUnscheduledCount, projectionOutsideCount,
+    projectionWorkspaceTotal, projectionScheduledCount, projectionVisibleCount,
+    nearestProjectionOutsideAnchor, summaryScopeChips,
+    shouldShowProjectionSummary, genericSummaryMetrics,
+    workspaceSummaryEyebrow, workspaceSummaryTitle, workspaceSummaryDescription,
+  } = computed
 
   // ---- Task/Tag/Folder/List Actions (extracted to useTaskActions) ----
   const actions = useTaskActions({
@@ -502,7 +481,11 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     createList, renameList, updateListColor, updateListFolder, deleteList,
   } = actions
 
-  /** Mobile-optimized toggle: immediate completion + Undo Toast (UX-01) */
+  const selectedTask = useMemo(
+    () => (selectedTaskId ? (tasks.find((task) => task.id === selectedTaskId && !task.deleted) ?? null) : null),
+    [selectedTaskId, tasks],
+  )
+
   const mobileToggleComplete = (taskId: string) => {
     const task = tasks.find(t => t.id === taskId)
     if (task && !task.completed) {
@@ -517,358 +500,13 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     selection.selectAllBulk(visibleTasks.map(t => t.id))
   }
 
-  const countsBySelection = useMemo(() => {
-    const keyword = searchKeyword.trim().toLowerCase()
-    const getScopedSelectionCount = (selectionKindValue: string, selectionIdValue: string) => {
-      let scopedTasks = getTasksForSelection({
-        tasks,
-        selectionKind: selectionKindValue,
-        selectionId: selectionIdValue,
-        filters,
-        selectionTimeModes,
-      })
-      if (selectedTagIds.length > 0) {
-        scopedTasks = scopedTasks.filter((task) => matchesSelectedTags(task, selectedTagIds))
-      }
-      if (keyword) {
-        scopedTasks = scopedTasks.filter((task) => matchesSearch(task, keyword, tags))
-      }
-      return scopedTasks.length
-    }
-    const map: Record<string, number> = {
-      'system:all': getScopedSelectionCount('system', 'all'),
-      'system:today': getScopedSelectionCount('system', 'today'),
-      'system:upcoming': getScopedSelectionCount('system', 'upcoming'),
-      'system:inbox': getScopedSelectionCount('system', 'inbox'),
-      'system:completed': getScopedSelectionCount('system', 'completed'),
-      'system:trash': getScopedSelectionCount('system', 'trash'),
-    }
-    lists.forEach((list) => { map[`list:${list.id}`] = getScopedSelectionCount('list', list.id) })
-    tags.forEach((tag) => { map[`tag:${tag.id}`] = getScopedSelectionCount('tag', tag.id) })
-    filters.forEach((filter) => { map[`filter:${filter.id}`] = getScopedSelectionCount('filter', filter.id) })
-    return map
-  }, [filters, lists, searchKeyword, selectedTagIds, selectionTimeModes, tags, tasks])
+  // Layout breakpoints
+  const isPhoneViewport = viewportWidth <= 680
+  const isNavigationDrawerMode = viewportWidth <= 960
+  const isCompactSidebar = viewportWidth > 960 && viewportWidth <= 1200
+  const isUtilityDrawerMode = viewportWidth <= 1280
 
-  const visibleTasks = useMemo(() => {
-    let base = getTasksForSelection({ tasks, selectionKind, selectionId, filters, selectionTimeModes })
-    if (selectedTagIds.length > 0) {
-      base = base.filter((task) => matchesSelectedTags(task, selectedTagIds))
-    }
-    const keyword = searchKeyword.trim().toLowerCase()
-    if (keyword) {
-      base = base.filter((task) => matchesSearch(task, keyword, tags))
-    }
-    return sortVisibleTasks(base)
-  }, [filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks])
-
-  const calendarTasks = useMemo(() => {
-    let base = getTasksForSelection({ tasks, selectionKind, selectionId, filters, selectionTimeModes, includeCompleted: calendarShowCompleted })
-    if (selectedTagIds.length > 0) {
-      base = base.filter((task) => matchesSelectedTags(task, selectedTagIds))
-    }
-    const keyword = searchKeyword.trim().toLowerCase()
-    if (keyword) {
-      base = base.filter((task) => matchesSearch(task, keyword, tags))
-    }
-    return sortVisibleTasks(base)
-  }, [calendarShowCompleted, filters, searchKeyword, selectedTagIds, selectionId, selectionKind, selectionTimeModes, tags, tasks])
-
-  // 移动端月历：不受侧边栏选中项限制，显示所有清单中有日期的任务
-  // 但跟随焦点 Tab 的范围筛选（清单/全部），以保持跨 Tab 一致性
-  const mobileCalendarTasks = useMemo(() => {
-    let base = tasks.filter(t => !t.deleted && (calendarShowCompleted || !t.completed) && (t.dueAt || t.startAt))
-    // 若焦点 Tab 选的是某个清单，日历也只显示该清单的任务
-    if (mobileFocusScope === 'list' && mobileFocusScopeListId) {
-      base = base.filter(t => t.listId === mobileFocusScopeListId)
-    }
-    return sortVisibleTasks(base)
-  }, [tasks, calendarShowCompleted, mobileFocusScope, mobileFocusScopeListId])
-
-  // 移动端矩阵/看板/时间线：同样跟随焦点 Tab 的清单范围，其余与 visibleTasks 一致
-  const mobileVisibleTasks = useMemo(() => {
-    let base: Task[]
-    if (mobileFocusScope === 'list' && mobileFocusScopeListId) {
-      // 用指定清单过滤，排除已删除和已完成
-      base = tasks.filter(t => !t.deleted && !t.completed && t.listId === mobileFocusScopeListId)
-    } else if (mobileFocusScope === 'today') {
-      const todayKey = getDateKey()
-      base = tasks.filter(t => {
-        if (t.deleted || t.completed) return false
-        const dueDate = t.dueAt?.slice(0, 10)
-        const dlDate = t.deadlineAt?.slice(0, 10)
-        return (dueDate && dueDate <= todayKey) || (dlDate && dlDate <= todayKey)
-      })
-    } else if (mobileFocusScope === 'week') {
-      const todayKey = getDateKey()
-      const weekEndKey = addDays(todayKey, 7)
-      base = tasks.filter(t => {
-        if (t.deleted || t.completed) return false
-        const dueDate = t.dueAt?.slice(0, 10)
-        const dlDate = t.deadlineAt?.slice(0, 10)
-        return (dueDate && dueDate <= weekEndKey) || (dlDate && dlDate <= weekEndKey)
-      })
-    } else {
-      // 全部：复用 visibleTasks（走桌面侧边栏选择逻辑）
-      return visibleTasks
-    }
-    const keyword = searchKeyword.trim().toLowerCase()
-    if (keyword) {
-      base = base.filter(t => matchesSearch(t, keyword, tags))
-    }
-    return sortVisibleTasks(base)
-  }, [mobileFocusScope, mobileFocusScopeListId, tasks, visibleTasks, searchKeyword, tags])
-
-  const timelineTasks = visibleTasks
-
-  // ---- 移动端焦点页任务分段 ----
-  const mobileFocusSegments = useMemo(() => {
-    const todayKey = getDateKey()
-    const tomorrowKey = addDays(todayKey, 1)
-    const threeDaysKey = addDays(todayKey, 3)
-    const weekEndKey = addDays(todayKey, 7)
-    let activeTasks = tasks.filter(t => !t.deleted && !t.completed)
-
-    // Apply search filter
-    const keyword = searchKeyword.trim().toLowerCase()
-    if (keyword) {
-      activeTasks = activeTasks.filter(t => matchesSearch(t, keyword, tags))
-    }
-
-    // Apply scope filter (fix: mobileFocusScope was only passed to MobileFocusView
-    // as props but never applied here — tasks were always computed for 'all' scope)
-    if (mobileFocusScope === 'list' && mobileFocusScopeListId) {
-      activeTasks = activeTasks.filter(t => t.listId === mobileFocusScopeListId)
-    } else if (mobileFocusScope === 'today') {
-      activeTasks = activeTasks.filter(t => {
-        const dueDate = t.dueAt?.slice(0, 10)
-        const dlDate = t.deadlineAt?.slice(0, 10)
-        // Include tasks that are today or overdue (so overdue bucket still shows)
-        return (dueDate && dueDate <= todayKey) || (dlDate && dlDate <= todayKey)
-      })
-    } else if (mobileFocusScope === 'week') {
-      activeTasks = activeTasks.filter(t => {
-        const dueDate = t.dueAt?.slice(0, 10)
-        const dlDate = t.deadlineAt?.slice(0, 10)
-        // Include tasks within the next 7 days (plus overdue)
-        return (dueDate && dueDate <= weekEndKey) || (dlDate && dlDate <= weekEndKey)
-      })
-    }
-
-    const overdue: Task[] = []
-    const todayPlanned: Task[] = []
-    const todayDeadline: Task[] = []
-    const inbox: Task[] = []
-    const upcoming: Task[] = []
-
-    for (const task of activeTasks) {
-      const dueDate = task.dueAt?.slice(0, 10) ?? null
-      const dlDate = (task.deadlineAt ?? null)?.slice(0, 10) ?? null
-
-      // Check overdue: either deadline or dueAt has passed
-      const isDeadlineOverdue = dlDate && dlDate < todayKey
-      const isDueOverdue = dueDate && dueDate < todayKey
-      if (isDeadlineOverdue || isDueOverdue) {
-        overdue.push(task)
-        continue
-      }
-
-      // Today planned: dueAt = today
-      if (dueDate === todayKey) {
-        todayPlanned.push(task)
-        continue
-      }
-
-      // Today deadline: deadlineAt = today but dueAt ≠ today
-      if (dlDate === todayKey && dueDate !== todayKey) {
-        todayDeadline.push(task)
-        continue
-      }
-
-      // Upcoming: dueAt in next 2-3 days (or up to weekEnd for week scope)
-      const upcomingEnd = mobileFocusScope === 'week' ? weekEndKey : threeDaysKey
-      if (dueDate && dueDate >= tomorrowKey && dueDate <= upcomingEnd) {
-        upcoming.push(task)
-        continue
-      }
-
-      // Inbox: no schedule (inbox items or items without dates)
-      if (task.listId === 'inbox' && !dueDate && !dlDate) {
-        inbox.push(task)
-        continue
-      }
-    }
-
-    return { overdue, todayPlanned, todayDeadline, inbox, upcoming }
-  }, [tasks, searchKeyword, tags, mobileFocusScope, mobileFocusScopeListId])
-
-  // 今天已完成的任务数（用于空状态区分「全部完成」vs「没有安排」）
-  const mobileCompletedTodayCount = useMemo(() => {
-    const todayKey = getDateKey()
-    return tasks.filter(t => !t.deleted && t.completed && (
-      t.dueAt?.slice(0, 10) === todayKey ||
-      t.deadlineAt?.slice(0, 10) === todayKey
-    )).length
-  }, [tasks])
-
-  const renderedWorkspaceTasks = isToolSelection
-    ? tasks.filter((task) => !task.deleted)
-    : currentView === 'calendar'
-      ? calendarTasks
-      : currentView === 'timeline'
-        ? timelineTasks
-        : visibleTasks
-
-  const selectedTask = useMemo(
-    () => (selectedTaskId ? (tasks.find((task) => task.id === selectedTaskId && !task.deleted) ?? null) : null),
-    [selectedTaskId, tasks],
-  )
-
-  const selectedTagObjects = useMemo(
-    () => selectedTagIds.map((tagId) => tags.find((item) => item.id === tagId)).filter(Boolean) as Tag[],
-    [selectedTagIds, tags],
-  )
-
-  const specialTagIds = [SPECIAL_TAG_IDS.urgent, SPECIAL_TAG_IDS.important] as string[]
-  const primaryTags = useMemo(() => tags.filter((tag) => specialTagIds.includes(tag.id)), [specialTagIds, tags])
-  const secondaryTags = useMemo(() => tags.filter((tag) => !specialTagIds.includes(tag.id)), [specialTagIds, tags])
-
-  const workspaceLabel = useMemo(() => {
-    if (selectionKind === 'system') {
-      const labelMap: Record<string, string> = {
-        all: '全部',
-        today: '今日',
-        upcoming: '未来 7 天',
-        inbox: '收件箱',
-        completed: '已完成',
-        trash: '回收站',
-      }
-      const baseLabel = labelMap[selectionId] ?? 'TaskFlow'
-      if (selectionId === 'today' || selectionId === 'upcoming') {
-        return `${baseLabel} · ${timeFieldModeLabel[currentSelectionTimeMode]}`
-      }
-      return baseLabel
-    }
-    if (selectionKind === 'list') return lists.find((item) => item.id === selectionId)?.name ?? '清单'
-    if (selectionKind === 'tag') return `#${tags.find((item) => item.id === selectionId)?.name ?? '标签'}`
-    if (selectionKind === 'filter') return filters.find((item) => item.id === selectionId)?.name ?? '智能清单'
-    if (selectionKind === 'tool') return selectionId === 'stats' ? '统计' : 'TaskFlow'
-    return 'TaskFlow'
-  }, [currentSelectionTimeMode, filters, lists, selectionId, selectionKind, tags])
-
-  const currentViewLabel = viewMeta.find((view) => view.id === currentView)?.label ?? '列表'
-
-  // 布局断点体系（对标 Linear / Todoist / Things 3）
-  const isPhoneViewport     = viewportWidth <= 680        // 手机：底部导航 + 全屏视图
-  const isNavigationDrawerMode = viewportWidth <= 960     // 平板/小窗：导航变抽屉
-  const isCompactSidebar    = viewportWidth > 960 && viewportWidth <= 1200  // 中宽屏：侧边栏折叠为图标栏
-  const isUtilityDrawerMode = viewportWidth <= 1280       // 详情面板变抽屉
-
-  // ---- Mobile Dialogs ----
-  const {
-    mobileConfirmDialog, setMobileConfirmDialog,
-    mobilePromptDialog, setMobilePromptDialog,
-    mobilePromptValue, setMobilePromptValue,
-    mobileConfirm, mobilePrompt,
-  } = useMobileDialogs(isPhoneViewport)
-
-  const weekDates = useMemo(() => buildWeek(calendarAnchor), [calendarAnchor])
-  const monthDates = useMemo(() => buildMonthMatrix(calendarAnchor), [calendarAnchor])
-  const calendarNavLabel = useMemo(
-    () => (calendarMode === 'month' ? formatMonthLabel(calendarAnchor) : formatWeekRange(calendarAnchor)),
-    [calendarAnchor, calendarMode],
-  )
-
-  const stats = useMemo(() => buildTaskStats(renderedWorkspaceTasks), [renderedWorkspaceTasks])
-
-  const projectionContextTasks = useMemo(() => {
-    if (isToolSelection || (currentView !== 'calendar' && currentView !== 'timeline')) return []
-    return currentView === 'calendar' ? calendarTasks : visibleTasks
-  }, [calendarTasks, currentView, isToolSelection, visibleTasks])
-
-  const projectionWorkspaceStats = useMemo(() => {
-    if (isToolSelection || (currentView !== 'calendar' && currentView !== 'timeline')) return null
-    return buildTaskStats(projectionContextTasks)
-  }, [currentView, isToolSelection, projectionContextTasks])
-
-  const calendarProjectionDates = useMemo(() => (calendarMode === 'month' ? monthDates : weekDates), [calendarMode, monthDates, weekDates])
-  const calendarVisibleTasks = useMemo(
-    () => calendarTasks.filter((task) => isTaskVisibleInCalendarWindow(task, calendarProjectionDates)),
-    [calendarProjectionDates, calendarTasks],
-  )
-
-  const timelineWindowBounds = useMemo(() => {
-    const windowDates = timelineScale === 'day' ? [calendarAnchor] : buildWeek(calendarAnchor)
-    return {
-      start: getDateTimeMs(`${windowDates[0]}T00:00`, 'start') ?? Date.now(),
-      end: getDateTimeMs(`${windowDates[windowDates.length - 1]}T23:59`, 'end') ?? Date.now(),
-    }
-  }, [calendarAnchor, timelineScale])
-  const timelineVisibleTasks = useMemo(
-    () => timelineTasks.filter((task) => isTaskVisibleInTimelineWindow(task, timelineWindowBounds.start, timelineWindowBounds.end)),
-    [timelineTasks, timelineWindowBounds.end, timelineWindowBounds.start],
-  )
-  const projectionScheduledTasks = useMemo(() => projectionContextTasks.filter((task) => hasTaskSchedule(task)), [projectionContextTasks])
-  const projectionUnscheduledTasks = useMemo(() => projectionContextTasks.filter((task) => !hasTaskSchedule(task)), [projectionContextTasks])
-  const projectionOutsideTasks = useMemo(() => {
-    if (currentView === 'calendar') {
-      return projectionScheduledTasks.filter((task) => !isTaskVisibleInCalendarWindow(task, calendarProjectionDates))
-    }
-    if (currentView === 'timeline') {
-      return projectionScheduledTasks.filter((task) => !isTaskVisibleInTimelineWindow(task, timelineWindowBounds.start, timelineWindowBounds.end))
-    }
-    return []
-  }, [calendarProjectionDates, currentView, projectionScheduledTasks, timelineWindowBounds.end, timelineWindowBounds.start])
-  const projectionOutsideTasksSorted = useMemo(
-    () => [...projectionOutsideTasks].sort((left, right) => compareTasksByProjectionDistance(left, right, calendarAnchor, currentView)),
-    [calendarAnchor, currentView, projectionOutsideTasks],
-  )
-  const projectionWindowLabel = currentView === 'calendar' ? calendarNavLabel : getTimelineWindowLabel(calendarAnchor, timelineScale)
-  const projectionVisibleCount = currentView === 'calendar' ? calendarVisibleTasks.length : currentView === 'timeline' ? timelineVisibleTasks.length : 0
-  const projectionWorkspaceTotal = projectionWorkspaceStats ? projectionWorkspaceStats.active + projectionWorkspaceStats.completed : projectionContextTasks.length
-  const projectionScheduledCount = projectionWorkspaceStats?.scheduled ?? projectionScheduledTasks.length
-  const projectionUnscheduledCount = Math.max(projectionWorkspaceTotal - projectionScheduledCount, 0)
-  const projectionOutsideCount = Math.max(projectionScheduledCount - projectionVisibleCount, 0)
-  const nearestProjectionOutsideAnchor = projectionOutsideTasksSorted[0] ? getProjectionAnchorDateKey(projectionOutsideTasksSorted[0], currentView) : null
-  const summaryScopeChips = useMemo(() => {
-    if (isToolSelection) return []
-    const chips: string[] = []
-
-    if (currentView === 'calendar' || currentView === 'timeline') {
-      chips.push(`${currentView === 'calendar' ? '窗口' : '时间窗'} · ${projectionWindowLabel}`)
-    }
-
-    if (selectedTagObjects.length === 1) {
-      chips.push(`#${selectedTagObjects[0].name}`)
-    } else if (selectedTagObjects.length > 1) {
-      chips.push(`交集 · ${selectedTagObjects.map((tag) => `#${tag.name}`).join(' · ')}`)
-    }
-
-    if (searchKeyword.trim()) {
-      chips.push(`搜索 · ${searchKeyword.trim()}`)
-    }
-
-    return chips
-  }, [currentView, isToolSelection, projectionWindowLabel, searchKeyword, selectedTagObjects])
-  const projectionSummaryTitle = currentView === 'calendar'
-    ? `${workspaceLabel} · ${calendarMode === 'month' ? '月视图' : calendarMode === 'week' ? '周视图' : '日程列表'}`
-    : `${workspaceLabel} · 时间线`
-  const projectionSummaryDescription = ''
-  const genericSummaryMetrics = useMemo<ProjectionSummaryMetric[]>(
-    () => [
-      { label: '总数', value: renderedWorkspaceTasks.length, hint: '当前结果' },
-      { label: '活跃', value: stats.active },
-      { label: '已完成', value: stats.completed },
-      { label: '已逾期', value: stats.overdue, hint: stats.overdue > 0 ? '优先处理' : '暂无' },
-    ],
-    [renderedWorkspaceTasks.length, stats.active, stats.completed, stats.overdue],
-  )
-  const workspaceSummaryEyebrow = ''
-  const workspaceSummaryTitle = currentView === 'calendar' || currentView === 'timeline' ? projectionSummaryTitle : `${workspaceLabel} · ${currentViewLabel}`
-  const workspaceSummaryDescription = currentView === 'calendar'
-    ? projectionSummaryDescription
-    : currentView === 'timeline'
-      ? projectionSummaryDescription
-      : ''
+  const { mobileConfirmDialog, setMobileConfirmDialog, mobilePromptDialog, setMobilePromptDialog, mobilePromptValue, setMobilePromptValue, mobileConfirm, mobilePrompt } = useMobileDialogs(isPhoneViewport)
 
   const commitTask = ({
     title,
@@ -1026,11 +664,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   // ---- 移动端快速创建 (逻辑已内联到 MobileQuickCreateSheet) ----
 
-  const contextTasks = useMemo(
-    () => tasks.filter((task) => !task.deleted),
-    [tasks],
-  )
-
   const sidebarProps = {
     folders, lists, tags, filters, countsBySelection,
     primaryTags, secondaryTags, selectedTagObjects,
@@ -1054,8 +687,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   }
 
   const navigationContent = <AppSidebar {...sidebarProps} />
-
-  const shouldShowProjectionSummary = !isToolSelection && (currentView === 'calendar' || currentView === 'timeline')
 
   // ---- 移动端 Tab 切换 ----
   const handleMobileTabChange = (tab: MobileTab) => {
