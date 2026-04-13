@@ -167,7 +167,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     ?? null
   const selection = useTaskSelection(_initialTaskId)
   const { selectedTaskId, setSelectedTaskId, bulkSelectedIds, bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect } = selection
-  const setMobileQuickCreateOpen
 
   const [folders, setFolders] = useState(initialState.folders)
   const [lists, setLists] = useState(initialState.lists)
