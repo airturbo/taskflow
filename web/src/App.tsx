@@ -20,25 +20,15 @@ import { AppSidebar } from './components/AppSidebar'
 import { AppTopBar } from './components/AppTopBar'
 import { MobileTabBar } from './components/MobileTabBar'
 import { ReminderCenterPanel } from './components/ReminderCenterPanel'
-import { ListView } from './components/views/ListView'
 import { TagPicker, TagManagementDialog } from './components/TagManagementDialog'
 import { TaskDetailPanel } from './components/TaskDetailPanel'
 import { InlineCreatePopover } from './components/InlineCreatePopover'
 import { ResponsiveDrawer, TaskBottomSheet } from './components/TaskBottomSheet'
-import { CalendarView } from './components/views/CalendarView'
-import { KanbanView } from './components/views/KanbanView'
-import { TimelineView } from './components/views/TimelineView'
-import { MatrixView } from './components/views/MatrixView'
-import { StatsView, ProjectionSummary, ProjectionRecoveryPanel } from './components/views/StatsView'
+import { ProjectionSummary, ProjectionRecoveryPanel } from './components/views/StatsView'
+import { WorkspaceViewContent } from './components/WorkspaceViewContent'
 import { MobileTaskDetailContent } from './mobile/MobileTaskDetailContent'
-import { MobileFocusView } from './mobile/MobileFocusView'
-import { MobileCalendarView } from './mobile/MobileCalendarView'
-import { MobileMatrixView } from './mobile/MobileMatrixView'
-import { MobileProjectsView } from './mobile/MobileProjectsView'
-import { MobileMeView } from './mobile/MobileMeView'
 import { MobileQuickCreateSheet, MobileConfirmSheet, MobilePromptSheet, MobileTagManagerSheet } from './mobile/MobileSheets'
 import { PwaInstallBanner } from './components/PwaInstallBanner'
-import { ViewErrorBoundary } from './components/ViewErrorBoundary'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
 import type {
   CalendarMode,
@@ -1563,248 +1553,104 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
         )}
 
         <section className={`workspace panel ${isPhoneViewport ? 'is-phone' : ''} ${mobileTabFading ? 'is-fading' : ''}`}>
-          {isPhoneViewport ? (
-            /* ======== 手机端：按 mobileTab 渲染 ======== */
-            mobileTab === 'focus' ? (
-              <ViewErrorBoundary viewName="MobileFocusView">
-              <MobileFocusView
-                segments={mobileFocusSegments}
-                sortMode={mobileFocusSortMode}
-                onToggleSortMode={() => setMobileFocusSortMode(m => m === 'planned' ? 'deadline' : 'planned')}
-                upcomingCollapsed={mobileFocusUpcomingCollapsed}
-                onToggleUpcoming={() => setMobileFocusUpcomingCollapsed(!mobileFocusUpcomingCollapsed)}
-                lists={lists}
-                tags={tags}
-                onSelectTask={selectTask}
-                onUpdateTask={updateTask}
-                onToggleComplete={mobileToggleComplete}
-                focusScope={mobileFocusScope}
-                focusScopeListId={mobileFocusScopeListId}
-                completedTodayCount={mobileCompletedTodayCount}
-              />
-              </ViewErrorBoundary>
-            ) : mobileTab === 'calendar' ? (
-              <ViewErrorBoundary viewName="MobileCalendarView">
-              <MobileCalendarView
-                tasks={mobileCalendarTasks}
-                lists={lists}
-                tags={tags}
-                calendarMode={calendarMode}
-                calendarAnchor={calendarAnchor}
-                monthDates={monthDates}
-                weekDates={weekDates}
-                showCompletedTasks={calendarShowCompleted}
-                selectedTaskId={selectedTaskId}
-                onSelectTask={selectTask}
-                onOpenInlineCreate={openInlineCreate}
-                onMoveTaskToDate={moveTaskToDate}
-                onChangeMode={setCalendarMode}
-                onToggleComplete={mobileToggleComplete}
-                onChangeAnchor={setCalendarAnchor}
-              />
-              </ViewErrorBoundary>
-            ) : mobileTab === 'matrix' ? (
-              <>
-                {/* 需求3：顶栏下拉模式已在topbar实现，此处去掉segmented control */}
-                {mobileMatrixViewMode === 'matrix' ? (
-                  <ViewErrorBoundary viewName="MobileMatrixView">
-                  <MobileMatrixView
-                    tasks={mobileVisibleTasks}
-                    lists={lists}
-                    tags={tags}
-                    selectedTaskId={selectedTaskId}
-                    onSelectTask={selectTask}
-                    onChangeStatus={applyStatusChangeFeedback}
-                    onChangePriority={updateTaskPriority}
-                    onMoveToQuadrant={moveTaskToQuadrant}
-                    onOpenInlineCreate={openInlineCreate}
-                  />
-                  </ViewErrorBoundary>
-                ) : mobileMatrixViewMode === 'kanban' ? (
-                  <KanbanView
-                    tasks={mobileVisibleTasks}
-                    lists={lists}
-                    tags={tags}
-                    selectedTaskId={selectedTaskId}
-                    onSelectTask={selectTask}
-                    onChangeStatus={applyStatusChangeFeedback}
-                    onChangePriority={updateTaskPriority}
-                    onDropStatusChange={applyKanbanDropFeedback}
-                    onOpenInlineCreate={openInlineCreate}
-                  />
-                ) : (
-                  <TimelineView
-                    tasks={mobileVisibleTasks}
-                    selectedTaskId={selectedTaskId}
-                    calendarAnchor={calendarAnchor}
-                    timelineScale={timelineScale}
-                    onSelectTask={selectTask}
-                    onUpdateSchedule={rescheduleTask}
-                    onOpenInlineCreate={openInlineCreate}
-                    onChangeAnchor={setCalendarAnchor}
-                    onChangeScale={setTimelineScale}
-                  />
-                )}
-              </>
-            ) : (
-              /* me tab — #11: includes projects sub-view */
-              meShowProjects ? (
-                <ViewErrorBoundary viewName="MobileProjectsView">
-                <MobileProjectsView
-                  folders={folders}
-                  lists={lists}
-                  tasks={tasks}
-                  countsBySelection={countsBySelection}
-                  onSelectList={(listId) => {
-                    // 跳转到焦点页，scope 切换为该清单
-                    setActiveSelection(`list:${listId}`)
-                    setMobileFocusScope('list')
-                    setMobileFocusScopeListId(listId)
-                    setMeShowProjects(false)
-                    setMobileTab('focus')
-                  }}
-                  onRenameList={async (listId) => {
-                    const list = lists.find(l => l.id === listId)
-                    if (!list) return
-                    const name = await mobilePrompt('重命名清单', list.name)
-                    if (name) renameList(listId, name)
-                  }}
-                  onDeleteList={async (listId) => {
-                    const list = lists.find(l => l.id === listId)
-                    if (!list) return
-                    if (await mobileConfirm(`删除清单「${list.name}」？其中的任务会移到收件箱。`)) {
-                      deleteList(listId)
-                    }
-                  }}
-                  onChangeListColor={(listId, color) => {
-                    updateListColor(listId, color)
-                  }}
-                  onCreateList={async (folderId) => {
-                    const name = await mobilePrompt('清单名称')
-                    if (name) createList(name, folderId)
-                  }}
-                  onCreateFolder={async () => {
-                    const name = await mobilePrompt('文件夹名称')
-                    if (name) createFolder(name)
-                  }}
-                  onMoveListToFolder={(listId, folderId) => {
-                    updateListFolder(listId, folderId)
-                  }}
-                  presetColors={PRESET_COLORS}
-                />
-                </ViewErrorBoundary>
-              ) : (
-              <ViewErrorBoundary viewName="MobileMeView">
-              <MobileMeView
-                tasks={tasks}
-                user={user ?? null}
-                syncStatus={syncStatus}
-                lastSyncedAt={lastSyncedAt}
-                theme={theme}
-                themeLabel={themeLabel}
-                themeIcon={themeIcon}
-                onCycleTheme={cycleTheme}
-                onSignOut={signOut}
-                onRequestAuth={requestAuthScreen}
-                onManualSync={handleManualSync}
-                onOpenTagManager={() => setTagManagerOpen(true)}
-                onGoToCompleted={() => { setActiveSelection('system:completed'); setMobileTab('focus') }}
-                onGoToTrash={() => { setActiveSelection('system:trash'); setMobileTab('focus') }}
-                onGoToProjects={() => setMeShowProjects(true)}
-              />
-              </ViewErrorBoundary>
-              )
-            )
-          ) : (
-            /* ======== 桌面端：保持原有逻辑 ======== */
-            isToolSelection ? (
-            <ViewErrorBoundary viewName="StatsView">
-            <StatsView
-              tasks={contextTasks}
-              tags={tags}
-              stats={null}
-              priorityDistribution={null}
-              tagDistribution={null}
-            />
-            </ViewErrorBoundary>
-          ) : currentView === 'list' ? (
-            <ViewErrorBoundary viewName="ListView">
-            <ListView
-              tasks={visibleTasks}
-              lists={lists}
-              tags={tags}
-              selectedTaskId={selectedTaskId}
-              onSelectTask={selectTask}
-              onToggleTaskComplete={toggleTaskComplete}
-              onDelete={softDeleteTask}
-              onRestore={restoreTask}
-              onDuplicate={duplicateTask}
-              bulkMode={bulkMode}
-              bulkSelectedIds={bulkSelectedIds}
-              onToggleBulkSelect={toggleBulkSelect}
-            />
-            </ViewErrorBoundary>
-          ) : currentView === 'calendar' ? (
-            <ViewErrorBoundary viewName="CalendarView">
-            <CalendarView
-              tasks={calendarTasks}
-              lists={lists}
-              tags={tags}
-              calendarMode={calendarMode}
-              calendarAnchor={calendarAnchor}
-              monthDates={monthDates}
-              weekDates={weekDates}
-              showCompletedTasks={calendarShowCompleted}
-              selectedTaskId={selectedTaskId}
-              onSelectTask={selectTask}
-              onOpenInlineCreate={openInlineCreate}
-              onMoveTaskToDate={moveTaskToDate}
-            />
-            </ViewErrorBoundary>
-          ) : currentView === 'kanban' ? (
-            <ViewErrorBoundary viewName="KanbanView">
-            <KanbanView
-              tasks={visibleTasks}
-              lists={lists}
-              tags={tags}
-              selectedTaskId={selectedTaskId}
-              onSelectTask={selectTask}
-              onChangeStatus={applyStatusChangeFeedback}
-              onChangePriority={updateTaskPriority}
-              onDropStatusChange={applyKanbanDropFeedback}
-              onOpenInlineCreate={openInlineCreate}
-            />
-            </ViewErrorBoundary>
-          ) : currentView === 'timeline' ? (
-            <ViewErrorBoundary viewName="TimelineView">
-            <TimelineView
-              tasks={timelineTasks}
-              selectedTaskId={selectedTaskId}
-              calendarAnchor={calendarAnchor}
-              timelineScale={timelineScale}
-              onSelectTask={selectTask}
-              onUpdateSchedule={rescheduleTask}
-              onOpenInlineCreate={openInlineCreate}
-              onChangeAnchor={setCalendarAnchor}
-              onChangeScale={setTimelineScale}
-            />
-            </ViewErrorBoundary>
-          ) : (
-            <ViewErrorBoundary viewName="MatrixView">
-            <MatrixView
-              tasks={visibleTasks}
-              lists={lists}
-              tags={tags}
-              selectedTaskId={selectedTaskId}
-              onSelectTask={selectTask}
-              onChangeStatus={applyStatusChangeFeedback}
-              onChangePriority={updateTaskPriority}
-              onMoveToQuadrant={moveTaskToQuadrant}
-              onOpenInlineCreate={openInlineCreate}
-            />
-            </ViewErrorBoundary>
-          )
-          )}
+          <WorkspaceViewContent
+            isPhoneViewport={isPhoneViewport}
+            isToolSelection={isToolSelection}
+            currentView={currentView}
+            mobileTab={mobileTab}
+            mobileMatrixViewMode={mobileMatrixViewMode}
+            meShowProjects={meShowProjects}
+            tasks={tasks}
+            visibleTasks={visibleTasks}
+            calendarTasks={calendarTasks}
+            mobileCalendarTasks={mobileCalendarTasks}
+            mobileVisibleTasks={mobileVisibleTasks}
+            contextTasks={contextTasks}
+            mobileFocusSegments={mobileFocusSegments}
+            mobileFocusSortMode={mobileFocusSortMode}
+            mobileFocusUpcomingCollapsed={mobileFocusUpcomingCollapsed}
+            mobileCompletedTodayCount={mobileCompletedTodayCount}
+            mobileFocusScope={mobileFocusScope}
+            mobileFocusScopeListId={mobileFocusScopeListId}
+            lists={lists}
+            tags={tags}
+            folders={folders}
+            countsBySelection={countsBySelection}
+            selectedTaskId={selectedTaskId}
+            calendarMode={calendarMode}
+            calendarAnchor={calendarAnchor}
+            monthDates={monthDates}
+            weekDates={weekDates}
+            calendarShowCompleted={calendarShowCompleted}
+            timelineScale={timelineScale}
+            onSelectTask={selectTask}
+            onUpdateTask={updateTask}
+            onToggleComplete={toggleTaskComplete}
+            onMobileToggleComplete={mobileToggleComplete}
+            onChangeStatus={applyStatusChangeFeedback}
+            onChangePriority={updateTaskPriority}
+            onMoveToQuadrant={moveTaskToQuadrant}
+            onDropStatusChange={applyKanbanDropFeedback}
+            onOpenInlineCreate={openInlineCreate}
+            onMoveTaskToDate={moveTaskToDate}
+            onRescheduleTask={rescheduleTask}
+            onDelete={softDeleteTask}
+            onRestore={restoreTask}
+            onDuplicate={duplicateTask}
+            onSetCalendarMode={setCalendarMode}
+            onSetCalendarAnchor={setCalendarAnchor}
+            onSetTimelineScale={setTimelineScale}
+            onToggleSortMode={() => setMobileFocusSortMode(m => m === 'planned' ? 'deadline' : 'planned')}
+            onToggleUpcoming={() => setMobileFocusUpcomingCollapsed(!mobileFocusUpcomingCollapsed)}
+            bulkMode={bulkMode}
+            bulkSelectedIds={bulkSelectedIds}
+            onToggleBulkSelect={toggleBulkSelect}
+            user={user ?? null}
+            syncStatus={syncStatus}
+            lastSyncedAt={lastSyncedAt}
+            theme={theme}
+            themeLabel={themeLabel}
+            themeIcon={themeIcon}
+            onCycleTheme={cycleTheme}
+            onSignOut={signOut}
+            onRequestAuth={requestAuthScreen}
+            onManualSync={handleManualSync}
+            onOpenTagManager={() => setTagManagerOpen(true)}
+            onGoToCompleted={() => { setActiveSelection('system:completed'); setMobileTab('focus') }}
+            onGoToTrash={() => { setActiveSelection('system:trash'); setMobileTab('focus') }}
+            onGoToProjects={() => setMeShowProjects(true)}
+            onSelectList={(listId) => {
+              setActiveSelection(`list:${listId}`)
+              setMobileFocusScope('list')
+              setMobileFocusScopeListId(listId)
+              setMeShowProjects(false)
+              setMobileTab('focus')
+            }}
+            onRenameList={async (listId) => {
+              const list = lists.find(l => l.id === listId)
+              if (!list) return
+              const name = await mobilePrompt('\u91CD\u547D\u540D\u6E05\u5355', list.name)
+              if (name) renameList(listId, name)
+            }}
+            onDeleteList={async (listId) => {
+              const list = lists.find(l => l.id === listId)
+              if (!list) return
+              if (await mobileConfirm(`\u5220\u9664\u6E05\u5355\u300C${list.name}\u300D\uFF1F\u5176\u4E2D\u7684\u4EFB\u52A1\u4F1A\u79FB\u5230\u6536\u4EF6\u7BB1\u3002`)) {
+                deleteList(listId)
+              }
+            }}
+            onChangeListColor={(listId, color) => updateListColor(listId, color)}
+            onCreateList={async (folderId) => {
+              const name = await mobilePrompt('\u6E05\u5355\u540D\u79F0')
+              if (name) createList(name, folderId)
+            }}
+            onCreateFolder={async () => {
+              const name = await mobilePrompt('\u6587\u4EF6\u5939\u540D\u79F0')
+              if (name) createFolder(name)
+            }}
+            onMoveListToFolder={(listId, folderId) => updateListFolder(listId, folderId)}
+            presetColors={PRESET_COLORS}
+          />
         </section>
 
         {/* #5 — 手机端项目页返回导航 (from me > projects) */}
