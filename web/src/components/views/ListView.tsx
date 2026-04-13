@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import type { Task, TodoList, Tag } from '../../types/domain'
 import { priorityMeta } from '@taskflow/core'
 import { EmptyState, TaskTimeSummary } from '../shared'
@@ -16,6 +17,7 @@ export function ListView({
   bulkMode = false,
   bulkSelectedIds = new Set(),
   onToggleBulkSelect,
+  onBulkRangeSelect,
   completingTaskIds = new Set(),
 }: {
   tasks: Task[]
@@ -30,9 +32,23 @@ export function ListView({
   bulkMode?: boolean
   bulkSelectedIds?: Set<string>
   onToggleBulkSelect?: (taskId: string) => void
+  onBulkRangeSelect?: (ids: string[]) => void
   completingTaskIds?: Set<string>
 }) {
+  const lastClickedIdx = useRef<number>(-1)
+
   if (!tasks.length) return <EmptyState title="这个工作区现在很干净。" description="可以直接在顶部快速创建一条新任务。" />
+
+  const handleBulkClick = (task: Task, idx: number, shiftKey: boolean) => {
+    if (shiftKey && lastClickedIdx.current >= 0 && onBulkRangeSelect) {
+      const lo = Math.min(lastClickedIdx.current, idx)
+      const hi = Math.max(lastClickedIdx.current, idx)
+      onBulkRangeSelect(tasks.slice(lo, hi + 1).map((t) => t.id))
+    } else {
+      lastClickedIdx.current = idx
+      onToggleBulkSelect?.(task.id)
+    }
+  }
 
   return (
     <div className="task-list">
@@ -43,6 +59,8 @@ export function ListView({
         const isBulkSelected = bulkSelectedIds.has(task.id)
         const isCompleting = completingTaskIds.has(task.id)
 
+        const idx = tasks.indexOf(task)
+
         return (
           <article
             key={task.id}
@@ -51,8 +69,8 @@ export function ListView({
             role="button"
             tabIndex={0}
             aria-label={`打开任务 ${task.title}`}
-            onClick={() => bulkMode ? onToggleBulkSelect?.(task.id) : onSelectTask(task.id)}
-            onKeyDown={(event) => handleCardKeyboardActivation(event, () => bulkMode ? onToggleBulkSelect?.(task.id) : onSelectTask(task.id))}
+            onClick={(e) => bulkMode ? handleBulkClick(task, idx, e.shiftKey) : onSelectTask(task.id)}
+            onKeyDown={(event) => handleCardKeyboardActivation(event, () => bulkMode ? handleBulkClick(task, idx, false) : onSelectTask(task.id))}
           >
             {bulkMode ? (
               <input

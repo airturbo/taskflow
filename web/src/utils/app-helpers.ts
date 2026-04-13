@@ -27,12 +27,12 @@ import {
 
 export const statusOptions: TaskStatus[] = ['todo', 'doing', 'done']
 
-export const viewMeta: { id: WorkspaceView; label: string }[] = [
-  { id: 'calendar', label: '\u65E5\u5386' },
-  { id: 'list', label: '\u5217\u8868' },
-  { id: 'kanban', label: '\u770B\u677F' },
-  { id: 'timeline', label: '\u65F6\u95F4\u7EBF' },
-  { id: 'matrix', label: '\u56DB\u8C61\u9650' },
+export const viewMeta: { id: WorkspaceView; label: string; shortcutKey: string }[] = [
+  { id: 'calendar', label: '\u65E5\u5386', shortcutKey: '1' },
+  { id: 'list', label: '\u5217\u8868', shortcutKey: '2' },
+  { id: 'kanban', label: '\u770B\u677F', shortcutKey: '3' },
+  { id: 'timeline', label: '\u65F6\u95F4\u7EBF', shortcutKey: '4' },
+  { id: 'matrix', label: '\u56DB\u8C61\u9650', shortcutKey: '5' },
 ]
 
 export const timeFieldModeLabel: Record<TimeFieldMode, string> = {

@@ -31,6 +31,7 @@ import { MobileTaskDetailContent } from '../mobile/MobileTaskDetailContent'
 import { MobileQuickCreateSheet, MobileConfirmSheet, MobilePromptSheet, MobileTagManagerSheet } from '../mobile/MobileSheets'
 import { PwaInstallBanner } from './PwaInstallBanner'
 import { ShortcutPanel } from './ShortcutPanel'
+import { ShortcutGuideOverlay } from './ShortcutGuideOverlay'
 import { ExportPanel } from './ExportPanel'
 import { CommandPalette } from './CommandPalette'
 import styles from './WorkspaceShell.module.css'
@@ -128,7 +129,7 @@ export interface WorkspaceShellProps {
   moveTaskToDate: (id: string, f: string, t: string) => void
   bulkMode: boolean; setBulkMode: (v: boolean) => void
   bulkSelectedIds: Set<string>; toggleBulkSelect: (id: string) => void; clearBulkSelect: () => void
-  selectAllVisibleBulk: () => void
+  selectAllVisibleBulk: () => void; bulkRangeSelect: (ids: string[]) => void
   bulkComplete: () => void; bulkDelete: () => void; bulkMoveToList: (id: string) => void; bulkAddTag: (id: string) => void
   softDeleteTask: (id: string) => void; restoreTask: (id: string) => void; duplicateTask: (id: string) => void
   addReminder: (id: string, label: string, value: string, kind: 'relative' | 'absolute') => void
@@ -429,7 +430,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         {!p.isToolSelection && (
           <section className={`${styles.viewSwitcher} panel`}>
             <div className={styles.segmentedControl}>
-              {viewMeta.map((v) => <button key={v.id} className={p.currentView === v.id ? 'is-active' : ''} onClick={() => p.setCurrentView(v.id)}>{v.label}</button>)}
+              {viewMeta.map((v) => <button key={v.id} className={p.currentView === v.id ? 'is-active' : ''} onClick={() => p.setCurrentView(v.id)} title={`${v.label}（快捷键 ${v.shortcutKey}）`}>{v.label}</button>)}
             </div>
             {p.currentView === 'calendar' && (
               <div className={styles.calendarNav}>
@@ -471,6 +472,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
         {p.tagManagerOpen && (p.isPhoneViewport ? <MobileTagManagerSheet tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} /> : <TagManagementDialog tags={p.tags} onClose={() => p.setTagManagerOpen(false)} onCreateTag={p.createTagDefinition} onUpdateTag={p.updateTagDefinition} onDeleteTag={p.deleteTagDefinition} />)}
         {p.shortcutPanelOpen && <ShortcutPanel onClose={() => p.setShortcutPanelOpen(false)} />}
+        <ShortcutGuideOverlay />
         {p.exportPanelOpen && <ExportPanel state={{ folders: p.folders, lists: p.lists, tags: p.tags, filters: p.filters, tasks: p.tasks, theme: p.theme, activeSelection: p.activeSelection, selectedTagIds: p.selectedTagIds, selectionTimeModes: p.selectionTimeModes ?? {}, currentView: p.currentView as any, calendarMode: p.calendarMode, calendarShowCompleted: p.calendarShowCompleted, timelineScale: p.timelineScale, firedReminderKeys: p.initialState.firedReminderKeys, onboarding: p.initialState.onboarding }} onClose={() => p.setExportPanelOpen(false)} />}
 
         <section className={`workspace panel ${styles.workspacePanel} ${p.isPhoneViewport ? 'is-phone' : ''} ${p.mobileTabFading ? 'is-fading' : ''}`}>
@@ -496,7 +498,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
                 p.onApplyCommandFilter([], null, null, preset.due as any, '')
               }
             }}
-            bulkMode={p.bulkMode} bulkSelectedIds={p.bulkSelectedIds} onToggleBulkSelect={p.toggleBulkSelect}
+            bulkMode={p.bulkMode} bulkSelectedIds={p.bulkSelectedIds} onToggleBulkSelect={p.toggleBulkSelect} onBulkRangeSelect={p.bulkRangeSelect}
             user={p.user} syncStatus={p.syncStatus} lastSyncedAt={p.lastSyncedAt} theme={p.theme} themeLabel={p.themeLabel} themeIcon={p.themeIcon}
             onCycleTheme={p.cycleTheme} onSignOut={p.signOut} onRequestAuth={requestAuthScreen} onManualSync={p.handleManualSync}
             onOpenTagManager={() => p.setTagManagerOpen(true)}
@@ -522,6 +524,26 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
           <div className={styles.mobileProjectNav}><button className="ghost-button small" onClick={() => p.setMeShowProjects(false)}>{'\u2190 \u8FD4\u56DE'}</button></div>
         )}
       </main>
+
+      {/* Floating bulk action bar — shown when tasks are selected in list view */}
+      {!p.isPhoneViewport && !p.isToolSelection && p.currentView === 'list' && p.bulkMode && p.bulkSelectedIds.size > 0 && (
+        <div className={styles.floatingBulkBar}>
+          <span className={styles.floatingBulkCount}>已选 {p.bulkSelectedIds.size} 条</span>
+          <button className="ghost-button small" onClick={p.bulkComplete}>✓ 完成</button>
+          <div className={styles.floatingBulkDivider} />
+          <select className="ghost-button small" style={{ cursor: 'pointer', padding: '3px 8px' }} defaultValue="" onChange={e => { if (e.target.value) { p.bulkMoveToList(e.target.value); e.target.value = '' } }}>
+            <option value="" disabled>移动到清单…</option>
+            {p.lists.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}
+          </select>
+          <select className="ghost-button small" style={{ cursor: 'pointer', padding: '3px 8px' }} defaultValue="" onChange={e => { if (e.target.value) { p.bulkAddTag(e.target.value); e.target.value = '' } }}>
+            <option value="" disabled>打标签…</option>
+            {p.tags.map(t => <option key={t.id} value={t.id}>#{t.name}</option>)}
+          </select>
+          <div className={styles.floatingBulkDivider} />
+          <button className="ghost-button small danger" onClick={p.bulkDelete}>🗑 删除</button>
+          <button className="ghost-button small" onClick={p.clearBulkSelect}>退出</button>
+        </div>
+      )}
 
       {!p.isUtilityDrawerMode && <aside className={styles.rightRail}>{utilityContent}</aside>}
 

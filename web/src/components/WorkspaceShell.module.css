@@ -332,3 +332,43 @@
 .workspacePanel:global(.is-fading) {
   opacity: 0.3;
 }
+
+/* ---- Floating bulk bar ---- */
+.floatingBulkBar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+  animation: floatIn 0.18s ease;
+  white-space: nowrap;
+}
+
+@keyframes floatIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.floatingBulkCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+  margin-right: 2px;
+}
+
+.floatingBulkDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  flex-shrink: 0;
+}

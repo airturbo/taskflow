@@ -78,6 +78,7 @@ export interface WorkspaceViewContentProps {
   bulkMode: boolean
   bulkSelectedIds: Set<string>
   onToggleBulkSelect: (id: string) => void
+  onBulkRangeSelect?: (ids: string[]) => void
 
   // Mobile "me" tab callbacks
   user: any
@@ -280,6 +281,7 @@ function DesktopViewSwitch(props: WorkspaceViewContentProps) {
           bulkMode={props.bulkMode}
           bulkSelectedIds={props.bulkSelectedIds}
           onToggleBulkSelect={props.onToggleBulkSelect}
+          onBulkRangeSelect={props.onBulkRangeSelect}
           completingTaskIds={props.completingTaskIds}
         />
       </ViewErrorBoundary>

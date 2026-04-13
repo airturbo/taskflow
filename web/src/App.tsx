@@ -459,7 +459,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       undoStatusChange={undoStatusChange} rescheduleTask={rescheduleTask} moveTaskToDate={moveTaskToDate}
       bulkMode={bulkMode} setBulkMode={setBulkMode}
       bulkSelectedIds={bulkSelectedIds} toggleBulkSelect={toggleBulkSelect} clearBulkSelect={clearBulkSelect}
-      selectAllVisibleBulk={selectAllVisibleBulk}
+      selectAllVisibleBulk={selectAllVisibleBulk} bulkRangeSelect={(ids) => selection.setBulkSelectedIds(prev => new Set([...prev, ...ids]))}
       bulkComplete={bulkComplete} bulkDelete={bulkDelete} bulkMoveToList={bulkMoveToList} bulkAddTag={bulkAddTag}
       softDeleteTask={softDeleteTask} restoreTask={restoreTask} duplicateTask={duplicateTask}
       addReminder={addReminder} removeReminder={removeReminder} snoozeReminder={snoozeReminder}
