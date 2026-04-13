@@ -445,3 +445,19 @@
   flex: 1;
   font-size: 14px;
 }
+
+/* ---- Safe area + touch target ---- */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .mobileFocusView {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 680px) {
+  .mobileFocusCard {
+    min-height: 44px;
+    min-width: 44px;
+    border-radius: 14px;
+  }
+}
