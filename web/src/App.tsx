@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useRealtimeSync } from './hooks/useRealtimeSync'
-import { useGlobalShortcuts } from './hooks/useGlobalShortcuts'
 import { useSystemTheme } from './hooks/useSystemTheme'
 import { usePushNotifications } from './hooks/usePushNotifications'
 import { useModalState } from './hooks/useModalState'
@@ -13,6 +12,7 @@ import { useQuickCreate } from './hooks/useQuickCreate'
 import { useMobileDialogs } from './hooks/useMobileDialogs'
 import { useTaskActions } from './hooks/useTaskActions'
 import { useWorkspaceComputed } from './hooks/useWorkspaceComputed'
+import { useWorkspaceEffects } from './hooks/useWorkspaceEffects'
 import { useMobileUiStore } from './stores/mobileUiStore'
 import { WorkspaceShell } from './components/WorkspaceShell'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
@@ -22,8 +22,7 @@ import type {
 } from './types/domain'
 import { useReminderCenter } from './hooks/useReminderCenter'
 import { getNowIso } from './utils/dates'
-import { collectReminderEvents } from './utils/reminder-engine'
-import { loadState, saveState, setCurrentUserId } from './utils/storage'
+import { loadState, setCurrentUserId } from './utils/storage'
 import { parseSmartEntry } from './utils/smart-entry'
 import { ensureSpecialTags } from '@taskflow/core'
 import { buildTimelineDraftWindow } from '@taskflow/core'
@@ -247,20 +246,11 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }, [])
 
-  // Track which list is selected in the projects tab (null = project list view)
   const [mobileProjectListId, setMobileProjectListId] = useState<string | null>(null)
-  // Track view mode within a project list on mobile
-  type MobileListViewMode = 'list' | 'kanban' | 'matrix'
-  const [_mobileListViewMode, _setMobileListViewMode] = useState<MobileListViewMode>('list')
   const [mobileMatrixViewMode, setMobileMatrixViewMode] = useState<'matrix' | 'kanban' | 'timeline'>('matrix')
-  // Focus page sort mode
   const [mobileFocusSortMode, setMobileFocusSortMode] = useState<'planned' | 'deadline'>('planned')
-  // v3: matrix mode menu in topbar (需求3)
   const [mobileMatrixModeMenuOpen, setMobileMatrixModeMenuOpen] = useState(false)
-  // v3: "我的"页 projects sub-view
   const [meShowProjects, setMeShowProjects] = useState(false)
-
-  // ---- 清单/文件夹编辑状态 moved to AppSidebar ----
 
   const {
     reminderFeed,
@@ -273,138 +263,19 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     markReminderSnoozed,
   } = useReminderCenter()
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = resolvedTheme
-  }, [resolvedTheme])
-
-  useEffect(() => {
-    void saveState({
-      folders,
-      lists,
-      tags,
-      filters,
-      tasks,
-      theme,
-      activeSelection,
-      selectedTagIds,
-      selectionTimeModes,
-      currentView,
-      calendarMode,
-      calendarShowCompleted,
-      timelineScale,
-      firedReminderKeys,
-      onboarding: initialState.onboarding,
-    })
-  }, [activeSelection, calendarMode, calendarShowCompleted, currentView, filters, firedReminderKeys, folders, lists, selectedTagIds, selectionTimeModes, tags, tasks, theme, timelineScale])
-
-  useEffect(() => {
-    const onResize = () => setViewportWidth(window.innerWidth)
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
-  // 全局快捷键
-  useGlobalShortcuts([
-    {
-      key: 'n', meta: 'cmdOrCtrl',
-      description: '新建任务',
-      action: () => quickCreateInputRef.current?.focus(),
-    },
-    {
-      key: 'k', meta: 'cmdOrCtrl',
-      description: '命令面板',
-      action: () => setCommandPaletteOpen(prev => !prev),
-    },
-    {
-      key: 'Escape',
-      description: '取消选中',
-      action: () => { setSelectedTaskId(null); searchInputRef.current?.blur() },
-    },
-    {
-      key: '1', description: '切换到日历视图',
-      action: () => setCurrentView('calendar'),
-    },
-    {
-      key: '2', description: '切换到列表视图',
-      action: () => setCurrentView('list'),
-    },
-    {
-      key: '3', description: '切换到看板视图',
-      action: () => setCurrentView('kanban'),
-    },
-    {
-      key: '4', description: '切换到时间线视图',
-      action: () => setCurrentView('timeline'),
-    },
-    {
-      key: '5', description: '切换到四象限视图',
-      action: () => setCurrentView('matrix'),
-    },
-    {
-      key: '?', description: '快捷键面板',
-      action: () => setShortcutPanelOpen(prev => !prev),
-    },
-  ])
-
-  useEffect(() => {
-    if (viewportWidth > 960) setNavigationDrawerOpen(false)
-    if (viewportWidth > 1280) setUtilityDrawerOpen(false)
-  }, [viewportWidth])
-
-  useEffect(() => {
-    if (!selectedTaskId) return
-    const exists = tasks.some((task) => task.id === selectedTaskId && !task.deleted)
-    if (!exists) {
-      const fallback = tasks.find((task) => !task.deleted)
-      setSelectedTaskId(fallback?.id ?? null)
-    }
-  }, [selectedTaskId, tasks])
-
-  useEffect(() => {
-    if (!createFeedback) return
-    const timer = window.setTimeout(() => setCreateFeedback(null), 4800)
-    return () => window.clearTimeout(timer)
-  }, [createFeedback])
-
-  useEffect(() => {
-    if (!statusChangeFeedback) return
-    const timer = window.setTimeout(() => setStatusChangeFeedback(null), 3000)
-    return () => window.clearTimeout(timer)
-  }, [statusChangeFeedback])
-
-  useEffect(() => {
-    if (!inlineCreate) return
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setInlineCreate(null)
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [inlineCreate])
-
-  useEffect(() => {
-    setInlineCreate(null)
-    setNavigationDrawerOpen(false)
-    setProjectionInsightMode(null)
-  }, [activeSelection, calendarMode, currentView, searchKeyword, selectedTagIds, timelineScale])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const tickReminders = async () => {
-      if (cancelled) return
-      const { events, nextKeys } = collectReminderEvents(tasks, firedReminderKeys)
-      if (events.length === 0) return
-      events.forEach((event) => { void notifySurface(event) })
-      setFiredReminderKeys(nextKeys)
-    }
-
-    void tickReminders()
-    const timer = window.setInterval(() => { void tickReminders() }, 15000)
-    return () => {
-      cancelled = true
-      window.clearInterval(timer)
-    }
-  }, [firedReminderKeys, notifySurface, tasks])
+  // ---- Effects (extracted to useWorkspaceEffects) ----
+  useWorkspaceEffects({
+    resolvedTheme, folders, lists, tags, filters, tasks, theme,
+    activeSelection, selectedTagIds, selectionTimeModes, currentView,
+    calendarMode, calendarShowCompleted, timelineScale,
+    firedReminderKeys, initialState, setViewportWidth, viewportWidth,
+    quickCreateInputRef, searchInputRef, setCommandPaletteOpen,
+    setSelectedTaskId, setCurrentView, setShortcutPanelOpen,
+    setNavigationDrawerOpen, setUtilityDrawerOpen, selectedTaskId,
+    createFeedback, setCreateFeedback, statusChangeFeedback, setStatusChangeFeedback,
+    inlineCreate, setInlineCreate, setProjectionInsightMode, searchKeyword,
+    setFiredReminderKeys, notifySurface,
+  })
 
   // ---- Computed/Derived State (extracted to useWorkspaceComputed) ----
   const computed = useWorkspaceComputed({
