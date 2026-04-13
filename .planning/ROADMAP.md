@@ -46,7 +46,7 @@
 
 ---
 
-### Phase 7: CSS 架构（~4 days）
+### Phase 7: CSS 架构（~4 days） ✅ Plans 01–03 done
 **Goal:** 6908 行单文件 CSS → CSS Modules 模块化
 
 | REQ | Description | Est |
