@@ -488,6 +488,14 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
             onSetCalendarMode={p.setCalendarMode} onSetCalendarAnchor={p.setCalendarAnchor} onSetTimelineScale={p.setTimelineScale}
             onToggleSortMode={() => p.setMobileFocusSortMode((m: any) => m === 'planned' ? 'deadline' : 'planned')}
             onToggleUpcoming={() => p.setMobileFocusUpcomingCollapsed(!p.mobileFocusUpcomingCollapsed)}
+            onStatsNavigate={(view, preset) => {
+              p.setCurrentView(view)
+              if (preset?.selection) p.setActiveSelection(preset.selection)
+              else if (p.activeSelection === 'tool:stats') p.setActiveSelection('system:all')
+              if (preset?.due && p.onApplyCommandFilter) {
+                p.onApplyCommandFilter([], null, null, preset.due as any, '')
+              }
+            }}
             bulkMode={p.bulkMode} bulkSelectedIds={p.bulkSelectedIds} onToggleBulkSelect={p.toggleBulkSelect}
             user={p.user} syncStatus={p.syncStatus} lastSyncedAt={p.lastSyncedAt} theme={p.theme} themeLabel={p.themeLabel} themeIcon={p.themeIcon}
             onCycleTheme={p.cycleTheme} onSignOut={p.signOut} onRequestAuth={requestAuthScreen} onManualSync={p.handleManualSync}

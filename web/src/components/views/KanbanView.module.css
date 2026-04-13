@@ -23,10 +23,38 @@
 }
 
 .kanbanColumn header h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-secondary); margin: 0; }
-.kanbanColumn header span { font-size: 11px; color: var(--text-tertiary); background: var(--surface-raised); padding: 1px 8px; border-radius: 10px; }
+
+.kanbanColumnHeaderRight {
+  display: flex; align-items: center; gap: 6px;
+}
 
 .kanbanColumnActions {
   display: flex; align-items: center; gap: 8px;
+}
+
+.kanbanCountBadge {
+  font-size: 11px; color: var(--text-tertiary);
+  background: var(--surface-raised); padding: 1px 8px;
+  border-radius: 10px; cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.kanbanCountBadge:hover { background: var(--surface-hover); color: var(--text-secondary); }
+
+.kanbanCountBadgeWarn {
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff5050;
+}
+.kanbanCountBadgeWarn:hover { background: rgba(255, 80, 80, 0.2); }
+
+.kanbanColumnOverWip {
+  border-bottom: 2px solid rgba(255, 80, 80, 0.5) !important;
+}
+
+.kanbanWipInput {
+  width: 52px; font-size: 11px; padding: 1px 6px;
+  border: 1px solid var(--border-focus); border-radius: 6px;
+  background: var(--surface); color: var(--text);
+  text-align: center;
 }
 
 .kanbanStack {

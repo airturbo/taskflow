@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Task, TodoList, Tag, TaskStatus, Priority } from '../../types/domain'
 import type { InlineCreateRequest } from '../../types/workspace'
 import {
@@ -18,35 +19,72 @@ function KanbanDroppableColumn({
   children,
   onOpenInlineCreate,
   isEmpty,
+  count,
+  wipLimit,
+  onChangeWipLimit,
 }: {
   status: TaskStatus
   children: React.ReactNode
   onOpenInlineCreate: (request: InlineCreateRequest) => void
   isEmpty: boolean
+  count: number
+  wipLimit: number
+  onChangeWipLimit: (limit: number) => void
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status })
+  const isOverWip = wipLimit > 0 && count > wipLimit
+  const [editingWip, setEditingWip] = useState(false)
 
   return (
     <section className={styles.kanbanColumn}>
-      <header>
+      <header className={isOverWip ? styles.kanbanColumnOverWip : undefined}>
         <h3>{statusMeta[status]}</h3>
-        <div className={styles.kanbanColumnActions}>
-          <button
-            className="create-icon-button"
-            aria-label={`在看板${statusMeta[status]}列创建任务`}
-            title={`在看板${statusMeta[status]}列创建任务`}
-            onClick={(event) => {
-              event.stopPropagation()
-              onOpenInlineCreate({
-                view: 'kanban',
-                anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
-                status,
-                guidance: `${statusMeta[status]} · 看板`,
-              })
-            }}
-          >
-            +
-          </button>
+        <div className={styles.kanbanColumnHeaderRight}>
+          {editingWip ? (
+            <input
+              className={styles.kanbanWipInput}
+              type="number"
+              min={0}
+              defaultValue={wipLimit}
+              autoFocus
+              onBlur={(e) => {
+                const v = parseInt(e.target.value, 10)
+                onChangeWipLimit(Number.isFinite(v) && v >= 0 ? v : 0)
+                setEditingWip(false)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                if (e.key === 'Escape') setEditingWip(false)
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <span
+              className={`${styles.kanbanCountBadge} ${isOverWip ? styles.kanbanCountBadgeWarn : ''}`}
+              title={wipLimit > 0 ? `${count}/${wipLimit} WIP · 点击修改限制` : `${count} 个任务 · 点击设置 WIP 限制`}
+              onClick={() => setEditingWip(true)}
+            >
+              {count}{wipLimit > 0 ? `/${wipLimit}` : ''}
+            </span>
+          )}
+          <div className={styles.kanbanColumnActions}>
+            <button
+              className="create-icon-button"
+              aria-label={`在看板${statusMeta[status]}列创建任务`}
+              title={`在看板${statusMeta[status]}列创建任务`}
+              onClick={(event) => {
+                event.stopPropagation()
+                onOpenInlineCreate({
+                  view: 'kanban',
+                  anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
+                  status,
+                  guidance: `${statusMeta[status]} · 看板`,
+                })
+              }}
+            >
+              +
+            </button>
+          </div>
         </div>
       </header>
       <div
@@ -194,6 +232,9 @@ export function KanbanOverlayCard({ task }: { task: Task }) {
 
 // ---- KanbanView — requires DndContext ancestor (provided by WorkspaceShell) ----
 
+// Default WIP limits: 0 = unlimited
+const DEFAULT_WIP_LIMITS: Record<TaskStatus, number> = { todo: 0, doing: 5, done: 0 }
+
 export function KanbanView({
   tasks,
   lists,
@@ -214,8 +255,14 @@ export function KanbanView({
   onDropStatusChange: (taskId: string, status: TaskStatus) => void
   onOpenInlineCreate: (request: InlineCreateRequest) => void
 }) {
+  const [wipLimits, setWipLimits] = useState<Record<TaskStatus, number>>(DEFAULT_WIP_LIMITS)
+
   const columns: Record<TaskStatus, Task[]> = { todo: [], doing: [], done: [] }
   tasks.forEach((task) => columns[task.status].push(task))
+
+  const handleChangeWipLimit = (status: TaskStatus, limit: number) => {
+    setWipLimits((prev) => ({ ...prev, [status]: limit }))
+  }
 
   return (
     <div className={styles.kanbanGrid}>
@@ -225,6 +272,9 @@ export function KanbanView({
           status={status}
           onOpenInlineCreate={onOpenInlineCreate}
           isEmpty={columns[status].length === 0}
+          count={columns[status].length}
+          wipLimit={wipLimits[status]}
+          onChangeWipLimit={(limit) => handleChangeWipLimit(status, limit)}
         >
           {columns[status].map((task) => (
             <KanbanDraggableCard

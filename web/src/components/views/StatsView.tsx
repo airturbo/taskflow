@@ -143,12 +143,14 @@ export function StatsView({
   stats,
   priorityDistribution,
   tagDistribution,
+  onNavigate,
 }: {
   tasks: Task[]
   tags: Tag[]
   stats?: { active: number; completed: number; overdue: number; scheduled: number } | null
   priorityDistribution?: Record<Priority, number> | null
   tagDistribution?: Array<{ tag: Tag; count: number }> | null
+  onNavigate?: (view: string, preset?: { selection?: string; due?: string }) => void
 }) {
   const fallbackStats = useMemo(
     () => ({
@@ -328,25 +330,41 @@ export function StatsView({
 
       {/* 核心指标 */}
       <div className={styles.statsGrid}>
-        <article className={styles.statsCard}>
+        <article
+          className={`${styles.statsCard} ${onNavigate ? styles.statsCardClickable : ''}`}
+          onClick={onNavigate ? () => onNavigate('list', { selection: 'system:completed' }) : undefined}
+          title={onNavigate ? '查看已完成任务' : undefined}
+        >
           <span>已完成任务</span>
           <strong>
             {resolvedStats.completed}
             <small style={{ fontSize: 13, fontWeight: 400, opacity: 0.5 }}> / {resolvedStats.completed + resolvedStats.active}</small>
           </strong>
         </article>
-        <article className={styles.statsCard}>
+        <article
+          className={`${styles.statsCard} ${onNavigate ? styles.statsCardClickable : ''}`}
+          onClick={onNavigate ? () => onNavigate('list') : undefined}
+          title={onNavigate ? '查看活跃任务' : undefined}
+        >
           <span>活跃任务</span>
           <strong>
             {resolvedStats.active}
             <small style={{ fontSize: 13, fontWeight: 400, opacity: 0.5 }}> / {resolvedStats.completed + resolvedStats.active}</small>
           </strong>
         </article>
-        <article className={styles.statsCard}>
+        <article
+          className={`${styles.statsCard} ${onNavigate ? styles.statsCardClickable : ''}`}
+          onClick={onNavigate ? () => onNavigate('list', { due: 'overdue' }) : undefined}
+          title={onNavigate ? '查看逾期任务' : undefined}
+        >
           <span>已逾期</span>
           <strong style={{ color: resolvedStats.overdue > 0 ? '#ff6b7a' : undefined }}>{resolvedStats.overdue}</strong>
         </article>
-        <article className={styles.statsCard}>
+        <article
+          className={`${styles.statsCard} ${onNavigate ? styles.statsCardClickable : ''}`}
+          onClick={onNavigate ? () => onNavigate('timeline') : undefined}
+          title={onNavigate ? '在时间线查看已排期任务' : undefined}
+        >
           <span>已排期</span>
           <strong>{resolvedStats.scheduled}</strong>
         </article>

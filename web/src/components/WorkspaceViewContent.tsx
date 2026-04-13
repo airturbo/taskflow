@@ -74,6 +74,7 @@ export interface WorkspaceViewContentProps {
   onSetTimelineScale: (scale: any) => void
   onToggleSortMode: () => void
   onToggleUpcoming: () => void
+  onStatsNavigate?: (view: string, preset?: { selection?: string; due?: string }) => void
   bulkMode: boolean
   bulkSelectedIds: Set<string>
   onToggleBulkSelect: (id: string) => void
@@ -258,7 +259,7 @@ function DesktopViewSwitch(props: WorkspaceViewContentProps) {
   if (props.isToolSelection) {
     return (
       <ViewErrorBoundary viewName="StatsView">
-        <StatsView tasks={props.contextTasks} tags={props.tags} stats={null} priorityDistribution={null} tagDistribution={null} />
+        <StatsView tasks={props.contextTasks} tags={props.tags} stats={null} priorityDistribution={null} tagDistribution={null} onNavigate={props.onStatsNavigate} />
       </ViewErrorBoundary>
     )
   }
