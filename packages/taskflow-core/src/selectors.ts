@@ -218,10 +218,20 @@ function syncAutoStartReminder(reminders: Task['reminders'], anchorAt: string | 
 }
 
 export function normalizeTaskPatch(task: Task, patch: Partial<Task>) {
+  const now = getNowIso()
+  // SYNC-03: stamp fieldVersions for each mutated field
+  const prevVersions = task.fieldVersions ?? {}
+  const newVersions: Record<string, string> = { ...prevVersions }
+  for (const key of Object.keys(patch) as Array<keyof Task>) {
+    if (key === 'fieldVersions' || key === 'updatedAt' || key === 'createdAt' || key === 'id') continue
+    newVersions[key] = now
+  }
+
   const next = {
     ...task,
     ...patch,
-    updatedAt: getNowIso(),
+    fieldVersions: newVersions,
+    updatedAt: now,
   }
 
   if (patch.status) {

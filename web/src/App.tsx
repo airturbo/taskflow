@@ -17,7 +17,9 @@ import { useRouterSync } from './hooks/useRouterSync'
 import { useMobileUiStore } from './stores/mobileUiStore'
 import { useDesktopUiStore } from './stores/desktopUiStore'
 import { WorkspaceShell } from './components/WorkspaceShell'
+import { ConflictResolutionDialog } from './components/ConflictResolutionDialog'
 import { enqueueOfflineState, flushOfflineQueue, hasPendingQueue } from './utils/offline-queue'
+import { mergeTaskList, applyConflictResolutions, type FieldConflict } from './utils/field-merge'
 import { nextDueDate } from './utils/repeat-rule'
 import type {
   PersistedState,
@@ -81,21 +83,19 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const { isSupported: pushSupported, isSubscribed: pushSubscribed, subscribe: subscribePush, unsubscribe: unsubscribePush } = usePushNotifications(user?.id ?? null)
 
   // ---- 云同步（本地优先，尽力而为） ----
+  // SYNC-02: pending conflicts awaiting user resolution
+  const [pendingConflicts, setPendingConflicts] = useState<FieldConflict[]>([])
+  const pendingRemoteTasksRef = useRef<Task[]>([])
+
   const handleRemoteUpdate = (remoteState: Partial<PersistedState>) => {
-    // newer-wins：远端有更新时，用远端数据覆盖对应字段
-    // tasks 字段做增量合并：以 updatedAt 更新的任务胜出
+    // SYNC-01: field-level merge engine
     if (remoteState.tasks) {
       const remoteTasks = remoteState.tasks
       setTasks(localTasks => {
-        const localMap = new Map(localTasks.map(t => [t.id, t]))
-        const merged = [...localTasks]
-        for (const remoteTask of remoteTasks) {
-          const local = localMap.get(remoteTask.id)
-          if (!local || remoteTask.updatedAt > local.updatedAt) {
-            const idx = merged.findIndex(t => t.id === remoteTask.id)
-            if (idx >= 0) merged[idx] = remoteTask
-            else merged.push(remoteTask)
-          }
+        const { tasks: merged, conflicts } = mergeTaskList(localTasks, remoteTasks)
+        if (conflicts.length > 0) {
+          pendingRemoteTasksRef.current = remoteTasks
+          setPendingConflicts(conflicts)
         }
         return merged
       })
@@ -105,6 +105,18 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     if (remoteState.tags) setTags(remoteState.tags)
     if (remoteState.filters) setFilters(remoteState.filters)
   }
+
+  const handleConflictResolve = useCallback((resolutions: Record<string, 'local' | 'remote'>) => {
+    setTasks(current => applyConflictResolutions(current, pendingConflicts, resolutions, pendingRemoteTasksRef.current))
+    setPendingConflicts([])
+    pendingRemoteTasksRef.current = []
+  }, [pendingConflicts])
+
+  const handleConflictDismiss = useCallback(() => {
+    // Keep local values for all unresolved conflicts (already in merged state)
+    setPendingConflicts([])
+    pendingRemoteTasksRef.current = []
+  }, [])
 
   const { syncStatus, lastSyncedAt, forceSync, pauseSync, resumeSync } = useRealtimeSync({
     userId: user?.id ?? null,
@@ -368,6 +380,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const { mobileConfirmDialog, setMobileConfirmDialog, mobilePromptDialog, setMobilePromptDialog, mobilePromptValue, setMobilePromptValue, mobileConfirm, mobilePrompt } = useMobileDialogs(isPhoneViewport)
 
   return (
+    <>
     <WorkspaceShell
       user={user ?? null} signOut={signOut}
       folders={folders} lists={lists} tags={tags} filters={filters} tasks={tasks}
@@ -475,6 +488,14 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       completionFeedback={completionFeedback}
       hideCompletionFeedback={hideCompletionFeedback}
     />
+    {pendingConflicts.length > 0 && (
+      <ConflictResolutionDialog
+        conflicts={pendingConflicts}
+        onResolve={handleConflictResolve}
+        onDismiss={handleConflictDismiss}
+      />
+    )}
+    </>
   )
 }
 
