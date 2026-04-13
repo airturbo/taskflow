@@ -48,6 +48,20 @@ export function TimelineView({
   const createRowStyle = { gridTemplateColumns: `repeat(${createSlots.length}, minmax(0, 1fr))` } as CSSProperties
   const [dragState, setDragState] = useState<TimelineDragState | null>(null)
   const dragRef = useRef<TimelineDragState | null>(null)
+  const dayScrollRef = useRef<HTMLDivElement | null>(null)
+
+  // Auto-scroll day view to current time on mount / anchor change
+  useEffect(() => {
+    if (!isDayScale) return
+    const el = dayScrollRef.current
+    if (!el) return
+    const DAY_HOUR_HEIGHT_PX = 64
+    const DAY_TOTAL_HEIGHT_PX = DAY_HOUR_HEIGHT_PX * 24
+    const winStart = getDateTimeMs(`${calendarAnchor}T00:00`, 'start') ?? Date.now()
+    const frac = (Date.now() - winStart) / (DAY_MINUTES * MINUTE)
+    if (frac < 0 || frac > 1) return
+    el.scrollTop = Math.max(0, frac * DAY_TOTAL_HEIGHT_PX - el.clientHeight / 2)
+  }, [isDayScale, calendarAnchor])
 
   useEffect(() => {
     dragRef.current = dragState
@@ -165,7 +179,7 @@ export function TimelineView({
 
   const hourLabels = Array.from({ length: 24 }, (_, i) => i)
   const nowFrac = (Date.now() - windowStart) / (windowEnd - windowStart)
-  const nowInWindow = isDayScale && nowFrac >= 0 && nowFrac <= 1
+  const nowInWindow = nowFrac >= 0 && nowFrac <= 1
 
   return (
     <div className="view-stack">
@@ -191,7 +205,7 @@ export function TimelineView({
 
       {isDayScale ? (
         <div className={styles.timelineDayView}>
-          <div className={styles.timelineDayScroll}>
+          <div className={styles.timelineDayScroll} ref={dayScrollRef}>
             <div className={styles.timelineDayInner} style={{ height: `${DAY_TOTAL_HEIGHT}px` }}>
               {hourLabels.map((h) => (
                 <div
@@ -329,6 +343,13 @@ export function TimelineView({
                           >
                             <span>DDL</span>
                           </div>
+                        )}
+                        {nowInWindow && (
+                          <div
+                            className={styles.timelineNowLine}
+                            style={{ left: `${nowFrac * 100}%` }}
+                            aria-hidden="true"
+                          />
                         )}
                         <button
                           className={`${styles.timelineBar} priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}

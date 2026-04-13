@@ -42,7 +42,7 @@ export const timeFieldModeLabel: Record<TimeFieldMode, string> = {
 
 export const MINUTE = 60 * 1000
 export const DAY_MINUTES = 24 * 60
-export const MAX_EMBEDDED_ATTACHMENT_BYTES = 1.5 * 1024 * 1024
+export const MAX_EMBEDDED_ATTACHMENT_BYTES = 10 * 1024 * 1024
 export const REMINDER_ANCHOR_OPTIONS = ['deadline', 'planned', 'start'] as const
 export const REMINDER_UNIT_OPTIONS = ['m', 'h', 'd'] as const
 

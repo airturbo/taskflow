@@ -114,6 +114,7 @@ export function TaskDetailPanel({
   const [subtaskDraft, setSubtaskDraft] = useState('')
   const [commentDraft, setCommentDraft] = useState('')
   const [attachmentError, setAttachmentError] = useState<string | null>(null)
+  const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number } | null>(null)
   const [relativeAnchor, setRelativeAnchor] = useState<(typeof REMINDER_ANCHOR_OPTIONS)[number]>('deadline')
   const [relativeAmount, setRelativeAmount] = useState('30')
   const [relativeUnit, setRelativeUnit] = useState<(typeof REMINDER_UNIT_OPTIONS)[number]>('m')
@@ -175,8 +176,12 @@ export function TaskDetailPanel({
     }
 
     try {
-      const attachments = await Promise.all(
-        files.map(async (file) =>
+      setUploadProgress({ current: 0, total: files.length })
+      const attachments = []
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        setUploadProgress({ current: i + 1, total: files.length })
+        attachments.push(
           buildTaskAttachment({
             name: file.name,
             source: 'embedded',
@@ -184,12 +189,14 @@ export function TaskDetailPanel({
             mimeType: file.type || null,
             size: file.size,
           }),
-        ),
-      )
+        )
+      }
       onAddAttachments(task.id, attachments)
       setAttachmentError(null)
     } catch {
       setAttachmentError('读取附件失败，请再试一次。')
+    } finally {
+      setUploadProgress(null)
     }
   }
 
@@ -628,6 +635,17 @@ export function TaskDetailPanel({
               : `网页端当前支持 ${Math.round(MAX_EMBEDDED_ATTACHMENT_BYTES / 1024 / 1024)}MB 内的小文件。`}
           </span>
         </div>
+        {uploadProgress && (
+          <div className={styles.uploadProgressBar}>
+            <div
+              className={styles.uploadProgressFill}
+              style={{ width: `${Math.round((uploadProgress.current / uploadProgress.total) * 100)}%` }}
+            />
+            <span className={styles.uploadProgressLabel}>
+              上传中 {uploadProgress.current}/{uploadProgress.total}…
+            </span>
+          </div>
+        )}
         {attachmentError && <p className={styles.detailInlineError}>{attachmentError}</p>}
       </div>
 

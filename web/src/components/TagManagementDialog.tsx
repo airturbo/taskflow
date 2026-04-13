@@ -73,6 +73,7 @@ export function TagManagementDialog({
 }) {
   const [newTagName, setNewTagName] = useState('')
   const [newTagColor, setNewTagColor] = useState<string>(TAG_COLOR_PRESETS[0])
+  const [hoveredPresetColor, setHoveredPresetColor] = useState<string | null>(null)
   const [drafts, setDrafts] = useState<Record<string, { name: string; color: string }>>(() =>
     Object.fromEntries(tags.map((tag) => [tag.id, { name: tag.name, color: tag.color }])),
   )
@@ -148,8 +149,17 @@ export function TagManagementDialog({
                 style={{ background: color }}
                 aria-label={`选择颜色 ${color}`}
                 onClick={() => setNewTagColor(color)}
+                onMouseEnter={() => setHoveredPresetColor(color)}
+                onMouseLeave={() => setHoveredPresetColor(null)}
               />
             ))}
+            <span
+              className="tag-chip is-active"
+              style={{ borderColor: `${hoveredPresetColor ?? newTagColor}55`, marginLeft: 6, transition: 'border-color 0.15s, background 0.15s' }}
+            >
+              <i style={{ background: hoveredPresetColor ?? newTagColor, transition: 'background 0.15s' }} />
+              #{newTagName || '预览'}
+            </span>
           </div>
           {error && <p className={styles.error}>{error}</p>}
         </section>

@@ -97,6 +97,30 @@
   border-radius: 8px; background: var(--surface-raised); overflow: hidden;
 }
 
+/* ---- Now line (week view) ---- */
+
+.timelineNowLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ff3b30;
+  z-index: 4;
+  pointer-events: none;
+  transform: translateX(-1px);
+}
+
+.timelineNowLine::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3b30;
+}
+
 /* ---- Deadline marker ---- */
 
 .timelineDeadlineMarker {
