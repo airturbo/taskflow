@@ -4,7 +4,6 @@ import { useAuth } from './hooks/useAuth'
 import { useRealtimeSync } from './hooks/useRealtimeSync'
 import { useSystemTheme } from './hooks/useSystemTheme'
 import { usePushNotifications } from './hooks/usePushNotifications'
-import { useModalState } from './hooks/useModalState'
 import { useTaskSelection } from './hooks/useTaskSelection'
 import { useFilterState } from './hooks/useFilterState'
 import { useViewConfig } from './hooks/useViewConfig'
@@ -168,8 +167,7 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     ?? null
   const selection = useTaskSelection(_initialTaskId)
   const { selectedTaskId, setSelectedTaskId, bulkSelectedIds, bulkMode, setBulkMode, toggleBulkSelect, clearBulkSelect } = selection
-  const modals = useModalState()
-  const { tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen, commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen, navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen, taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded, projectionInsightMode, setProjectionInsightMode } = modals
+  const setMobileQuickCreateOpen
 
   const [folders, setFolders] = useState(initialState.folders)
   const [lists, setLists] = useState(initialState.lists)
@@ -181,9 +179,9 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const [firedReminderKeys, setFiredReminderKeys] = useState(initialState.firedReminderKeys)
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
 
-  const { mobileTab, setMobileTab, mobileTabFading, mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen, mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed, mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen, quickCreateOpen: mobileQuickCreateOpen, openQuickCreate: _openQuickCreate, closeQuickCreate, completionToast: mobileCompletionToast, showCompletionToast, hideCompletionToast } = useMobileUiStore()
+  const { mobileTab, setMobileTab, mobileTabFading, mobileFocusScope, mobileFocusScopeListId, setMobileFocusScope: _setMobileFocusScopeStore, mobileFocusScopeMenuOpen, setMobileFocusScopeMenuOpen, mobileFocusUpcomingCollapsed, setMobileFocusUpcomingCollapsed, mobileCalendarModeMenuOpen, setMobileCalendarModeMenuOpen, quickCreateOpen: mobileQuickCreateOpen, openQuickCreate: _openQuickCreate, closeQuickCreate, completionToast: mobileCompletionToast, showCompletionToast, hideCompletionToast, mobileMatrixViewMode, setMobileMatrixViewMode, mobileMatrixModeMenuOpen, setMobileMatrixModeMenuOpen, mobileFocusSortMode, setMobileFocusSortMode, meShowProjects, setMeShowProjects, mobileProjectListId, setMobileProjectListId } = useMobileUiStore()
 
-  const { addCompletingTask, showCompletionFeedback, hideCompletionFeedback, completionFeedback, completingTaskIds } = useDesktopUiStore()
+  const { addCompletingTask, showCompletionFeedback, hideCompletionFeedback, completionFeedback, completingTaskIds, tagManagerOpen, setTagManagerOpen, shortcutPanelOpen, setShortcutPanelOpen, commandPaletteOpen, setCommandPaletteOpen, exportPanelOpen, setExportPanelOpen, navigationDrawerOpen, setNavigationDrawerOpen, utilityDrawerOpen, setUtilityDrawerOpen, taskSheetOpen, setTaskSheetOpen, sidebarExpanded, setSidebarExpanded, projectionInsightMode, setProjectionInsightMode } = useDesktopUiStore()
   const setMobileQuickCreateOpen = (open: boolean) => open ? _openQuickCreate() : closeQuickCreate()
   const setMobileCompletionToast = (toast: { taskId: string; title: string } | null) => toast ? showCompletionToast(toast) : hideCompletionToast()
   const setMobileFocusScope = (scope: 'all' | 'today' | 'week' | 'list') => _setMobileFocusScopeStore(scope, mobileFocusScopeListId)
@@ -195,12 +193,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
       if (completionToastTimerRef.current) window.clearTimeout(completionToastTimerRef.current)
     }
   }, [])
-
-  const [mobileProjectListId, setMobileProjectListId] = useState<string | null>(null)
-  const [mobileMatrixViewMode, setMobileMatrixViewMode] = useState<'matrix' | 'kanban' | 'timeline'>('matrix')
-  const [mobileFocusSortMode, setMobileFocusSortMode] = useState<'planned' | 'deadline'>('planned')
-  const [mobileMatrixModeMenuOpen, setMobileMatrixModeMenuOpen] = useState(false)
-  const [meShowProjects, setMeShowProjects] = useState(false)
 
   const {
     reminderFeed,

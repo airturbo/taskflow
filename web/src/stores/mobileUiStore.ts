@@ -13,6 +13,8 @@ import { create } from 'zustand'
 
 export type MobileTab = 'focus' | 'calendar' | 'matrix' | 'me'
 export type MobileFocusScope = 'all' | 'today' | 'week' | 'list'
+export type MobileMatrixViewMode = 'matrix' | 'kanban' | 'timeline'
+export type MobileFocusSortMode = 'planned' | 'deadline'
 
 export interface MobileCompletionToast {
   taskId: string
@@ -62,6 +64,24 @@ interface MobileUiState {
   completionToast: MobileCompletionToast | null
   showCompletionToast: (toast: MobileCompletionToast) => void
   hideCompletionToast: () => void
+
+  // ─── 矩阵/看板/时间线视图模式 ────────────────────────────────
+  mobileMatrixViewMode: MobileMatrixViewMode
+  setMobileMatrixViewMode: (mode: MobileMatrixViewMode) => void
+
+  mobileMatrixModeMenuOpen: boolean
+  setMobileMatrixModeMenuOpen: (open: boolean) => void
+
+  // ─── 焦点视图排序模式 ────────────────────────────────────────
+  mobileFocusSortMode: MobileFocusSortMode
+  setMobileFocusSortMode: (mode: MobileFocusSortMode) => void
+
+  // ─── 我的 / 项目 ─────────────────────────────────────────────
+  meShowProjects: boolean
+  setMeShowProjects: (show: boolean) => void
+
+  mobileProjectListId: string | null
+  setMobileProjectListId: (id: string | null) => void
 }
 
 export const useMobileUiStore = create<MobileUiState>((set) => ({
@@ -108,4 +128,22 @@ export const useMobileUiStore = create<MobileUiState>((set) => ({
   completionToast: null,
   showCompletionToast: (toast) => set({ completionToast: toast }),
   hideCompletionToast: () => set({ completionToast: null }),
+
+  // 矩阵视图模式
+  mobileMatrixViewMode: 'matrix',
+  setMobileMatrixViewMode: (mode) => set({ mobileMatrixViewMode: mode }),
+
+  mobileMatrixModeMenuOpen: false,
+  setMobileMatrixModeMenuOpen: (open) => set({ mobileMatrixModeMenuOpen: open }),
+
+  // 焦点排序模式
+  mobileFocusSortMode: 'planned',
+  setMobileFocusSortMode: (mode) => set({ mobileFocusSortMode: mode }),
+
+  // 我的 / 项目
+  meShowProjects: false,
+  setMeShowProjects: (show) => set({ meShowProjects: show }),
+
+  mobileProjectListId: null,
+  setMobileProjectListId: (id) => set({ mobileProjectListId: id }),
 }))
