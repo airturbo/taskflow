@@ -4,6 +4,7 @@ import type { InlineCreateRequest } from '../types/workspace'
 import { priorityMeta, getCalendarTaskDateKey } from '@taskflow/core'
 import { formatDateTime, formatDayLabel, getDateKey, addMonths } from '../utils/dates'
 import { CalendarView } from '../components/views/CalendarView'
+import styles from './MobileCalendarView.module.css'
 
 const CALENDAR_MODES: CalendarMode[] = ['month', 'week', 'agenda']
 const CALENDAR_MODE_LABELS: Record<CalendarMode, string> = { month: '月历', week: '周历', agenda: '日程' }
@@ -29,9 +30,9 @@ function MobileMonthDots({ tasks }: { tasks: Task[] }) {
     if (colors.length >= 3) break
   }
   return (
-    <span className="mobile-month-dots" aria-hidden="true">
+    <span className={styles.mobileMonthDots} aria-hidden="true">
       {colors.map((c, i) => (
-        <span key={i} className="mobile-month-dot" style={{ background: c }} />
+        <span key={i} className={styles.mobileMonthDot} style={{ background: c }} />
       ))}
     </span>
   )
@@ -61,42 +62,42 @@ function MobileDayPanel({
 
   if (tasks.length === 0) {
     return (
-      <div className="mobile-day-panel">
-        <div className="mobile-day-panel__header">
-          <span className="mobile-day-panel__title">
+      <div className={styles.mobileDayPanel}>
+        <div className={styles.mobileDayPanelHeader}>
+          <span className={styles.mobileDayPanelTitle}>
             {dayLabel}
-            {isTodayDay && <span className="mobile-day-panel__today-badge">今天</span>}
+            {isTodayDay && <span className={styles.mobileDayPanelTodayBadge}>今天</span>}
           </span>
-          <button className="mobile-day-panel__add-btn" onClick={() => onAddTask(dateKey)} aria-label="添加任务">
+          <button className={styles.mobileDayPanelAddBtn} onClick={() => onAddTask(dateKey)} aria-label="添加任务">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/></svg>
             添加任务
           </button>
         </div>
-        <p className="mobile-day-panel__empty">这一天暂无任务，轻松一下！</p>
+        <p className={styles.mobileDayPanelEmpty}>这一天暂无任务，轻松一下！</p>
       </div>
     )
   }
 
   return (
-    <div className="mobile-day-panel">
-      <div className="mobile-day-panel__header">
-        <span className="mobile-day-panel__title">
+    <div className={styles.mobileDayPanel}>
+      <div className={styles.mobileDayPanelHeader}>
+        <span className={styles.mobileDayPanelTitle}>
           {dayLabel}
-          {isTodayDay && <span className="mobile-day-panel__today-badge">今天</span>}
-          <span className="mobile-day-panel__count">{tasks.length} 项</span>
+          {isTodayDay && <span className={styles.mobileDayPanelTodayBadge}>今天</span>}
+          <span className={styles.mobileDayPanelCount}>{tasks.length} 项</span>
         </span>
-        <button className="mobile-day-panel__add-btn" onClick={() => onAddTask(dateKey)} aria-label="添加任务">
+        <button className={styles.mobileDayPanelAddBtn} onClick={() => onAddTask(dateKey)} aria-label="添加任务">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/></svg>
         </button>
       </div>
-      <ul className="mobile-day-panel__list">
+      <ul className={styles.mobileDayPanelList}>
         {tasks.map((task) => {
           const taskList = task.listId ? lists.find(l => l.id === task.listId) : null
           const dueTime = task.dueAt ? formatDateTime(task.dueAt) : null
           return (
             <li
               key={task.id}
-              className={`mobile-day-panel__item priority-accent-${task.priority} ${task.completed ? 'is-completed' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''}`}
+              className={`${styles.mobileDayPanelItem} priority-accent-${task.priority} ${task.completed ? 'is-completed' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''}`}
               onClick={() => onSelectTask(task.id)}
             >
               <button
@@ -104,13 +105,13 @@ function MobileDayPanel({
                 aria-label={task.completed ? '标记未完成' : '标记完成'}
                 onClick={(e) => { e.stopPropagation(); onToggleComplete(task.id) }}
               />
-              <div className="mobile-day-panel__item-content">
-                <span className="mobile-day-panel__item-title">{task.title}</span>
-                <span className="mobile-day-panel__item-meta">
-                  {dueTime && <span className="mobile-day-panel__item-time">{dueTime}</span>}
+              <div className={styles.mobileDayPanelItemContent}>
+                <span className={styles.mobileDayPanelItemTitle}>{task.title}</span>
+                <span className={styles.mobileDayPanelItemMeta}>
+                  {dueTime && <span className={styles.mobileDayPanelItemTime}>{dueTime}</span>}
                   {taskList && (
-                    <span className="mobile-day-panel__item-list">
-                      <span className="mobile-month-dot" style={{ background: taskList.color }} />
+                    <span className={styles.mobileDayPanelItemList}>
+                      <span className={styles.mobileMonthDot} style={{ background: taskList.color }} />
                       {taskList.name}
                     </span>
                   )}
@@ -210,16 +211,16 @@ export function MobileCalendarView(props: {
 
     return (
       <div
-        className="mobile-calendar-gesture-wrapper"
+        className={styles.mobileCalendarGestureWrapper}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         {/* 模式切换 */}
-        <div className="mobile-calendar-mode-dots" aria-hidden="true">
+        <div className={styles.mobileCalendarModeDots} aria-hidden="true">
           {CALENDAR_MODES.map((m) => (
             <button
               key={m}
-              className={`mobile-calendar-mode-dot ${m === props.calendarMode ? 'is-active' : ''}`}
+              className={`${styles.mobileCalendarModeDot} ${m === props.calendarMode ? 'is-active' : ''}`}
               onClick={() => props.onChangeMode(m)}
               aria-label={`切换到${CALENDAR_MODE_LABELS[m]}`}
             >
@@ -230,14 +231,14 @@ export function MobileCalendarView(props: {
 
         {/* 月份导航头 */}
         {props.onChangeAnchor && (
-          <div className="mobile-month-nav">
+          <div className={styles.mobileMonthNav}>
             <button
-              className="mobile-month-nav__arrow"
+              className={styles.mobileMonthNavArrow}
               onClick={() => props.onChangeAnchor!(addMonths(props.calendarAnchor, -1))}
               aria-label="上个月"
             >‹</button>
             <button
-              className="mobile-month-nav__title"
+              className={styles.mobileMonthNavTitle}
               onClick={() => {
                 const input = document.createElement('input')
                 input.type = 'month'
@@ -260,7 +261,7 @@ export function MobileCalendarView(props: {
               {props.calendarAnchor.slice(0, 4)}年{parseInt(props.calendarAnchor.slice(5, 7), 10)}月
             </button>
             <button
-              className="mobile-month-nav__arrow"
+              className={styles.mobileMonthNavArrow}
               onClick={() => props.onChangeAnchor!(addMonths(props.calendarAnchor, 1))}
               aria-label="下个月"
             >›</button>
@@ -268,12 +269,12 @@ export function MobileCalendarView(props: {
         )}
 
         {/* 星期标题行 */}
-        <div className="mobile-month-weekdays">
+        <div className={styles.mobileMonthWeekdays}>
           {weekdays.map((d) => <span key={d}>{d}</span>)}
         </div>
 
         {/* 月历网格 */}
-        <div className="mobile-month-grid">
+        <div className={styles.mobileMonthGrid}>
           {props.monthDates.map((dateKey) => {
             const dayTasks = tasksByDate.get(dateKey) ?? []
             const isCurMonth = dateKey.slice(0, 7) === currentMonth
@@ -284,7 +285,7 @@ export function MobileCalendarView(props: {
               <button
                 key={dateKey}
                 className={[
-                  'mobile-month-cell',
+                  styles.mobileMonthCell,
                   isTodayDay ? 'is-today' : '',
                   isFocused ? 'is-focused' : '',
                   !isCurMonth ? 'is-other-month' : '',
@@ -293,7 +294,7 @@ export function MobileCalendarView(props: {
                 aria-label={`${dateKey}${dayTasks.length > 0 ? `，${dayTasks.length}个任务` : ''}`}
                 aria-pressed={isFocused}
               >
-                <span className="mobile-month-cell__num">{dayNum}</span>
+                <span className={styles.mobileMonthCellNum}>{dayNum}</span>
                 <MobileMonthDots tasks={dayTasks} />
               </button>
             )
@@ -324,16 +325,16 @@ export function MobileCalendarView(props: {
   // week / agenda 仍使用桌面版 CalendarView
   return (
     <div
-      className="mobile-calendar-gesture-wrapper"
+      className={styles.mobileCalendarGestureWrapper}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* Mode indicator dots */}
-      <div className="mobile-calendar-mode-dots" aria-hidden="true">
+      <div className={styles.mobileCalendarModeDots} aria-hidden="true">
         {CALENDAR_MODES.map((m) => (
           <button
             key={m}
-            className={`mobile-calendar-mode-dot ${m === props.calendarMode ? 'is-active' : ''}`}
+            className={`${styles.mobileCalendarModeDot} ${m === props.calendarMode ? 'is-active' : ''}`}
             onClick={() => props.onChangeMode(m)}
             aria-label={`切换到${CALENDAR_MODE_LABELS[m]}`}
           >

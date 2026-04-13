@@ -1,0 +1,333 @@
+/* MobileCalendarView.module.css
+   Covers: MobileCalendarView, MobileMonthDots, MobileDayPanel sub-components
+   Global classes kept: mobile-focus-card__priority-badge (shared across 3 components),
+                        check-button (global shared)
+   Dynamic class strings: mobile-month-cell.is-today/is-focused/is-other-month,
+                          mobile-day-panel__item.is-selected/is-completed/priority-accent-*
+                          mobile-calendar-mode-dot.is-active → :global() wrappers
+*/
+
+/* ---- Gesture Wrapper ---- */
+
+.mobileCalendarGestureWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+/* ---- Mode Selector Dots ---- */
+
+.mobileCalendarModeDots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding: 6px 16px 0;
+  flex-shrink: 0;
+}
+
+.mobileCalendarModeDot {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.mobileCalendarModeDot:global(.is-active) {
+  background: var(--accent, #007aff);
+  border-color: var(--accent, #007aff);
+  color: #fff;
+}
+
+/* ---- Month Navigation ---- */
+
+.mobileMonthNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 2px;
+}
+
+.mobileMonthNavArrow {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--text-primary);
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.mobileMonthNavArrow:active { background: var(--hover); }
+
+.mobileMonthNavTitle {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.mobileMonthNavTitle:active { background: var(--hover); }
+
+/* ---- Weekday Headers ---- */
+
+.mobileMonthWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px 8px 0;
+  flex-shrink: 0;
+}
+
+.mobileMonthWeekdays span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  padding: 4px 0;
+}
+
+/* ---- Month Grid ---- */
+
+.mobileMonthGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 4px 8px 8px;
+  flex-shrink: 0;
+}
+
+.mobileMonthCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 2px 5px;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobileMonthCell:active {
+  background: var(--surface-hover);
+}
+
+.mobileMonthCell:global(.is-today) .mobileMonthCellNum {
+  background: var(--accent, #007aff);
+  color: #fff;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.mobileMonthCell:global(.is-focused):not(:global(.is-today)) {
+  background: var(--surface-2, rgba(0,0,0,0.06));
+}
+
+.mobileMonthCell:global(.is-focused):global(.is-today) .mobileMonthCellNum {
+  box-shadow: 0 0 0 2px var(--accent, #007aff), 0 0 0 4px rgba(0,122,255,0.2);
+}
+
+.mobileMonthCell:global(.is-other-month) {
+  opacity: 0.38;
+}
+
+.mobileMonthCellNum {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Month Dots ---- */
+
+.mobileMonthDots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  min-height: 5px;
+}
+
+.mobileMonthDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ---- Day Panel ---- */
+
+.mobileDayPanel {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.mobileDayPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobileDayPanelTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobileDayPanelTodayBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent, #007aff);
+  background: rgba(0,122,255,0.12);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.mobileDayPanelCount {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+.mobileDayPanelAddBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent, #007aff);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.12s;
+  min-height: 32px;
+}
+
+.mobileDayPanelAddBtn:active {
+  background: var(--surface-hover);
+}
+
+.mobileDayPanelEmpty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mobileDayPanelList {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.mobileDayPanelItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+
+.mobileDayPanelItem:active {
+  background: var(--surface-hover);
+}
+
+.mobileDayPanelItem:global(.is-selected) {
+  background: var(--surface-hover);
+}
+
+.mobileDayPanelItem:global(.priority-accent-urgent) { border-left-color: #ff3b30; }
+.mobileDayPanelItem:global(.priority-accent-high)   { border-left-color: #ff9500; }
+.mobileDayPanelItem:global(.priority-accent-normal) { border-left-color: #007aff; }
+.mobileDayPanelItem:global(.priority-accent-low)    { border-left-color: #8e8e93; }
+
+.mobileDayPanelItem:global(.is-completed) {
+  opacity: 0.5;
+}
+
+.mobileDayPanelItem:global(.is-completed) .mobileDayPanelItemTitle {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.mobileDayPanelItem :global(.check-button) {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mobileDayPanelItemContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mobileDayPanelItemTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.mobileDayPanelItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobileDayPanelItemTime {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.mobileDayPanelItemList {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}

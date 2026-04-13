@@ -1,0 +1,332 @@
+/* MobileMatrixView.module.css
+   Covers: MobileMatrixView, MobileMatrixCard sub-component
+   Global classes kept: mobile-focus-card__priority-badge (shared across 3 components),
+                        check-button (global shared)
+   Dynamic class strings: mobile-matrix__tab.is-active, mobile-matrix-card.is-completed/is-selected
+                          → :global() wrappers below
+*/
+
+/* ---- Matrix Overview (legacy grid mode) ---- */
+
+.mobileMatrixOverview {
+  padding: 12px 16px;
+}
+
+.mobileMatrixOverviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mobileMatrixOverviewCell {
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 2px solid var(--quadrant-color, var(--border));
+  border-radius: 16px;
+  padding: 16px 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.mobileMatrixOverviewCell:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+}
+
+.mobileMatrixOverviewIcon { font-size: 20px; }
+
+.mobileMatrixOverviewLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.mobileMatrixOverviewBadge {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--quadrant-color, var(--text));
+  line-height: 1;
+}
+
+.mobileMatrixOverviewTapHint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ---- Matrix Focus Mode (legacy) ---- */
+
+.mobileMatrixFocus {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mobileMatrixFocusHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+.mobileMatrixFocusBack {
+  background: none;
+  border: none;
+  color: var(--accent, #007aff);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.mobileMatrixFocusTitle {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mobileMatrixFocusCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ---- Matrix Tab Mode (current) ---- */
+
+.mobileMatrix {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mobileMatrixTabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px 6px;
+  flex-shrink: 0;
+}
+
+.mobileMatrixTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px 6px;
+  border-radius: 12px;
+  background: var(--surface-raised, var(--bg-subtle));
+  border: 2px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.mobileMatrixTab:global(.is-active) {
+  background: color-mix(in srgb, var(--q-color, #007aff) 12%, transparent);
+  border-color: var(--q-color, #007aff);
+}
+
+.mobileMatrixTabIcon { font-size: 16px; line-height: 1; }
+
+.mobileMatrixTabLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mobileMatrixTabBadge {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  background: var(--text-secondary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 8px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.mobileMatrixTab:global(.is-active) .mobileMatrixTabBadge {
+  background: var(--q-color, #007aff);
+}
+
+.mobileMatrixHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--q-color, #007aff) 8%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--q-color, #007aff) 20%, transparent);
+  flex-shrink: 0;
+}
+
+.mobileMatrixHeaderInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mobileMatrixHeaderTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mobileMatrixHeaderHint {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.mobileMatrixAddBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--q-color, #007aff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobileMatrixEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: var(--text-tertiary);
+}
+
+.mobileMatrixEmpty span { font-size: 40px; }
+.mobileMatrixEmpty p { font-size: 14px; }
+
+.mobileMatrixList {
+  list-style: none;
+  margin: 0;
+  padding: 10px 14px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- Matrix Card ---- */
+
+.mobileMatrixCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-raised, var(--bg-subtle));
+  border-radius: 12px;
+  border-left: 3px solid var(--q-color, var(--border));
+  position: relative;
+}
+
+.mobileMatrixCard:global(.is-completed) { opacity: 0.5; }
+.mobileMatrixCard:global(.is-selected) { box-shadow: 0 0 0 2px var(--q-color, var(--accent)); }
+
+.mobileMatrixCardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.mobileMatrixCardTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileMatrixCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.mobileMatrixCardTime { color: var(--text-secondary); }
+
+.mobileMatrixCardList {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mobileMatrixCardList i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.mobileMatrixCardMoveBtn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mobileMatrixCardMoveMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 50;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  overflow: hidden;
+  min-width: 160px;
+  margin-top: 4px;
+}
+
+.mobileMatrixCardMoveItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.mobileMatrixCardMoveItem:hover { background: var(--bg-subtle); }
+
+.mobileMatrixCardMoveCancel {
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}

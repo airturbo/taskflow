@@ -4,6 +4,7 @@ import type { MatrixQuadrantKey } from '@taskflow/core'
 import type { InlineCreateRequest } from '../types/workspace'
 import { getQuadrant, priorityMeta } from '@taskflow/core'
 import { formatDateTime } from '../utils/dates'
+import styles from './MobileMatrixView.module.css'
 
 const QUADRANT_META: Record<MatrixQuadrantKey, { title: string; shortTitle: string; color: string; icon: string; hint: string }> = {
   q1: { title: '紧急且重要', shortTitle: 'Q1', color: '#ff3b30', icon: '🔴', hint: '立即处理' },
@@ -32,34 +33,34 @@ export function MobileMatrixView(props: {
   const tasks = tasksByQuadrant[activeQ]
 
   return (
-    <div className="mobile-matrix">
+    <div className={styles.mobileMatrix}>
       {/* 顶部象限切换 tab */}
-      <div className="mobile-matrix__tabs">
+      <div className={styles.mobileMatrixTabs}>
         {(Object.keys(QUADRANT_META) as MatrixQuadrantKey[]).map((key) => {
           const count = tasksByQuadrant[key].length
           return (
             <button
               key={key}
-              className={`mobile-matrix__tab ${key === activeQ ? 'is-active' : ''}`}
+              className={`${styles.mobileMatrixTab} ${key === activeQ ? 'is-active' : ''}`}
               style={key === activeQ ? { '--q-color': QUADRANT_META[key].color } as React.CSSProperties : undefined}
               onClick={() => setActiveQ(key)}
             >
-              <span className="mobile-matrix__tab-icon">{QUADRANT_META[key].icon}</span>
-              <span className="mobile-matrix__tab-label">{QUADRANT_META[key].shortTitle}</span>
-              {count > 0 && <span className="mobile-matrix__tab-badge">{count}</span>}
+              <span className={styles.mobileMatrixTabIcon}>{QUADRANT_META[key].icon}</span>
+              <span className={styles.mobileMatrixTabLabel}>{QUADRANT_META[key].shortTitle}</span>
+              {count > 0 && <span className={styles.mobileMatrixTabBadge}>{count}</span>}
             </button>
           )
         })}
       </div>
 
       {/* 当前象限标题 */}
-      <div className="mobile-matrix__header" style={{ '--q-color': m.color } as React.CSSProperties}>
-        <div className="mobile-matrix__header-info">
-          <span className="mobile-matrix__header-title">{m.title}</span>
-          <span className="mobile-matrix__header-hint">{m.hint}</span>
+      <div className={styles.mobileMatrixHeader} style={{ '--q-color': m.color } as React.CSSProperties}>
+        <div className={styles.mobileMatrixHeaderInfo}>
+          <span className={styles.mobileMatrixHeaderTitle}>{m.title}</span>
+          <span className={styles.mobileMatrixHeaderHint}>{m.hint}</span>
         </div>
         <button
-          className="mobile-matrix__add-btn"
+          className={styles.mobileMatrixAddBtn}
           onClick={() =>
             props.onOpenInlineCreate({
               view: 'matrix',
@@ -76,12 +77,12 @@ export function MobileMatrixView(props: {
 
       {/* 任务列表 */}
       {tasks.length === 0 ? (
-        <div className="mobile-matrix__empty">
+        <div className={styles.mobileMatrixEmpty}>
           <span>{m.icon}</span>
           <p>此象限暂无任务</p>
         </div>
       ) : (
-        <ul className="mobile-matrix__list">
+        <ul className={styles.mobileMatrixList}>
           {tasks.map((task) => (
             <MobileMatrixCard
               key={task.id}
@@ -124,7 +125,7 @@ function MobileMatrixCard({
 
   return (
     <li
-      className={`mobile-matrix-card priority-accent-${task.priority} ${task.completed ? 'is-completed' : ''} ${isSelected ? 'is-selected' : ''}`}
+      className={`${styles.mobileMatrixCard} ${task.completed ? 'is-completed' : ''} ${isSelected ? 'is-selected' : ''}`}
       style={{ '--q-color': m.color } as React.CSSProperties}
     >
       <button
@@ -132,12 +133,12 @@ function MobileMatrixCard({
         aria-label={task.completed ? '取消完成' : '标记完成'}
         onClick={(e) => { e.stopPropagation(); onToggle() }}
       />
-      <div className="mobile-matrix-card__body" onClick={onSelect}>
-        <span className="mobile-matrix-card__title">{task.title}</span>
-        <span className="mobile-matrix-card__meta">
-          {dueTime && <span className="mobile-matrix-card__time">{dueTime}</span>}
+      <div className={styles.mobileMatrixCardBody} onClick={onSelect}>
+        <span className={styles.mobileMatrixCardTitle}>{task.title}</span>
+        <span className={styles.mobileMatrixCardMeta}>
+          {dueTime && <span className={styles.mobileMatrixCardTime}>{dueTime}</span>}
           {taskList && (
-            <span className="mobile-matrix-card__list">
+            <span className={styles.mobileMatrixCardList}>
               <i style={{ background: taskList.color }} />
               {taskList.name}
             </span>
@@ -151,22 +152,22 @@ function MobileMatrixCard({
       )}
       {/* 移动到其他象限 */}
       <button
-        className="mobile-matrix-card__move-btn"
+        className={styles.mobileMatrixCardMoveBtn}
         aria-label="移动到其他象限"
         onClick={(e) => { e.stopPropagation(); setShowMove(v => !v) }}
       >⋯</button>
       {showMove && (
-        <div className="mobile-matrix-card__move-menu">
+        <div className={styles.mobileMatrixCardMoveMenu}>
           {(Object.keys(QUADRANT_META) as MatrixQuadrantKey[]).filter(k => k !== activeQ).map(k => (
             <button
               key={k}
-              className="mobile-matrix-card__move-item"
+              className={styles.mobileMatrixCardMoveItem}
               onClick={() => { onMoveToQuadrant(k); setShowMove(false) }}
             >
               {QUADRANT_META[k].icon} {QUADRANT_META[k].title}
             </button>
           ))}
-          <button className="mobile-matrix-card__move-item mobile-matrix-card__move-cancel" onClick={() => setShowMove(false)}>取消</button>
+          <button className={`${styles.mobileMatrixCardMoveItem} ${styles.mobileMatrixCardMoveCancel}`} onClick={() => setShowMove(false)}>取消</button>
         </div>
       )}
     </li>
