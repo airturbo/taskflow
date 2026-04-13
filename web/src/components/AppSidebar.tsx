@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Folder, SavedFilter, Tag, TodoList, TimeFieldMode } from '../types/domain'
 import { FolderListItem, SidebarSection, NavButton } from './WorkspaceSidebar'
 import { handleCardKeyboardActivation } from '../utils/workspace-helpers'
+import styles from './AppSidebar.module.css'
 
 const PRESET_COLORS = [
   '#6c63ff', '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b',
@@ -107,7 +108,7 @@ export function AppSidebar(props: AppSidebarProps) {
 
   return (
     <>
-      <div className="brand-block">
+      <div className={styles.brandBlock}>
         <h1>TaskFlow</h1>
         <button
           className="ghost-button small"
@@ -315,7 +316,7 @@ export function AppSidebar(props: AppSidebarProps) {
         {/* 右键上下文菜单 */}
         {ctxMenu && (
           <div
-            className="ctx-menu"
+            className={styles.ctxMenu}
             style={{ position: 'fixed', top: ctxMenu.y, left: ctxMenu.x, zIndex: 9999 }}
             onClick={e => e.stopPropagation()}
           >
@@ -323,7 +324,7 @@ export function AppSidebar(props: AppSidebarProps) {
               <>
                 <button onClick={async () => { const name = await mobilePrompt('清单名称'); if (name) onCreateList(name, ctxMenu.id); setCtxMenu(null) }}>＋ 新建清单到此文件夹</button>
                 <button onClick={() => startEdit('folder', ctxMenu.id, folders.find(f => f.id === ctxMenu.id)?.name ?? '')}>✎ 重命名</button>
-                <div className="ctx-menu__divider" />
+                <div className={styles.ctxMenuDivider} />
                 <button className="danger" onClick={async () => {
                   const f = folders.find(x => x.id === ctxMenu.id)
                   if (f && await mobileConfirm(`删除文件夹「${f.name}」？清单会保留。`)) onDeleteFolder(ctxMenu.id)
@@ -343,7 +344,7 @@ export function AppSidebar(props: AppSidebarProps) {
                   onUpdateListFolder(ctxMenu.id, folder?.id ?? null)
                   setCtxMenu(null)
                 }}>→ 移动到文件夹</button>
-                <div className="ctx-menu__divider" />
+                <div className={styles.ctxMenuDivider} />
                 <button className="danger" onClick={async () => {
                   const l = lists.find(x => x.id === ctxMenu.id)
                   if (l && await mobileConfirm(`删除清单「${l.name}」？任务移到收件箱。`)) onDeleteList(ctxMenu.id)

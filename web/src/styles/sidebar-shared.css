@@ -1,0 +1,55 @@
+/* sidebar-shared.css — Shared sidebar utility classes used by AppSidebar + WorkspaceSidebar */
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 20px;
+}
+.sidebar-section:last-child { margin-bottom: 0; }
+
+.sidebar-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px;
+  margin-bottom: 4px;
+  min-height: 24px;
+}
+
+.sidebar-inline-input {
+  width: 100%;
+  padding: 3px 6px;
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  outline: none;
+}
+
+.sidebar-action-btn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.sidebar-action-btn:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.sidebar-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}

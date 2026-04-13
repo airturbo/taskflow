@@ -1,0 +1,58 @@
+/* AppSidebar.module.css — AppSidebar-specific styles */
+
+/* ---- Brand block ---- */
+.brandBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brandBlock h1 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Context menu ---- */
+.ctxMenu {
+  background: var(--bg-elevated, var(--bg-secondary));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ctxMenu button {
+  width: 100%;
+  text-align: left;
+  padding: 7px 12px;
+  font-size: 13px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.ctxMenu button:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.ctxMenu button:global(.danger):hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.ctxMenuDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 3px 0;
+}

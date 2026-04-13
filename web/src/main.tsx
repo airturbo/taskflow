@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/globals.css'
+import './styles/sidebar-shared.css'
 import './index.css'
 import App from './App.tsx'
 import { AuthGate } from './components/AuthGate.tsx'

@@ -24,54 +24,10 @@
 /* .main-stage, .right-rail → WorkspaceShell.module.css */
 
 /* ---- Sidebar ---- */
-.brand-block {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
+/* .brand-block → AppSidebar.module.css */
 
-.brand-block h1 {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
+/* .sidebar-section, .sidebar-section__header, .sidebar-label, .sidebar-stack → sidebar-shared.css */
 
-.sidebar-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: 20px; /* Proximity：分组间留出足够间距 */
-}
-.sidebar-section:last-child { margin-bottom: 0; }
-
-.sidebar-section__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 0 8px;
-  margin-bottom: 4px;
-  min-height: 24px;
-}
-
-/* Contrast：分组标签用最低权重，给内容让路 */
-.sidebar-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  user-select: none;
-}
-
-/* Proximity：同组项目间距极小，强化分组感 */
-.sidebar-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
 /* folder-children 单独定义，允许缩进覆盖 */
 .folder-children {
   display: flex;
@@ -79,7 +35,6 @@
   gap: 1px;
   margin-top: 1px;
 }
-
 
 .folder-block { display: flex; flex-direction: column; gap: 0; margin-bottom: 6px; }
 
@@ -214,43 +169,9 @@
 }
 
 
-/* 操作按钮（✎ ✕） */
-.sidebar-action-btn {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
-  font-size: 11px;
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
-  flex-shrink: 0;
-  line-height: 1;
-}
-.sidebar-action-btn:hover {
-  background: var(--surface-raised);
-  color: var(--text);
-}
-.sidebar-action-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-}
+/* 操作按钮（✎ ✕）→ sidebar-shared.css */
 
-/* 内联编辑输入框 */
-.sidebar-inline-input {
-  width: 100%;
-  padding: 3px 6px;
-  font-size: 13px;
-  border: 1px solid var(--accent);
-  border-radius: 4px;
-  background: var(--bg-secondary);
-  color: var(--text);
-  outline: none;
-}
+/* 内联编辑输入框 → sidebar-shared.css */
 
 /* 色点可点击 */
 .folder-dot--clickable {
@@ -262,43 +183,7 @@
   opacity: 0.8;
 }
 
-/* 右键上下文菜单 */
-.ctx-menu {
-  background: var(--bg-elevated, var(--bg-secondary));
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 5px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-  min-width: 170px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.ctx-menu button {
-  width: 100%;
-  text-align: left;
-  padding: 7px 12px;
-  font-size: 13px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
-}
-.ctx-menu button:hover {
-  background: var(--surface-hover);
-  color: var(--text);
-}
-.ctx-menu button.danger:hover {
-  background: rgba(239,68,68,0.12);
-  color: #ef4444;
-}
-.ctx-menu__divider {
-  height: 1px;
-  background: var(--border);
-  margin: 3px 0;
-}
+/* 右键上下文菜单 → AppSidebar.module.css */
 
 .folder-dot, .list-dot, .tag-chip i, .mini-tag i {
   width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0;
