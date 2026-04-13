@@ -13,6 +13,8 @@ import { useTaskSelection } from './hooks/useTaskSelection'
 import { useFilterState } from './hooks/useFilterState'
 import { useViewConfig } from './hooks/useViewConfig'
 import { useNavigationState } from './hooks/useNavigationState'
+import { useQuickCreate, type InlineCreateDraft, type InlineCreatePosition, type InlineCreatePositionMode, type QuickCreateFeedback, type StatusChangeFeedback } from './hooks/useQuickCreate'
+import { useMobileDialogs } from './hooks/useMobileDialogs'
 import { isSupabaseEnabled } from './utils/supabase'
 import { useMobileUiStore } from './stores/mobileUiStore'
 import { SyncIndicator } from './components/SyncIndicator'
@@ -164,15 +166,6 @@ const upsertTaskInCache = (items: Task[], nextTask: Task, prepend = false) => {
   return nextItems
 }
 
-
-
-type QuickCreateFeedback = {
-  title: string
-  listId: string
-  listName: string
-  visibleInWorkspace: boolean
-  workspaceLabel: string
-}
 
 type TimelineDragMode = 'move' | 'resize-start' | 'resize-end'
 
@@ -387,13 +380,6 @@ function TaskTimeSummary({ task, compact = false }: { task: Task; compact?: bool
   )
 }
 
-type StatusChangeFeedback = {
-  taskId: string
-  title: string
-  fromStatus: TaskStatus
-  toStatus: TaskStatus
-}
-
 type CreateTaskPayload = {
   title: string
   note?: string
@@ -406,28 +392,6 @@ type CreateTaskPayload = {
   deadlineAt?: string | null
   activityLabel: string
   markOnboardingScheduleComplete?: boolean
-}
-
-type InlineCreatePositionMode = 'floating' | 'top-docked'
-
-type InlineCreatePosition = {
-  x: number
-  y: number
-  mode: InlineCreatePositionMode
-}
-
-type InlineCreateDraft = {
-  view: WorkspaceView
-  title: string
-  note: string
-  listId: string
-  priority: Priority
-  tagIds: string[]
-  status: TaskStatus
-  dateKey: string
-  time: string
-  guidance: string
-  position: InlineCreatePosition
 }
 
 type InlineCreateRequest = {
@@ -686,15 +650,16 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const [tasks, setTasks] = useState(initialState.tasks)
   const { resolvedTheme, cycleTheme, themeIcon, themeLabel } = useSystemTheme(theme, setTheme)
 
-  // ---- Remaining inline states ----
-  const [quickEntry, setQuickEntry] = useState('')
-  const [quickListId, setQuickListId] = useState('inbox')
-  const quickCreateInputRef = useRef<HTMLInputElement>(null)
-  const [quickPriority, setQuickPriority] = useState<Priority>('normal')
-  const [quickTagIds, setQuickTagIds] = useState<string[]>([])
-  const [createFeedback, setCreateFeedback] = useState<QuickCreateFeedback | null>(null)
-  const [statusChangeFeedback, setStatusChangeFeedback] = useState<StatusChangeFeedback | null>(null)
-  const [inlineCreate, setInlineCreate] = useState<InlineCreateDraft | null>(null)
+  // ---- Quick Create + Inline Create ----
+  const {
+    quickEntry, setQuickEntry, quickListId, setQuickListId,
+    quickPriority, setQuickPriority, quickTagIds, setQuickTagIds,
+    quickCreateInputRef,
+    inlineCreate, setInlineCreate,
+    createFeedback, setCreateFeedback,
+    statusChangeFeedback, setStatusChangeFeedback,
+    toggleQuickTag, toggleInlineCreateTag,
+  } = useQuickCreate()
   const [firedReminderKeys, setFiredReminderKeys] = useState(initialState.firedReminderKeys)
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth)
 
@@ -727,9 +692,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
     }
   }, [])
 
-  const [mobileConfirmDialog, setMobileConfirmDialog] = useState<{ message: string; onConfirm: () => void; onCancel: () => void } | null>(null)
-  const [mobilePromptDialog, setMobilePromptDialog] = useState<{ message: string; defaultValue?: string; onSubmit: (value: string | null) => void } | null>(null)
-  const [mobilePromptValue, setMobilePromptValue] = useState('')
   // Track which list is selected in the projects tab (null = project list view)
   const [mobileProjectListId, setMobileProjectListId] = useState<string | null>(null)
   // Track view mode within a project list on mobile
@@ -1207,6 +1169,14 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
   const isCompactSidebar    = viewportWidth > 960 && viewportWidth <= 1200  // 中宽屏：侧边栏折叠为图标栏
   const isUtilityDrawerMode = viewportWidth <= 1280       // 详情面板变抽屉
 
+  // ---- Mobile Dialogs ----
+  const {
+    mobileConfirmDialog, setMobileConfirmDialog,
+    mobilePromptDialog, setMobilePromptDialog,
+    mobilePromptValue, setMobilePromptValue,
+    mobileConfirm, mobilePrompt,
+  } = useMobileDialogs(isPhoneViewport)
+
   const weekDates = useMemo(() => buildWeek(calendarAnchor), [calendarAnchor])
   const monthDates = useMemo(() => buildMonthMatrix(calendarAnchor), [calendarAnchor])
   const calendarNavLabel = useMemo(
@@ -1462,46 +1432,6 @@ function WorkspaceApp({ initialState }: { initialState: PersistedState }) {
 
   // ---- 移动端快速创建 (逻辑已内联到 MobileQuickCreateSheet) ----
 
-  // ---- 移动端自定义 confirm/prompt（Phase 1.5 使用）----
-  /** Mobile confirm dialog — ONLY for destructive operations (delete list/folder).
-   *  Task completion uses mobileToggleComplete + Undo Toast (UX-01). */
-  const mobileConfirm = (message: string): Promise<boolean> => {
-    if (!isPhoneViewport) return Promise.resolve(window.confirm(message))
-    return new Promise<boolean>((resolve) => {
-      setMobileConfirmDialog({
-        message,
-        onConfirm: () => resolve(true),
-        onCancel: () => resolve(false),
-      })
-    })
-  }
-
-  const mobilePrompt = (message: string, defaultValue = ''): Promise<string | null> => {
-    if (!isPhoneViewport) return Promise.resolve(window.prompt(message, defaultValue))
-    return new Promise<string | null>((resolve) => {
-      setMobilePromptValue(defaultValue)
-      setMobilePromptDialog({
-        message,
-        defaultValue,
-        onSubmit: (value) => resolve(value),
-      })
-    })
-  }
-
-
-  const toggleQuickTag = (tagId: string) => {
-    setQuickTagIds((current) => (current.includes(tagId) ? current.filter((item) => item !== tagId) : [...current, tagId]))
-  }
-
-  const toggleInlineCreateTag = (tagId: string) => {
-    setInlineCreate((current) => {
-      if (!current) return current
-      return {
-        ...current,
-        tagIds: current.tagIds.includes(tagId) ? current.tagIds.filter((item) => item !== tagId) : [...current.tagIds, tagId],
-      }
-    })
-  }
 
   const validateTagMutation = (name: string, excludeId?: string) => {
     const normalized = normalizeTagName(name)
