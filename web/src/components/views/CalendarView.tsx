@@ -9,6 +9,7 @@ import type { PointerDragSession } from '../../types/workspace'
 import { DragPreviewLayer, TaskDeadlineIndicators, TaskDeadlineDot } from '../shared'
 import { EmptyState } from '../shared'
 import { getTagToneStyle } from '../../utils/workspace-helpers'
+import styles from './CalendarView.module.css'
 
 export function CalendarView({
   tasks,
@@ -211,10 +212,10 @@ export function CalendarView({
     const currentMonth = calendarAnchor.slice(0, 7)
     return (
       <div className="view-stack">
-        <div className="calendar-weekday-header">
+        <div className={styles.calendarWeekdayHeader}>
           {weekdays.map((d) => <span key={d}>{d}</span>)}
         </div>
-        <div className="calendar-grid month">
+        <div className={`${styles.calendarGrid} month`}>
           {monthDates.map((dateKey) => {
             const dayTasks = tasks.filter((task) => getCalendarTaskDateKey(task) === dateKey)
             const lunar = getLunarDate(dateKey)
@@ -226,29 +227,29 @@ export function CalendarView({
               <article
                 key={dateKey}
                 data-calendar-drop-zone={dateKey}
-                className={`calendar-cell ${isToday(dateKey) ? 'is-today' : ''} ${isFocusedDay ? 'is-focused' : ''} ${isMutedDay ? 'is-muted' : ''} ${!isCurrentMonth ? 'is-other-month' : ''} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}
+                className={`${styles.calendarCell} ${isToday(dateKey) ? 'is-today' : ''} ${isFocusedDay ? 'is-focused' : ''} ${isMutedDay ? 'is-muted' : ''} ${!isCurrentMonth ? 'is-other-month' : ''} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}
                 onClick={() => setFocusedDateKey(dateKey)}
               >
                 <header>
-                  <span className="cal-day">{dayNum.replace(/^0/, '')}</span>
-                  <span className="cal-lunar">{lunar.display}</span>
+                  <span className={styles.calDay}>{dayNum.replace(/^0/, '')}</span>
+                  <span className={styles.calLunar}>{lunar.display}</span>
                 </header>
-                <div className="calendar-stack">
+                <div className={styles.calendarStack}>
                   {dayTasks.slice(0, 3).map((task) => (
                     <button
                       key={task.id}
-                      className={`calendar-chip priority-accent-${task.priority} ${selectedTaskId === task.id ? 'is-selected' : ''} ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
+                      className={`${styles.calendarChip} priority-accent-${task.priority} ${selectedTaskId === task.id ? 'is-selected' : ''} ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
                       style={getPointerDragStyle(task.id, dragTaskId, dragPreview)}
                       onPointerDown={task.completed ? undefined : startTaskDrag(task, dateKey)}
                       onClick={handleTaskClick(task.id, dateKey)}
                     >
-                      <span className="calendar-chip__title">{task.title}</span>
+                      <span className={styles.calendarChipTitle}>{task.title}</span>
                       <TaskDeadlineDot task={task} />
                     </button>
                   ))}
-                  {dayTasks.length > 3 && <span className="cal-more">+{dayTasks.length - 3} 项</span>}
+                  {dayTasks.length > 3 && <span className={styles.calMore}>+{dayTasks.length - 3} 项</span>}
                   <button
-                    className="calendar-create-chip"
+                    className={styles.calendarCreateChip}
                     aria-label={`在${formatDayLabel(dateKey)}创建任务`}
                     title={`在${formatDayLabel(dateKey)}创建任务`}
                     onClick={(event) => {
@@ -277,7 +278,7 @@ export function CalendarView({
   if (calendarMode === 'week') {
     return (
       <div className="view-stack">
-        <div className="calendar-grid week">
+        <div className={`${styles.calendarGrid} week`}>
           {weekDates.map((dateKey) => {
             const dayTasks = tasks.filter((task) => getCalendarTaskDateKey(task) === dateKey)
             const lunar = getLunarDate(dateKey)
@@ -285,26 +286,26 @@ export function CalendarView({
               <article
                 key={dateKey}
                 data-calendar-drop-zone={dateKey}
-                className={`calendar-column ${isToday(dateKey) ? 'is-today' : ''} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}
+                className={`${styles.calendarColumn} ${isToday(dateKey) ? 'is-today' : ''} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}
               >
                 <header>
                   <div>
                     <p>{formatDayLabel(dateKey)}</p>
-                    <span className="cal-lunar">{lunar.display}</span>
+                    <span className={styles.calLunar}>{lunar.display}</span>
                   </div>
                   <strong>{dayTasks.length || ''}</strong>
                 </header>
-                <div className={`calendar-day-body ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}>
+                <div className={`${styles.calendarDayBody} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}>
                   {dayTasks.map((task) => (
                     <button
                       key={task.id}
-                      className={`day-task ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
+                      className={`${styles.dayTask} ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
                       style={getPointerDragStyle(task.id, dragTaskId, dragPreview)}
                       onPointerDown={task.completed ? undefined : startTaskDrag(task, dateKey)}
                       onClick={handleTaskClick(task.id, dateKey)}
                     >
-                      <span className={`priority-line priority-${task.priority}`} />
-                      <div className="day-task__body">
+                      <span className={`${styles.priorityLine} priority-${task.priority}`} />
+                      <div className={styles.dayTaskBody}>
                         <strong>{task.title}</strong>
                         <small>{formatDateTime(getCalendarTaskAnchor(task))}</small>
                         <TaskDeadlineIndicators task={task} compact />
@@ -312,7 +313,7 @@ export function CalendarView({
                     </button>
                   ))}
                   <button
-                    className="calendar-create-chip calendar-create-chip--week"
+                    className={`${styles.calendarCreateChip} ${styles.calendarCreateChipWeek}`}
                     aria-label={`在${formatDayLabel(dateKey)}创建任务`}
                     title={`在${formatDayLabel(dateKey)}创建任务`}
                     onClick={(event) => {
@@ -340,11 +341,11 @@ export function CalendarView({
   const agendaTaskCount = weekDates.reduce((sum, dateKey) => sum + (agendaTaskMap[dateKey]?.length ?? 0), 0)
   return (
     <div className="view-stack">
-      <div className="calendar-create-strip" data-onboarding-anchor="calendar-create">
+      <div className={styles.calendarCreateStrip} data-onboarding-anchor="calendar-create">
         {weekDates.map((dateKey) => (
           <button
             key={dateKey}
-            className={`calendar-strip-button ${isToday(dateKey) ? 'is-today' : ''}`}
+            className={`${styles.calendarStripButton} ${isToday(dateKey) ? 'is-today' : ''}`}
             aria-label={`在${formatDayLabel(dateKey)}创建任务`}
             title={`在${formatDayLabel(dateKey)}创建任务`}
             onClick={(event) =>
@@ -364,14 +365,14 @@ export function CalendarView({
       {agendaTaskCount === 0 ? (
         <EmptyState title="这周还没有日程安排。" description={showCompletedTasks ? '点上方日期即可补一条任务，已完成任务也会在这里一起展示。' : '点上方日期即可补一条任务。'} />
       ) : (
-        <div className="agenda-view">
+        <div className={styles.agendaView}>
           {weekDates.map((dateKey) => {
             const dayTasks = agendaTaskMap[dateKey] ?? []
             return (
-              <section key={dateKey} className="agenda-group">
+              <section key={dateKey} className={styles.agendaGroup}>
                 <header>
                   <h3>{formatDayLabel(dateKey)}</h3>
-                  <div className="agenda-group-actions">
+                  <div className={styles.agendaGroupActions}>
                     <span>{dayTasks.length} 项</span>
                     <button
                       className="create-icon-button"
@@ -391,10 +392,10 @@ export function CalendarView({
                     </button>
                   </div>
                 </header>
-                <div data-calendar-drop-zone={dateKey} className={`agenda-items ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}>
+                <div data-calendar-drop-zone={dateKey} className={`${styles.agendaItems} ${dragOverDateKey === dateKey ? 'is-drop-target' : ''}`}>
                   {dayTasks.length === 0 ? (
                     <button
-                      className="agenda-create-card"
+                      className={styles.agendaCreateCard}
                       aria-label={`在${formatDayLabel(dateKey)}创建任务`}
                       title={`在${formatDayLabel(dateKey)}创建任务`}
                       onClick={(event) =>
@@ -415,12 +416,12 @@ export function CalendarView({
                       return (
                         <button
                           key={task.id}
-                          className={`agenda-item ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
+                          className={`${styles.agendaItem} ${task.completed ? 'is-completed' : ''} ${dragTaskId === task.id ? 'is-dragging' : ''} ${longPressTaskId === task.id ? 'is-long-press' : ''}`}
                           style={getPointerDragStyle(task.id, dragTaskId, dragPreview)}
                           onPointerDown={task.completed ? undefined : startTaskDrag(task, dateKey)}
                           onClick={handleTaskClick(task.id, dateKey)}
                         >
-                          <div className="agenda-item__body">
+                          <div className={styles.agendaItemBody}>
                             <strong>{task.title}</strong>
                             <small>{list?.name ?? '未知清单'} · {formatDateTime(getCalendarTaskAnchor(task))}</small>
                             <TaskDeadlineIndicators task={task} />

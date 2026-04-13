@@ -1,0 +1,423 @@
+/* CalendarView.module.css
+   Covers: CalendarView (month / week / agenda modes)
+   Globals kept: create-icon-button (shared), priority-accent-* (MobileCalendarView),
+                 calendar-dot-*, calendar-empty
+   Note: drag/touch/long-press rules for calendarChip, dayTask, agendaItem are below.
+         kanban-card, matrix-card, timeline-bar drag rules remain global.
+*/
+
+/* ---- Calendar Grid + Cell ---- */
+
+.calendarCreateStrip {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+  margin-bottom: 16px;
+}
+
+.calendarStripButton {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border-radius: var(--radius-s); border: 1px dashed var(--border);
+  background: transparent; color: var(--text-secondary); padding: 8px 10px;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.calendarStripButton strong {
+  font-size: 14px; font-weight: 500; color: var(--text-tertiary);
+}
+
+.calendarStripButton:hover,
+.calendarStripButton:focus-visible {
+  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
+}
+
+.calendarStripButton:global(.is-today) {
+  background: var(--accent-soft); border-color: var(--border-focus); color: var(--text);
+}
+
+.calendarWeekdayHeader {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  text-align: center; font-size: 11px; font-weight: 600;
+  color: var(--text-tertiary); padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+
+.calDay { font-size: 14px; font-weight: 600; }
+.calLunar { font-size: 10px; color: var(--text-tertiary); }
+.calMore { font-size: 10px; color: var(--text-tertiary); padding: 2px 0; }
+
+.calendarCell:global(.is-other-month) {
+  opacity: 0.58;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+.calendarCell:global(.is-other-month):hover { opacity: 0.74; }
+
+.calendarGrid:global(.month) {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 0;
+  grid-auto-rows: minmax(120px, 1fr);
+}
+
+.calendarGrid:global(.week) {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 0;
+}
+
+.calendarCell {
+  position: relative;
+  min-height: 120px; max-height: 160px; padding: 8px; overflow: hidden;
+  border: 1px solid var(--border); border-radius: 0; background: color-mix(in srgb, var(--surface) 86%, transparent);
+  transition: background var(--transition), opacity var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  cursor: default;
+}
+
+.calendarCell:hover {
+  background: color-mix(in srgb, var(--surface) 80%, rgba(124, 156, 255, 0.06) 20%);
+}
+.calendarCell:global(.is-today):hover { background: color-mix(in srgb, var(--accent-soft) 78%, var(--surface) 22%); }
+.calendarCell:global(.is-drop-target),
+.calendarColumn:global(.is-drop-target),
+.agendaItems:global(.is-drop-target) {
+  background: rgba(124, 156, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.22), inset 0 14px 24px rgba(124, 156, 255, 0.08);
+}
+.calendarCell:global(.is-today) {
+  background: color-mix(in srgb, var(--accent-soft) 74%, var(--surface) 26%);
+  border-color: color-mix(in srgb, var(--accent) 18%, var(--border) 82%);
+}
+.calendarCell:global(.is-today) header span {
+  color: var(--accent); font-weight: 700;
+}
+.calendarCell:global(.is-focused) {
+  background: color-mix(in srgb, var(--surface) 74%, var(--accent-soft) 26%);
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border) 68%);
+  box-shadow: inset 0 0 0 1px rgba(99, 132, 255, 0.12), 0 12px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+  z-index: 1;
+}
+.calendarCell:global(.is-focused):global(.is-today) {
+  background: color-mix(in srgb, var(--surface) 70%, var(--accent-soft) 30%);
+}
+.calendarCell:global(.is-muted) {
+  opacity: 0.9;
+}
+.calendarCell:global(.is-muted):hover {
+  opacity: 1;
+}
+.calendarCell:global(.is-muted) .calendarChip,
+.calendarCell:global(.is-muted) .calMore,
+.calendarCell:global(.is-muted) .calLunar {
+  opacity: 0.92;
+}
+.calendarCell:global(.is-focused) .calDay,
+.calendarCell:global(.is-today) .calDay {
+  color: var(--text);
+}
+.calendarCell:global(.is-focused) .calLunar,
+.calendarCell:global(.is-today) .calLunar {
+  color: var(--text-secondary);
+}
+
+.calendarCell header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.calendarCell header span { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.calendarCell header strong { font-size: 11px; color: var(--text-tertiary); }
+.calDay {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; min-height: 28px; padding: 0 8px; border-radius: 999px;
+  background: rgba(136, 150, 171, 0.08);
+}
+.calendarCell:global(.is-today) .calDay,
+.calendarCell:global(.is-focused) .calDay {
+  background: rgba(124, 156, 255, 0.14);
+}
+
+.calendarStack, .calendarDayBody { display: flex; flex-direction: column; gap: 3px; }
+
+.calendarChip {
+  position: relative;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  width: 100%; text-align: left; border-radius: 6px;
+  padding: 4px 7px 4px 10px; font-size: 11px; font-weight: 500;
+  background: color-mix(in srgb, var(--surface) 96%, var(--calendar-chip-accent-soft, rgba(124, 156, 255, 0.12)) 4%);
+  color: var(--text-secondary); border: 1px solid rgba(136, 150, 171, 0.1); cursor: pointer; overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: background var(--transition), color var(--transition), opacity var(--transition), transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.calendarChip::before {
+  content: '';
+  position: absolute; left: 6px; top: 5px; bottom: 5px; width: 2px; border-radius: 999px;
+  background: var(--calendar-chip-accent, var(--accent)); opacity: 0.88;
+}
+.calendarChip:hover {
+  background: color-mix(in srgb, var(--surface) 94%, var(--calendar-chip-accent-soft, rgba(124, 156, 255, 0.12)) 6%);
+  border-color: rgba(136, 150, 171, 0.16);
+  color: var(--text-secondary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.calendarChipTitle {
+  min-width: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: inherit;
+}
+.calendarChip:global(.is-selected) {
+  background: color-mix(in srgb, var(--surface) 94%, var(--calendar-chip-accent-soft, rgba(124, 156, 255, 0.12)) 6%);
+  border-color: color-mix(in srgb, var(--calendar-chip-accent, var(--accent)) 18%, var(--border) 82%);
+  color: color-mix(in srgb, var(--text) 72%, var(--text-secondary) 28%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.calendarChip:global(.is-completed) {
+  background: rgba(148, 163, 184, 0.1) !important; color: var(--text-tertiary) !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+  text-decoration: line-through; text-decoration-thickness: 1px; cursor: default;
+  box-shadow: none;
+}
+.calendarChip:global(.is-completed)::before {
+  background: rgba(148, 163, 184, 0.68);
+  opacity: 0.58;
+}
+
+.calendarCreateChip {
+  align-self: flex-end; width: 22px; height: 22px; margin-top: auto;
+  border-radius: 999px; border: 1px solid transparent;
+  background: transparent; color: var(--text-tertiary); padding: 0;
+  text-align: center; font-size: 15px; line-height: 1; transition: opacity var(--transition), background var(--transition);
+  opacity: 0.38;
+}
+
+.calendarCell:hover .calendarCreateChip,
+.calendarColumn:hover .calendarCreateChip,
+.calendarCreateChip:focus-visible {
+  background: var(--surface-raised); border-color: var(--border); color: var(--text); opacity: 1;
+}
+
+.calendarCreateChipWeek { margin-top: 6px; }
+
+.calendarColumn {
+  padding: 0; border: 1px solid var(--border); border-radius: 0; background: transparent; cursor: default;
+}
+
+.calendarColumn:global(.is-today) { background: var(--accent-soft); }
+
+.calendarColumn header {
+  padding: 10px 10px 8px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.calendarColumn header p { margin: 0; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.calendarColumn header strong { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+
+.calendarDayBody { padding: 8px; gap: 4px; min-height: 180px; }
+
+.dayTask {
+  display: flex; gap: 8px; align-items: center;
+  width: 100%; border-radius: 4px; padding: 6px 8px;
+  border: none; background: var(--surface-raised); color: var(--text);
+  text-align: left; cursor: pointer; transition: background var(--transition), color var(--transition), opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.dayTask:hover { background: var(--surface-hover); }
+.dayTaskBody {
+  display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1;
+}
+.dayTask strong { font-size: 12px; font-weight: 500; }
+.dayTask small { font-size: 10px; color: var(--text-tertiary); }
+.dayTask:global(.is-completed) { color: var(--text-tertiary); cursor: default; }
+.dayTask:global(.is-completed) strong,
+.dayTask:global(.is-completed) small { color: inherit; text-decoration: line-through; text-decoration-thickness: 1px; }
+.dayTask:global(.is-completed) .priorityLine { opacity: 0.38; }
+
+.priorityLine { width: 3px; min-height: 24px; border-radius: 2px; flex-shrink: 0; }
+.priorityLine:global(.priority-urgent) { background: var(--red); }
+.priorityLine:global(.priority-high) { background: var(--amber); }
+.priorityLine:global(.priority-normal) { background: var(--accent); }
+.priorityLine:global(.priority-low) { background: var(--text-tertiary); }
+
+/* ---- Agenda ---- */
+
+.agendaView { display: flex; flex-direction: column; gap: 16px; }
+
+.agendaGroup {
+  border-radius: 0; border: none; background: transparent; padding: 0;
+}
+
+.agendaGroup header {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+
+.agendaGroup header h3 { font-size: 13px; font-weight: 600; margin: 0; }
+.agendaGroup header span { font-size: 11px; color: var(--text-tertiary); }
+
+.agendaGroupActions {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.agendaItems { display: flex; flex-direction: column; gap: 2px; }
+
+.agendaItem {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; border-radius: var(--radius-s); padding: 8px 10px;
+  border: none; background: transparent; color: var(--text);
+  text-align: left; cursor: pointer; transition: background var(--transition), color var(--transition), opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.agendaItem:hover { background: var(--surface-hover); }
+.agendaItemBody {
+  display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;
+}
+.agendaItem strong { font-size: 13px; font-weight: 500; }
+.agendaItem small { font-size: 11px; color: var(--text-tertiary); }
+.agendaItem:global(.is-completed) { color: var(--text-tertiary); }
+.agendaItem:global(.is-completed) strong,
+.agendaItem:global(.is-completed) small { color: inherit; text-decoration: line-through; text-decoration-thickness: 1px; }
+.agendaItem:global(.is-completed) :global(.mini-tag) { opacity: 0.6; }
+
+.agendaCreateCard {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; border-radius: var(--radius-s); border: 1px dashed var(--border);
+  background: transparent; color: var(--text-tertiary); font-size: 18px; transition: background var(--transition), border-color var(--transition);
+}
+
+.agendaCreateCard:hover,
+.agendaCreateCard:focus-visible {
+  background: var(--surface-hover); border-color: var(--border-focus); color: var(--text);
+}
+
+/* ---- Mobile responsive ---- */
+
+/* Bug 3 fix: phone calendar grid forced equal columns */
+:global(.is-phone) .calendarGrid:global(.month),
+:global(.is-phone) .calendarWeekdayHeader {
+  grid-template-columns: repeat(7, 1fr) !important;
+  overflow-x: hidden !important;
+  min-width: 0 !important;
+}
+:global(.is-phone) .calendarGrid:global(.month) {
+  grid-auto-rows: auto !important;
+}
+:global(.is-phone) .calendarGrid:global(.week),
+:global(.is-phone) .calendarCreateStrip {
+  grid-template-columns: repeat(7, 1fr) !important;
+  overflow-x: hidden !important;
+  min-width: 0 !important;
+}
+
+/* Phase 2.2: mobile calendar compact */
+:global(.is-phone) .calendarGrid:global(.month) .calendarCell {
+  min-height: auto;
+  padding: 4px;
+}
+
+/* Phase 3: phone calendar compacted */
+:global(.is-phone) .calendarGrid:global(.month),
+:global(.is-phone) .calendarWeekdayHeader {
+  grid-template-columns: repeat(7, 1fr);
+}
+:global(.is-phone) .calendarGrid:global(.week) {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* #15 — phone week header */
+:global(.is-phone) .calendarGrid:global(.week) .calendarColumn > header > div > p {
+  /* show date + weekday together */
+}
+
+/* #16 — phone month cell height compression */
+:global(.is-phone) .calendarGrid:global(.month) .calendarCell {
+  min-height: 36px;
+  padding: 2px;
+}
+:global(.is-phone) .calendarGrid:global(.month) .calendarCell .calendarStack {
+  display: none;
+}
+:global(.is-phone) .calendarGrid:global(.month) .calendarCell :global(.calendar-dot-indicator) {
+  display: flex;
+}
+
+/* @media 960px: agenda/dayTask column layout on tablets */
+@media (max-width: 960px) {
+  .agendaItem,
+  .dayTask {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* @media agenda touch targets */
+@media (max-width: 680px) {
+  .agendaItem {
+    padding: 12px 14px;
+    min-height: 52px;
+  }
+  .agendaItem strong { font-size: 14px; }
+  .agendaCreateCard { min-height: 52px; }
+  .agendaGroup header h3 { font-size: 14px; }
+}
+
+/* @media 680px: agenda calendar strip responsive */
+@media (max-width: 680px) {
+  .calendarCreateStrip {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .calendarStripButton {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+/* @media 680px: calendar grid min-width scrollable */
+@media (max-width: 680px) {
+  .calendarGrid:global(.week), .calendarCreateStrip {
+    grid-template-columns: repeat(7, minmax(150px, 1fr));
+  }
+  .calendarGrid:global(.month), .calendarWeekdayHeader {
+    grid-template-columns: repeat(7, minmax(120px, 1fr));
+  }
+}
+
+/* ---- Drag / touch / long-press behavior (calendar-specific) ---- */
+
+.calendarChip,
+.dayTask,
+.agendaItem {
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+.calendarChip:global(.is-dragging),
+.dayTask:global(.is-dragging),
+.agendaItem:global(.is-dragging) {
+  cursor: grabbing;
+  opacity: 0.96;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+.calendarChip:global(.is-long-press),
+.dayTask:global(.is-long-press),
+.agendaItem:global(.is-long-press) {
+  transform: scale(1.04);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+  opacity: 0.9;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+/* ---- @media 1280px: calendar responsive (scrollable grid) ---- */
+@media (max-width: 1280px) {
+  .calendarGrid:global(.month), .calendarWeekdayHeader {
+    grid-template-columns: repeat(7, minmax(130px, 1fr));
+    overflow-x: auto;
+  }
+  .calendarGrid:global(.week), .calendarCreateStrip {
+    grid-template-columns: repeat(7, minmax(160px, 1fr));
+    overflow-x: auto;
+  }
+}
+
+/* ---- is-phone overrides (phone body class) ---- */
+:global(.is-phone) .calendarCreateStrip {
+  display: none !important;
+}
+:global(.is-phone) .calendarColumn > header .create-icon-button {
+  display: none !important;
+}
