@@ -2314,57 +2314,7 @@ button.projection-metric:disabled {
   padding: 0 20px 16px;
 }
 
-/* ---- 移动端底部标签栏 ---- */
-.mobile-tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 30;
-  height: 56px;
-  display: flex;
-  align-items: stretch;
-  background: var(--bg-subtle);
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  /* 适配 iPhone 底部安全区 */
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.mobile-tab-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
-  transition: color var(--transition), transform 0.1s ease;
-  padding: 6px 0;
-  min-height: 44px;
-}
-
-.mobile-tab-item:active {
-  transform: scale(0.92);
-}
-
-.mobile-tab-item.is-active {
-  color: var(--accent);
-}
-
-.mobile-tab-item__icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.mobile-tab-item__label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
+/* .mobile-tab-bar, .mobile-tab-item* → MobileTabBar.module.css */
 
 /* .is-phone .main-stage → WorkspaceShell.module.css */
 
@@ -2570,11 +2520,7 @@ button.projection-metric:disabled {
   animation: sheet-slide-up-task-spring 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ---- 4.2 FAB 滚动行为（滚动时缩小）---- */
-.mobile-fab.is-scrolled {
-  transform: scale(0.8);
-  opacity: 0.7;
-}
+/* .mobile-fab.is-scrolled → MobileTabBar.module.css */
 
 /* ---- 4.3 CSS 细节打磨 ---- */
 
@@ -2585,8 +2531,6 @@ button.projection-metric:disabled {
   .check-button,
   .mobile-topbar__icon-btn,
   .mobile-topbar__menu-btn,
-  .mobile-tab-item,
-  .mobile-fab,
   .mobile-me-row,
   .mobile-projects-list-item,
   .mobile-focus-card,
@@ -2619,9 +2563,7 @@ button.projection-metric:disabled {
 
 /* 安全区适配增强 */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .mobile-fab {
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-  }
+  /* .mobile-fab bottom → MobileTabBar.module.css */
   .mobile-focus-view,
   .mobile-projects-view,
   .mobile-me-view {
@@ -2643,30 +2585,7 @@ button.projection-metric:disabled {
   font-weight: 700;
 }
 
-/* ---- FAB (Floating Action Button) ---- */
-.mobile-fab {
-  position: fixed;
-  right: 20px;
-  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-  z-index: 40;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background: var(--accent, #6c63ff);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.35), 0 2px 6px rgba(0,0,0,0.15);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  touch-action: manipulation;
-}
-.mobile-fab:active {
-  transform: scale(0.9);
-  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
-}
+/* .mobile-fab, .mobile-fab:active → MobileTabBar.module.css */
 
 /* ---- 移动端焦点页 ---- */
 .mobile-focus-view {

@@ -1,5 +1,6 @@
 import type { MobileTab } from '../stores/mobileUiStore'
 import { useMobileUiStore } from '../stores/mobileUiStore'
+import styles from './MobileTabBar.module.css'
 
 export interface MobileTabBarProps {
   mobileTab: MobileTab
@@ -12,7 +13,7 @@ export function MobileTabBar({ mobileTab, onChangeTab, onOpenQuickCreate }: Mobi
 
   return (
     <>
-      <nav className="mobile-tab-bar" aria-label="主导航">
+      <nav className={styles.tabBar} aria-label="主导航">
         {([
           { id: 'focus' as MobileTab, icon: '◎', label: '焦点' },
           { id: 'calendar' as MobileTab, icon: '📅', label: '日历' },
@@ -21,7 +22,7 @@ export function MobileTabBar({ mobileTab, onChangeTab, onOpenQuickCreate }: Mobi
         ]).map(tab => (
           <button
             key={tab.id}
-            className={`mobile-tab-item ${mobileTab === tab.id ? 'is-active' : ''}`}
+            className={`${styles.tabItem} ${mobileTab === tab.id ? 'is-active' : ''}`}
             onClick={() => {
               if (mobileTab !== tab.id) {
                 // #19 — Tab 切换淡入淡出
@@ -33,14 +34,14 @@ export function MobileTabBar({ mobileTab, onChangeTab, onOpenQuickCreate }: Mobi
               }
             }}
           >
-            <span className="mobile-tab-item__icon">{tab.icon}</span>
-            <span className="mobile-tab-item__label">{tab.label}</span>
+            <span className={styles.tabItemIcon}>{tab.icon}</span>
+            <span className={styles.tabItemLabel}>{tab.label}</span>
           </button>
         ))}
       </nav>
       {/* FAB — 快速创建 */}
       <button
-        className="mobile-fab"
+        className={styles.fab}
         onClick={onOpenQuickCreate}
         aria-label="快速创建任务"
       >

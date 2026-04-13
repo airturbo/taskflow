@@ -1,0 +1,82 @@
+/* MobileTabBar.module.css */
+
+.tabBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 56px;
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  /* 适配 iPhone 底部安全区 */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.tabItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  transition: color var(--transition), transform 0.1s ease;
+  padding: 6px 0;
+  min-height: 44px;
+}
+
+.tabItem:active {
+  transform: scale(0.92);
+}
+
+.tabItem:global(.is-active) {
+  color: var(--accent);
+}
+
+.tabItemIcon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tabItemLabel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent, #6c63ff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.35), 0 2px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  touch-action: manipulation;
+}
+
+.fab:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+}
+
+.fab:global(.is-scrolled) {
+  transform: scale(0.8);
+  opacity: 0.7;
+}
