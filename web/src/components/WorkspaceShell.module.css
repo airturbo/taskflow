@@ -1,0 +1,325 @@
+/* WorkspaceShell.module.css — Layout shell, Composer, View Switcher, Calendar Nav */
+
+/* ---- Layout ---- */
+.appShell {
+  display: grid;
+  grid-template-columns: 256px minmax(0, 1fr) 360px;
+  min-height: 100vh;
+}
+
+.mainStage {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100vh;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.rightRail {
+  background: var(--bg-subtle);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ---- Composer ---- */
+.composerBar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.composerBarMain {
+  display: grid;
+  grid-template-columns: 1fr 140px 100px auto;
+  gap: 8px;
+}
+
+.quickFeedback {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 24px; border-bottom: 1px solid var(--border);
+  background: transparent; border-radius: 0; box-shadow: none;
+  font-size: 13px;
+}
+
+.quickFeedback h3 { font-size: 13px; font-weight: 600; margin: 0; }
+.quickFeedback p { margin: 0; color: var(--text-secondary); font-size: 12px; }
+.quickFeedback.isPositive { background: var(--green-soft); }
+.quickFeedback.isWarning { background: var(--amber-soft); }
+
+.actionToast {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 14px 24px 0; padding: 10px 12px;
+  border-radius: var(--radius-s); border: 1px solid rgba(124, 156, 255, 0.2);
+  background: rgba(124, 156, 255, 0.08);
+}
+
+.actionToast strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.actionToast p { margin: 0; font-size: 12px; color: var(--text-secondary); }
+
+/* ---- View Switcher ---- */
+.viewSwitcher {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 24px; border-bottom: 1px solid var(--border);
+  background: transparent; border-radius: 0; box-shadow: none;
+}
+
+.segmentedControl,
+.calendarModes {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--surface-raised); border-radius: var(--radius-s);
+  padding: 2px;
+}
+
+.segmentedControl button,
+.calendarModes button {
+  border-radius: 4px; padding: 5px 14px; font-size: 12px; font-weight: 500;
+  background: transparent; color: var(--text-secondary);
+  border: none; transition: background var(--transition), color var(--transition);
+}
+
+.segmentedControl button:hover,
+.calendarModes button:hover { color: var(--text); }
+
+.segmentedControl button:global(.is-active),
+.calendarModes button:global(.is-active) {
+  background: var(--surface); color: var(--text); box-shadow: var(--shadow-s);
+}
+
+/* ---- Calendar Nav Controls (rendered inside View Switcher) ---- */
+.calendarNav {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 1;
+}
+
+.calendarControls {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end;
+}
+
+.calendarVisibilityToggle {
+  border-radius: 999px; border: 1px solid var(--border); background: var(--surface-raised);
+  color: var(--text-secondary); padding: 5px 10px; font-size: 12px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.calendarVisibilityToggle:hover,
+.calendarVisibilityToggle:focus-visible {
+  background: var(--surface-hover); color: var(--text);
+}
+
+.calendarVisibilityToggle:global(.is-active) {
+  border-color: rgba(84, 210, 160, 0.32); background: rgba(84, 210, 160, 0.14); color: var(--green);
+}
+
+.calendarWindowLabel {
+  display: flex; flex-direction: column; gap: 1px; min-width: 132px; padding-right: 6px;
+}
+
+.calendarWindowLabel strong { font-size: 12px; font-weight: 600; color: var(--text); }
+.calendarWindowLabel span { font-size: 10px; color: var(--text-tertiary); }
+
+.datePickerInput {
+  width: 130px; padding: 4px 8px; font-size: 12px;
+  border-radius: var(--radius-s); border: 1px solid var(--border);
+  background: var(--surface-raised); color: var(--text);
+}
+
+/* ---- Drawer rail (used in WorkspaceShell ResponsiveDrawer) ---- */
+.drawerRail {
+  display: flex; flex-direction: column; min-height: 100%;
+  min-width: 0;
+}
+
+/* ---- Mobile project nav bar ---- */
+.mobileProjectNav {
+  position: sticky;
+  top: 52px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+}
+
+.mobileProjectNavTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  text-align: center;
+}
+
+/* ---- Mobile completion toast ---- */
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.mobileCompletionToast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 16px;
+  border-radius: 22px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: toastSlideUp 0.2s ease;
+  max-width: calc(100vw - 40px);
+}
+
+.mobileCompletionToastLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileCompletionToastActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mobileCompletionToast button {
+  background: none;
+  border: none;
+  color: var(--accent, #6c63ff);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.mobileCompletionToastSnooze {
+  color: rgba(var(--bg-rgb, 255,255,255), 0.65) !important;
+  font-weight: 400 !important;
+}
+
+.mobileCompletionToastUndo {
+  color: var(--accent, #6c63ff) !important;
+}
+
+/* ================================================================
+   RESPONSIVE RULES
+   ================================================================ */
+
+/* 1280px: right rail becomes drawer, main stage expands */
+@media (max-width: 1280px) {
+  .appShell { grid-template-columns: 256px minmax(0, 1fr); }
+}
+
+/* 1200px: sidebar collapses to 48px icon strip */
+@media (max-width: 1200px) and (min-width: 961px) {
+  .appShell { grid-template-columns: 48px minmax(0, 1fr); }
+  .appShell:global(.has-expanded-sidebar) { grid-template-columns: 256px minmax(0, 1fr); }
+}
+
+/* 960px: sidebar becomes push drawer */
+@media (max-width: 960px) {
+  .appShell { grid-template-columns: 1fr; }
+  .appShell:global(.is-nav-open) { grid-template-columns: 256px minmax(0, 1fr); }
+
+  .viewSwitcher,
+  .quickFeedback,
+  .actionToast {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .viewSwitcher,
+  .quickFeedback,
+  .actionToast {
+    flex-direction: column;
+    align-items: stretch;
+    display: flex;
+  }
+
+  .calendarNav,
+  .calendarControls {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .composerBarMain { grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 1fr)); }
+  .composerBar :global(.primary-button) { grid-column: 1 / -1; }
+}
+
+/* 680px: phone layout */
+@media (max-width: 680px) {
+  .viewSwitcher,
+  .quickFeedback,
+  .actionToast {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  /* View Switcher horizontal scroll */
+  .viewSwitcher {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    padding: 8px 14px;
+    justify-content: flex-start;
+  }
+  .viewSwitcher::-webkit-scrollbar { display: none; }
+
+  .segmentedControl {
+    flex-shrink: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .segmentedControl::-webkit-scrollbar { display: none; }
+  .segmentedControl button { padding: 5px 12px; white-space: nowrap; }
+
+  .calendarNav { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .calendarControls { flex-wrap: wrap; justify-content: flex-start; }
+
+  /* Composer simplified for mobile */
+  .composerBar { padding: 10px 14px; gap: 0; }
+  .composerBarMain {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+  .composerBarMain input { font-size: 15px; padding: 10px 14px; border-radius: 22px; }
+  .composerBarMain select { display: none; }
+  .composerBar :global(.primary-button) {
+    grid-column: auto;
+    border-radius: 22px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  .composerBar :global(.tag-picker) { max-height: 0; overflow: hidden; transition: max-height 0.2s ease; }
+  .composerBar:focus-within :global(.tag-picker) { max-height: 200px; }
+}
+
+/* Phone: main stage bottom padding for tab bar */
+:global(.is-phone) .mainStage {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}

@@ -1,11 +1,7 @@
 /* index.css — Component & view styles (globals in styles/globals.css) */
 
 /* ---- Layout ---- */
-.app-shell {
-  display: grid;
-  grid-template-columns: 256px minmax(0, 1fr) 360px;
-  min-height: 100vh;
-}
+/* .app-shell → WorkspaceShell.module.css */
 
 .sidebar {
   background: var(--bg-subtle);
@@ -25,27 +21,7 @@
   background: var(--bg-subtle);
 }
 
-.main-stage {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-height: 100vh;
-  min-width: 0;
-  overflow-y: auto;
-}
-
-.right-rail {
-  background: var(--bg-subtle);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  min-width: 0;
-  overflow: hidden;
-}
+/* .main-stage, .right-rail → WorkspaceShell.module.css */
 
 /* ---- Sidebar ---- */
 .brand-block {
@@ -480,70 +456,7 @@
   font-size: 12px; font-weight: 600;
 }
 
-/* ---- Composer ---- */
-.composer-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--border);
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.composer-bar__main {
-  display: grid;
-  grid-template-columns: 1fr 140px 100px auto;
-  gap: 8px;
-}
-
-.quick-feedback {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 24px; border-bottom: 1px solid var(--border);
-  background: transparent; border-radius: 0; box-shadow: none;
-  font-size: 13px;
-}
-
-.quick-feedback h3 { font-size: 13px; font-weight: 600; margin: 0; }
-.quick-feedback p { margin: 0; color: var(--text-secondary); font-size: 12px; }
-.quick-feedback.is-positive { background: var(--green-soft); }
-.quick-feedback.is-warning { background: var(--amber-soft); }
-
-.action-toast {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin: 14px 24px 0; padding: 10px 12px;
-  border-radius: var(--radius-s); border: 1px solid rgba(124, 156, 255, 0.2);
-  background: rgba(124, 156, 255, 0.08);
-}
-
-.action-toast strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-.action-toast p { margin: 0; font-size: 12px; color: var(--text-secondary); }
-.action-toast .eyebrow { margin: 0 0 4px; }
-
-/* ---- View Switcher ---- */
-.view-switcher {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 24px; border-bottom: 1px solid var(--border);
-  background: transparent; border-radius: 0; box-shadow: none;
-}
-
-.segmented-control, .calendar-modes {
-  display: flex; align-items: center; gap: 2px;
-  background: var(--surface-raised); border-radius: var(--radius-s);
-  padding: 2px;
-}
-
-.segmented-control button, .calendar-modes button {
-  border-radius: 4px; padding: 5px 14px; font-size: 12px; font-weight: 500;
-  background: transparent; color: var(--text-secondary);
-  border: none; transition: background var(--transition), color var(--transition);
-}
-
-.segmented-control button:hover, .calendar-modes button:hover { color: var(--text); }
-.segmented-control button.is-active, .calendar-modes button.is-active {
-  background: var(--surface); color: var(--text); box-shadow: var(--shadow-s);
-}
+/* ---- Composer, View Switcher, Calendar Nav → WorkspaceShell.module.css ---- */
 
 /* ---- Shortcut Panel ---- */
 .shortcut-overlay {
@@ -1274,40 +1187,7 @@ button.projection-metric:disabled {
   margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-secondary);
 }
 
-.calendar-nav {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 1;
-}
-
-.calendar-controls {
-  display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end;
-}
-
-.calendar-visibility-toggle {
-  border-radius: 999px; border: 1px solid var(--border); background: var(--surface-raised);
-  color: var(--text-secondary); padding: 5px 10px; font-size: 12px; transition: background var(--transition), color var(--transition);
-}
-
-.calendar-visibility-toggle:hover,
-.calendar-visibility-toggle:focus-visible {
-  background: var(--surface-hover); color: var(--text);
-}
-
-.calendar-visibility-toggle.is-active {
-  border-color: rgba(84, 210, 160, 0.32); background: rgba(84, 210, 160, 0.14); color: var(--green);
-}
-
-.calendar-window-label {
-  display: flex; flex-direction: column; gap: 1px; min-width: 132px; padding-right: 6px;
-}
-
-.calendar-window-label strong { font-size: 12px; font-weight: 600; color: var(--text); }
-.calendar-window-label span { font-size: 10px; color: var(--text-tertiary); }
-
-.date-picker-input {
-  width: 130px; padding: 4px 8px; font-size: 12px;
-  border-radius: var(--radius-s); border: 1px solid var(--border);
-  background: var(--surface-raised); color: var(--text);
-}
+/* .calendar-nav, .calendar-controls, .calendar-visibility-toggle, .calendar-window-label, .date-picker-input → WorkspaceShell.module.css */
 
 .create-icon-button {
   display: inline-flex; align-items: center; justify-content: center;
@@ -2187,13 +2067,9 @@ button.projection-metric:disabled {
   overflow-y: auto;
 }
 
-.drawer-rail,
+/* .drawer-rail → WorkspaceShell.module.css */
 .sidebar--drawer {
   display: flex; flex-direction: column; min-height: 100%;
-}
-
-.drawer-rail {
-  min-width: 0;
 }
 
 /* sidebar--drawer 样式在上面左侧导航抽屉部分已定义 */
@@ -2476,8 +2352,8 @@ button.projection-metric:disabled {
    ============================================================ */
 
 /* ---- 1280px 以下：右侧 rail 变抽屉 ---- */
+/* .app-shell grid → WorkspaceShell.module.css */
 @media (max-width: 1280px) {
-  .app-shell { grid-template-columns: 256px minmax(0, 1fr); }
   .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .projection-summary__header { flex-wrap: wrap; }
   .projection-summary__toolbar { width: 100%; justify-content: flex-start; flex-basis: 100%; }
@@ -2495,17 +2371,7 @@ button.projection-metric:disabled {
   .timeline-header, .timeline-body { min-width: 760px; }
 }
 
-/* ---- 1200px 以下：侧边栏折叠为 48px 图标栏 ---- */
-@media (max-width: 1200px) and (min-width: 961px) {
-  .app-shell { grid-template-columns: 48px minmax(0, 1fr); }
-}
-
-/* 折叠侧边栏展开时：第一列扩展为 256px，推开主内容 */
-@media (max-width: 1200px) and (min-width: 961px) {
-  .app-shell.has-expanded-sidebar {
-    grid-template-columns: 256px minmax(0, 1fr);
-  }
-}
+/* ---- 1200px 以下：侧边栏折叠（.app-shell grid → WorkspaceShell.module.css）---- */
 
 /* ================================================================
    折叠侧边栏（960-1200px）— Linear / Notion 风格
@@ -2671,20 +2537,16 @@ button.projection-metric:disabled {
 }
 
 /* ---- 960px 以下：导航变推开式侧边栏（无遮罩，底层可操作）---- */
+/* .app-shell grid, .view-switcher, .quick-feedback, .action-toast, .calendar-nav, .calendar-controls, .composer-bar → WorkspaceShell.module.css */
 @media (max-width: 960px) {
-  /* 默认隐藏侧边栏，单列 */
-  .app-shell { grid-template-columns: 1fr; }
-
-  /* 侧边栏打开时：推开主内容，两列布局 */
-  .app-shell.is-nav-open { grid-template-columns: 256px minmax(0, 1fr); }
-
-  .topbar, .view-switcher, .quick-feedback, .action-toast, .filter-strip {
+  .topbar, .filter-strip {
     padding-left: 16px;
     padding-right: 16px;
   }
   .workspace { padding: 16px; }
-  .topbar, .view-switcher, .quick-feedback, .timeline-row, .day-task,
-  .agenda-item, .timeline-toolbar, .action-toast, .reminder-feed-item--featured,
+  .topbar, .timeline-row, .day-task,
+  .agenda-item, .timeline-toolbar,
+  .reminder-feed-item--featured,
   .inline-create-footer, .attachment-toolbar, .inline-create-mobility-row,
   .note-editor__templates, .note-editor__templates--secondary {
     flex-direction: column;
@@ -2696,7 +2558,7 @@ button.projection-metric:disabled {
   .note-editor__field-row {
     grid-template-columns: 1fr;
   }
-  .topbar-actions, .calendar-nav, .calendar-controls, .timeline-toolbar__actions {
+  .topbar-actions, .timeline-toolbar__actions {
     width: 100%;
     min-width: 0;
     flex-wrap: wrap;
@@ -2708,8 +2570,6 @@ button.projection-metric:disabled {
   .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .projection-summary, .projection-recovery { padding-left: 16px; padding-right: 16px; }
   .projection-summary__toolbar { width: 100%; justify-content: flex-start; }
-  .composer-bar__main { grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 1fr)); }
-  .composer-bar .primary-button { grid-column: 1 / -1; }
   .reminder-feed-item__toolbar { justify-content: flex-start; }
 }
 
@@ -2754,13 +2614,13 @@ button.projection-metric:disabled {
 
 /* ---- 680px 以下（手机端）---- */
 @media (max-width: 680px) {
-  .topbar, .view-switcher, .quick-feedback, .action-toast, .filter-strip {
+  .topbar, .filter-strip {
     padding-left: 14px;
     padding-right: 14px;
   }
   .workspace { padding: 14px; }
   .search-input { min-width: 0; }
-  .stats-grid, .two-col, .habit-grid, .inline-adder, .composer-bar__main,
+  .stats-grid, .two-col, .habit-grid, .inline-adder,
   .tag-manager__create-row, .tag-manager-item__editor {
     grid-template-columns: 1fr;
   }
@@ -3099,81 +2959,11 @@ button.projection-metric:disabled {
   letter-spacing: 0.01em;
 }
 
-/* 有底部导航栏时主内容区底部留白 */
-.is-phone .main-stage {
-  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
-}
+/* .is-phone .main-stage → WorkspaceShell.module.css */
 
-/* ---- 移动端视图切换器（横向滚动 pill）---- */
-@media (max-width: 680px) {
-  .view-switcher {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 0;
-    padding: 8px 14px;
-    justify-content: flex-start;
-  }
-  .view-switcher::-webkit-scrollbar { display: none; }
+/* .view-switcher, .segmented-control, .calendar-nav, .calendar-controls @680px → WorkspaceShell.module.css */
 
-  .segmented-control {
-    flex-shrink: 0;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-  }
-  .segmented-control::-webkit-scrollbar { display: none; }
-  .segmented-control button {
-    padding: 5px 12px;
-    white-space: nowrap;
-  }
-
-  .calendar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .calendar-controls {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-}
-
-/* ---- 移动端 Composer 栏精简（单行输入 + 下方折叠）---- */
-@media (max-width: 680px) {
-  .composer-bar {
-    padding: 10px 14px;
-    gap: 0;
-  }
-  .composer-bar__main {
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-  }
-  .composer-bar__main input {
-    font-size: 15px;
-    padding: 10px 14px;
-    border-radius: 22px;
-  }
-  .composer-bar__main select {
-    display: none; /* 移动端隐藏 select，通过自然语言识别即可 */
-  }
-  .composer-bar .primary-button {
-    grid-column: auto;
-    border-radius: 22px;
-    padding: 10px 18px;
-    font-size: 14px;
-  }
-  /* 标签选择器折叠：默认隐藏，用户点 input 后展开（简化体验）*/
-  .composer-bar .tag-picker {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease;
-  }
-  .composer-bar:focus-within .tag-picker {
-    max-height: 200px;
-  }
-}
+/* .composer-bar, .composer-bar__main @680px → WorkspaceShell.module.css */
 
 /* ---- 移动端任务卡片触摸优化 ---- */
 @media (max-width: 680px) {
@@ -3753,25 +3543,7 @@ button.projection-metric:disabled {
   padding-top: 16px;
 }
 
-/* Mobile project nav bar (back + view switch) */
-.mobile-project-nav {
-  position: sticky;
-  top: 52px;
-  z-index: 9;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--bg-subtle);
-  border-bottom: 1px solid var(--border);
-}
-.mobile-project-nav__title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  flex: 1;
-  text-align: center;
-}
+/* .mobile-project-nav, .mobile-project-nav__title → WorkspaceShell.module.css */
 .mobile-list-view-switch {
   flex-shrink: 0;
 }
@@ -4399,58 +4171,7 @@ button.projection-metric:disabled {
   transform: translateX(20px);
   transition: all 0.2s ease;
 }
-.mobile-completion-toast {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  background: var(--text);
-  color: var(--bg);
-  padding: 10px 16px;
-  border-radius: 22px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  animation: toast-slide-up 0.2s ease;
-  max-width: calc(100vw - 40px);
-}
-.mobile-completion-toast__label {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.mobile-completion-toast__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.mobile-completion-toast button {
-  background: none;
-  border: none;
-  color: var(--accent, #6c63ff);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  white-space: nowrap;
-}
-.mobile-completion-toast__snooze {
-  color: rgba(var(--bg-rgb, 255,255,255), 0.65) !important;
-  font-weight: 400 !important;
-}
-.mobile-completion-toast__undo {
-  color: var(--accent, #6c63ff) !important;
-}
-@keyframes toast-slide-up {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
+/* .mobile-completion-toast + @keyframes toast-slide-up → WorkspaceShell.module.css */
 
 /* #24 — 空状态情感化 */
 .mobile-focus-empty-emotional {

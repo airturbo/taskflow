@@ -30,6 +30,7 @@ import { PwaInstallBanner } from './PwaInstallBanner'
 import { ShortcutPanel } from './ShortcutPanel'
 import { ExportPanel } from './ExportPanel'
 import { CommandPalette } from './CommandPalette'
+import styles from './WorkspaceShell.module.css'
 
 export interface WorkspaceShellProps {
   // All state
@@ -295,7 +296,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
   )
 
   return (
-    <div className={`app-shell ${p.isNavigationDrawerMode ? 'is-navigation-drawer' : ''} ${p.isNavigationDrawerMode && p.navigationDrawerOpen ? 'is-nav-open' : ''} ${p.isUtilityDrawerMode ? 'is-utility-drawer' : ''} ${p.isPhoneViewport ? 'is-phone' : ''} ${p.isCompactSidebar ? 'is-compact-sidebar' : ''} ${p.isCompactSidebar && p.sidebarExpanded ? 'has-expanded-sidebar' : ''}`}>
+    <div className={`${styles.appShell} ${p.isNavigationDrawerMode ? 'is-navigation-drawer' : ''} ${p.isNavigationDrawerMode && p.navigationDrawerOpen ? 'is-nav-open' : ''} ${p.isUtilityDrawerMode ? 'is-utility-drawer' : ''} ${p.isPhoneViewport ? 'is-phone' : ''} ${p.isCompactSidebar ? 'is-compact-sidebar' : ''} ${p.isCompactSidebar && p.sidebarExpanded ? 'has-expanded-sidebar' : ''}`}>
       {(!p.isNavigationDrawerMode || p.navigationDrawerOpen) && !p.isPhoneViewport && (
         <aside className={`sidebar panel ${p.isCompactSidebar ? `sidebar--compact ${p.sidebarExpanded ? 'is-expanded' : ''}` : ''} ${p.isNavigationDrawerMode ? 'sidebar--push' : ''}`}>
           {p.isCompactSidebar && <button className="sidebar-collapse-toggle" onClick={() => p.setSidebarExpanded((v: any) => !v)} title={p.sidebarExpanded ? '\u6298\u53E0\u4FA7\u8FB9\u680F' : '\u5C55\u5F00\u4FA7\u8FB9\u680F'}>{p.sidebarExpanded ? '\u2190' : '\u2192'}</button>}
@@ -305,7 +306,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
       )}
       {p.isPhoneViewport && !p.isNavigationDrawerMode && <aside className="sidebar panel">{navigationContent}</aside>}
 
-      <main className="main-stage">
+      <main className={styles.mainStage}>
         <AppTopBar
           isNavigationDrawerMode={p.isNavigationDrawerMode} isPhoneViewport={p.isPhoneViewport} isUtilityDrawerMode={p.isUtilityDrawerMode}
           workspaceLabel={p.workspaceLabel} mobileTab={p.mobileTab} calendarMode={p.calendarMode}
@@ -369,8 +370,8 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
           </section>
         )}
 
-        <section className="composer-bar panel" data-onboarding-anchor="quick-add">
-          <div className="composer-bar__main">
+        <section className={`${styles.composerBar} panel`} data-onboarding-anchor="quick-add">
+          <div className={styles.composerBarMain}>
             <input ref={p.quickCreateInputRef} value={p.quickEntry} onChange={(e) => p.setQuickEntry(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') createTask() }} placeholder="\u4F8B\u5982\uFF1A\u660E\u5929\u4E0B\u5348 3 \u70B9\u4EA7\u54C1\u8BC4\u5BA1" />
             <select value={p.quickListId} onChange={(e) => p.setQuickListId(e.target.value)}>{p.lists.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}</select>
             <select value={p.quickPriority} onChange={(e) => p.setQuickPriority(e.target.value as Priority)}>{Object.entries(priorityMeta).map(([v, m]) => <option key={v} value={v}>{m.label}</option>)}</select>
@@ -380,7 +381,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         </section>
 
         {p.createFeedback && (
-          <section className={`quick-feedback panel ${p.createFeedback.visibleInWorkspace ? 'is-positive' : 'is-warning'}`}>
+          <section className={`${styles.quickFeedback} panel ${p.createFeedback.visibleInWorkspace ? styles.isPositive : styles.isWarning}`}>
             <div>
               <p className="eyebrow">{p.createFeedback.visibleInWorkspace ? 'created in current context' : 'created outside current context'}</p>
               <h3>{'\u5DF2\u521B\u5EFA\u201C'}{p.createFeedback.title}{'\u201D'}</h3>
@@ -394,22 +395,22 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         )}
 
         {!p.isToolSelection && (
-          <section className="view-switcher panel">
-            <div className="segmented-control">
+          <section className={`${styles.viewSwitcher} panel`}>
+            <div className={styles.segmentedControl}>
               {viewMeta.map((v) => <button key={v.id} className={p.currentView === v.id ? 'is-active' : ''} onClick={() => p.setCurrentView(v.id)}>{v.label}</button>)}
             </div>
             {p.currentView === 'calendar' && (
-              <div className="calendar-nav">
-                <div className="calendar-modes">
+              <div className={styles.calendarNav}>
+                <div className={styles.calendarModes}>
                   {(['month', 'week', 'agenda'] as CalendarMode[]).map((mode) => <button key={mode} className={p.calendarMode === mode ? 'is-active' : ''} onClick={() => p.setCalendarMode(mode)}>{mode === 'month' ? '\u6708' : mode === 'week' ? '\u5468' : '\u5217\u8868'}</button>)}
                 </div>
-                <div className="calendar-controls">
-                  <div className="calendar-window-label"><strong>{p.calendarNavLabel}</strong><span>{p.calendarMode === 'month' ? '\u6309\u6708\u6D4F\u89C8' : '\u6309\u5468\u6D4F\u89C8'}</span></div>
-                  <button className={`calendar-visibility-toggle ${p.calendarShowCompleted ? 'is-active' : ''}`} onClick={() => p.setCalendarShowCompleted((v: any) => !v)}>{p.calendarShowCompleted ? '\u9690\u85CF\u5DF2\u5B8C\u6210' : '\u663E\u793A\u5DF2\u5B8C\u6210'}</button>
+                <div className={styles.calendarControls}>
+                  <div className={styles.calendarWindowLabel}><strong>{p.calendarNavLabel}</strong><span>{p.calendarMode === 'month' ? '\u6309\u6708\u6D4F\u89C8' : '\u6309\u5468\u6D4F\u89C8'}</span></div>
+                  <button className={`${styles.calendarVisibilityToggle} ${p.calendarShowCompleted ? 'is-active' : ''}`} onClick={() => p.setCalendarShowCompleted((v: any) => !v)}>{p.calendarShowCompleted ? '\u9690\u85CF\u5DF2\u5B8C\u6210' : '\u663E\u793A\u5DF2\u5B8C\u6210'}</button>
                   <button className="ghost-button small" onClick={() => p.setCalendarAnchor(p.calendarMode === 'month' ? addMonths(p.calendarAnchor, -1) : addDays(p.calendarAnchor, -7))}>{'\u2039'}</button>
                   <button className="ghost-button small" onClick={() => p.setCalendarAnchor(getDateKey())}>{'\u4ECA\u5929'}</button>
                   <button className="ghost-button small" onClick={() => p.setCalendarAnchor(p.calendarMode === 'month' ? addMonths(p.calendarAnchor, 1) : addDays(p.calendarAnchor, 7))}>{'\u203A'}</button>
-                  <input type="date" className="date-picker-input" value={p.calendarAnchor} onChange={(e) => e.target.value && p.setCalendarAnchor(e.target.value)} />
+                  <input type="date" className={styles.datePickerInput} value={p.calendarAnchor} onChange={(e) => e.target.value && p.setCalendarAnchor(e.target.value)} />
                 </div>
               </div>
             )}
@@ -417,7 +418,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         )}
 
         {p.statusChangeFeedback && !p.isPhoneViewport && (
-          <section className="action-toast panel" aria-live="polite">
+          <section className={`${styles.actionToast} panel`} aria-live="polite">
             <div><p className="eyebrow">status updated</p><strong>{'\u5DF2\u79FB\u5230\u201C'}{statusMeta[p.statusChangeFeedback.toStatus as keyof typeof statusMeta]}{'\u201D'}</strong><p>{p.statusChangeFeedback.title}</p></div>
             <button className="ghost-button small" onClick={p.undoStatusChange}>{'\u64A4\u9500'}</button>
           </section>
@@ -463,20 +464,20 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
         </section>
 
         {p.isPhoneViewport && p.mobileTab === 'me' && p.meShowProjects && p.mobileProjectListId && (
-          <div className="mobile-project-nav"><button className="ghost-button small" onClick={() => { p.setMobileProjectListId(null); p.setActiveSelection('system:all') }}>{'\u2190 \u8FD4\u56DE\u6E05\u5355'}</button><span className="mobile-project-nav__title">{p.lists.find((l: any) => l.id === p.mobileProjectListId)?.name ?? '\u6E05\u5355'}</span></div>
+          <div className={styles.mobileProjectNav}><button className="ghost-button small" onClick={() => { p.setMobileProjectListId(null); p.setActiveSelection('system:all') }}>{'\u2190 \u8FD4\u56DE\u6E05\u5355'}</button><span className={styles.mobileProjectNavTitle}>{p.lists.find((l: any) => l.id === p.mobileProjectListId)?.name ?? '\u6E05\u5355'}</span></div>
         )}
         {p.isPhoneViewport && p.mobileTab === 'me' && p.meShowProjects && !p.mobileProjectListId && (
-          <div className="mobile-project-nav"><button className="ghost-button small" onClick={() => p.setMeShowProjects(false)}>{'\u2190 \u8FD4\u56DE'}</button></div>
+          <div className={styles.mobileProjectNav}><button className="ghost-button small" onClick={() => p.setMeShowProjects(false)}>{'\u2190 \u8FD4\u56DE'}</button></div>
         )}
       </main>
 
-      {!p.isUtilityDrawerMode && <aside className="right-rail">{utilityContent}</aside>}
+      {!p.isUtilityDrawerMode && <aside className={styles.rightRail}>{utilityContent}</aside>}
 
       {p.isPhoneViewport && <MobileTabBar mobileTab={p.mobileTab} onChangeTab={handleMobileTabChange} onOpenQuickCreate={() => p.setMobileQuickCreateOpen(true)} />}
 
       {p.isPhoneViewport && p.navigationDrawerOpen && <ResponsiveDrawer title="\u5DE5\u4F5C\u533A\u5BFC\u822A" side="left" onClose={() => p.setNavigationDrawerOpen(false)}><div className="sidebar panel sidebar--drawer">{navigationContent}</div></ResponsiveDrawer>}
 
-      {p.isUtilityDrawerMode && !p.isPhoneViewport && p.utilityDrawerOpen && <ResponsiveDrawer title="\u63D0\u9192\u4E0E\u8BE6\u60C5" side="right" width={400} onClose={() => p.setUtilityDrawerOpen(false)}><div className="drawer-rail">{utilityContent}</div></ResponsiveDrawer>}
+      {p.isUtilityDrawerMode && !p.isPhoneViewport && p.utilityDrawerOpen && <ResponsiveDrawer title="\u63D0\u9192\u4E0E\u8BE6\u60C5" side="right" width={400} onClose={() => p.setUtilityDrawerOpen(false)}><div className={styles.drawerRail}>{utilityContent}</div></ResponsiveDrawer>}
 
       {p.isPhoneViewport && p.taskSheetOpen && p.selectedTask && <TaskBottomSheet key={p.selectedTask.id} onClose={() => p.setTaskSheetOpen(false)}><MobileTaskDetailContent task={p.selectedTask} lists={p.lists} tags={p.tags} onUpdateTask={p.updateTask} onToggleComplete={p.mobileToggleComplete} onClose={() => p.setTaskSheetOpen(false)} /></TaskBottomSheet>}
 
@@ -487,11 +488,11 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
       {p.isPhoneViewport && p.mobilePromptDialog && <MobilePromptSheet message={p.mobilePromptDialog.message} value={p.mobilePromptValue} onChange={p.setMobilePromptValue} onSubmit={() => { p.mobilePromptDialog.onSubmit(p.mobilePromptValue); p.setMobilePromptDialog(null); p.setMobilePromptValue('') }} onCancel={() => { p.mobilePromptDialog.onSubmit(null); p.setMobilePromptDialog(null); p.setMobilePromptValue('') }} />}
 
       {p.isPhoneViewport && p.mobileCompletionToast && (
-        <div className="mobile-completion-toast" role="status" aria-live="polite" aria-label="\u4EFB\u52A1\u5DF2\u5B8C\u6210">
-          <span className="mobile-completion-toast__label">{'\u5DF2\u5B8C\u6210\u300C'}{p.mobileCompletionToast.title}{'\u300D'}</span>
-          <div className="mobile-completion-toast__actions">
-            <button className="mobile-completion-toast__snooze" onClick={() => { const task = p.tasks.find(t => t.id === p.mobileCompletionToast!.taskId); if (task) { const newDueAt = task.dueAt ? shiftDateTimeByDays(task.dueAt, 1) : `${addDays(getDateKey(), 1)}T09:00:00`; if (task.completed) p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.updateTask(p.mobileCompletionToast!.taskId, { dueAt: newDueAt }) }; p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u660E\u5929\u518D\u505A'}</button>
-            <button className="mobile-completion-toast__undo" onClick={() => { p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u64A4\u9500'}</button>
+        <div className={styles.mobileCompletionToast} role="status" aria-live="polite" aria-label="\u4EFB\u52A1\u5DF2\u5B8C\u6210">
+          <span className={styles.mobileCompletionToastLabel}>{'\u5DF2\u5B8C\u6210\u300C'}{p.mobileCompletionToast.title}{'\u300D'}</span>
+          <div className={styles.mobileCompletionToastActions}>
+            <button className={styles.mobileCompletionToastSnooze} onClick={() => { const task = p.tasks.find(t => t.id === p.mobileCompletionToast!.taskId); if (task) { const newDueAt = task.dueAt ? shiftDateTimeByDays(task.dueAt, 1) : `${addDays(getDateKey(), 1)}T09:00:00`; if (task.completed) p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.updateTask(p.mobileCompletionToast!.taskId, { dueAt: newDueAt }) }; p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u660E\u5929\u518D\u505A'}</button>
+            <button className={styles.mobileCompletionToastUndo} onClick={() => { p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u64A4\u9500'}</button>
           </div>
         </div>
       )}
