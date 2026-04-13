@@ -5,6 +5,7 @@
  * 按 Esc 或点击背景关闭。
  */
 import { useEffect } from 'react'
+import styles from './ShortcutPanel.module.css'
 
 interface ShortcutGroup {
   title: string
@@ -78,38 +79,38 @@ export const ShortcutPanel = ({ onClose }: ShortcutPanelProps) => {
   }, [onClose])
 
   return (
-    <div className="shortcut-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="快捷键参考">
-      <div className="shortcut-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="shortcut-panel__header">
+    <div className={styles.shortcutOverlay} onClick={onClose} role="dialog" aria-modal="true" aria-label="快捷键参考">
+      <div className={styles.shortcutPanel} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.shortcutPanelHeader}>
           <div>
-            <p className="shortcut-panel__eyebrow">keyboard shortcuts</p>
-            <h3 className="shortcut-panel__title">快捷键</h3>
+            <p className={styles.shortcutPanelEyebrow}>keyboard shortcuts</p>
+            <h3 className={styles.shortcutPanelTitle}>快捷键</h3>
           </div>
-          <button className="shortcut-panel__close-btn" onClick={onClose} aria-label="关闭">×</button>
+          <button className={styles.shortcutPanelCloseBtn} onClick={onClose} aria-label="关闭">×</button>
         </div>
 
-        <div className="shortcut-panel__features">
-          <p className="shortcut-panel__features-title">TaskFlow 功能概览</p>
-          <div className="shortcut-panel__features-divider" />
+        <div className={styles.shortcutPanelFeatures}>
+          <p className={styles.shortcutPanelFeaturesTitle}>TaskFlow 功能概览</p>
+          <div className={styles.shortcutPanelFeaturesDivider} />
           {FEATURE_ITEMS.map((item) => (
-            <div key={item.label} className="shortcut-panel__feature-item">
-              <span className="shortcut-panel__feature-icon">{item.icon}</span>
-              <span className="shortcut-panel__feature-label">{item.label}</span>
+            <div key={item.label} className={styles.shortcutPanelFeatureItem}>
+              <span className={styles.shortcutPanelFeatureIcon}>{item.icon}</span>
+              <span className={styles.shortcutPanelFeatureLabel}>{item.label}</span>
             </div>
           ))}
         </div>
 
-        <div className="shortcut-panel__groups">
+        <div className={styles.shortcutPanelGroups}>
           {SHORTCUT_GROUPS.map((group) => (
-            <section key={group.title} className="shortcut-panel__group">
-              <p className="shortcut-panel__group-title">{group.title}</p>
-              <div className="shortcut-panel__items">
+            <section key={group.title}>
+              <p className={styles.shortcutPanelGroupTitle}>{group.title}</p>
+              <div className={styles.shortcutPanelItems}>
                 {group.items.map((item, i) => (
-                  <div key={i} className="shortcut-panel__item">
-                    <span className="shortcut-panel__desc">{item.desc}</span>
-                    <div className="shortcut-panel__keys">
+                  <div key={i} className={styles.shortcutPanelItem}>
+                    <span className={styles.shortcutPanelDesc}>{item.desc}</span>
+                    <div className={styles.shortcutPanelKeys}>
                       {item.keys.map((k, ki) => (
-                        <kbd key={ki} className="shortcut-panel__kbd">{k}</kbd>
+                        <kbd key={ki} className={styles.shortcutPanelKbd}>{k}</kbd>
                       ))}
                     </div>
                   </div>
@@ -119,7 +120,7 @@ export const ShortcutPanel = ({ onClose }: ShortcutPanelProps) => {
           ))}
         </div>
 
-        <p className="shortcut-panel__footer">按 <kbd className="shortcut-panel__kbd shortcut-panel__kbd--small">?</kbd> 随时呼出此面板</p>
+        <p className={styles.shortcutPanelFooter}>按 <kbd className={`${styles.shortcutPanelKbd} ${styles.shortcutPanelKbdSmall}`}>?</kbd> 随时呼出此面板</p>
       </div>
     </div>
   )

@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react'
 import type { PersistedState } from '../types/domain'
 import { exportAsJSON, exportAsCSV, exportAsMarkdown } from '../utils/export'
+import styles from './ShortcutPanel.module.css'
 
 interface ExportPanelProps {
   state: PersistedState
@@ -86,21 +87,21 @@ export function ExportPanel({ state, onClose }: ExportPanelProps) {
 
   return (
     <div
-      className="shortcut-overlay"
+      className={styles.shortcutOverlay}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="数据导出"
     >
-      <div className="shortcut-panel export-panel" onClick={(e) => e.stopPropagation()}>
+      <div className={styles.shortcutPanel} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="shortcut-panel__header">
+        <div className={styles.shortcutPanelHeader}>
           <div>
-            <p className="shortcut-panel__eyebrow">data export</p>
-            <h3 className="shortcut-panel__title">导出数据</h3>
+            <p className={styles.shortcutPanelEyebrow}>data export</p>
+            <h3 className={styles.shortcutPanelTitle}>导出数据</h3>
           </div>
           <button
-            className="shortcut-panel__close-btn"
+            className={styles.shortcutPanelCloseBtn}
             onClick={onClose}
             aria-label="关闭"
           >
@@ -109,41 +110,41 @@ export function ExportPanel({ state, onClose }: ExportPanelProps) {
         </div>
 
         {/* Workspace summary */}
-        <div className="export-panel__summary">
-          <div className="export-panel__summary-item">
-            <span className="export-panel__summary-value">{activeTasks.length}</span>
-            <span className="export-panel__summary-label">任务</span>
+        <div className={styles.exportPanelSummary}>
+          <div className={styles.exportPanelSummaryItem}>
+            <span className={styles.exportPanelSummaryValue}>{activeTasks.length}</span>
+            <span className={styles.exportPanelSummaryLabel}>任务</span>
           </div>
-          <div className="export-panel__summary-divider" />
-          <div className="export-panel__summary-item">
-            <span className="export-panel__summary-value">{listCount}</span>
-            <span className="export-panel__summary-label">清单</span>
+          <div className={styles.exportPanelSummaryDivider} />
+          <div className={styles.exportPanelSummaryItem}>
+            <span className={styles.exportPanelSummaryValue}>{listCount}</span>
+            <span className={styles.exportPanelSummaryLabel}>清单</span>
           </div>
-          <div className="export-panel__summary-divider" />
-          <div className="export-panel__summary-item">
-            <span className="export-panel__summary-value">{tagCount}</span>
-            <span className="export-panel__summary-label">标签</span>
+          <div className={styles.exportPanelSummaryDivider} />
+          <div className={styles.exportPanelSummaryItem}>
+            <span className={styles.exportPanelSummaryValue}>{tagCount}</span>
+            <span className={styles.exportPanelSummaryLabel}>标签</span>
           </div>
         </div>
 
         {/* Format cards */}
-        <div className="export-panel__formats">
+        <div className={styles.exportPanelFormats}>
           {EXPORT_FORMATS.map((fmt) => {
             const s = status[fmt.id] ?? 'idle'
             return (
-              <div key={fmt.id} className="export-panel__format-row">
-                <div className="export-panel__format-info">
-                  <span className="export-panel__format-icon">{fmt.icon}</span>
+              <div key={fmt.id} className={styles.exportPanelFormatRow}>
+                <div className={styles.exportPanelFormatInfo}>
+                  <span className={styles.exportPanelFormatIcon}>{fmt.icon}</span>
                   <div>
-                    <p className="export-panel__format-label">
+                    <p className={styles.exportPanelFormatLabel}>
                       {fmt.label}
-                      <span className="export-panel__format-ext">{fmt.extension}</span>
+                      <span className={styles.exportPanelFormatExt}>{fmt.extension}</span>
                     </p>
-                    <p className="export-panel__format-desc">{fmt.description}</p>
+                    <p className={styles.exportPanelFormatDesc}>{fmt.description}</p>
                   </div>
                 </div>
                 <button
-                  className={`ghost-button small export-panel__format-btn${s === 'success' ? ' export-panel__format-btn--success' : s === 'error' ? ' export-panel__format-btn--error' : ''}`}
+                  className={`ghost-button small${s === 'success' ? ` ${styles.exportPanelFormatBtnSuccess}` : s === 'error' ? ` ${styles.exportPanelFormatBtnError}` : ''}`}
                   onClick={() => handleExport(fmt)}
                   disabled={s !== 'idle'}
                   aria-label={`导出 ${fmt.label}`}
@@ -156,7 +157,7 @@ export function ExportPanel({ state, onClose }: ExportPanelProps) {
         </div>
 
         {/* Footer note */}
-        <p className="shortcut-panel__footer">
+        <p className={styles.shortcutPanelFooter}>
           已删除的任务不会包含在导出中。JSON 格式可完整还原工作区。
         </p>
       </div>
