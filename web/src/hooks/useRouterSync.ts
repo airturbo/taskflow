@@ -206,17 +206,15 @@ export function useRouterSync(
 
     const parsed = parseQueryParams(location.search)
 
-    if (parsed.view !== undefined) setters.setCurrentView(parsed.view)
-    if (parsed.searchKeyword !== undefined) setters.setSearchInput(parsed.searchKeyword)
-    else setters.setSearchInput('')
-    if (parsed.calendarMode !== undefined) setters.setCalendarMode(parsed.calendarMode)
+    // Always apply parsed values; fall back to defaults when param is absent
+    setters.setCurrentView(parsed.view ?? 'list')
+    setters.setSearchInput(parsed.searchKeyword ?? '')
+    setters.setCalendarMode(parsed.calendarMode ?? 'month')
     if (parsed.calendarAnchor !== undefined) setters.setCalendarAnchor(parsed.calendarAnchor)
-    if (parsed.timelineScale !== undefined) setters.setTimelineScale(parsed.timelineScale)
-    if (parsed.selectedTagIds !== undefined) setters.setSelectedTagIds(parsed.selectedTagIds)
-    else setters.setSelectedTagIds([])
-    if (parsed.selectedTaskId !== undefined) setters.setSelectedTaskId(parsed.selectedTaskId)
-    if (parsed.calendarShowCompleted !== undefined) setters.setCalendarShowCompleted(parsed.calendarShowCompleted)
-    else setters.setCalendarShowCompleted(false)
+    setters.setTimelineScale(parsed.timelineScale ?? 'week')
+    setters.setSelectedTagIds(parsed.selectedTagIds ?? [])
+    setters.setSelectedTaskId(parsed.selectedTaskId ?? null)
+    setters.setCalendarShowCompleted(parsed.calendarShowCompleted ?? false)
 
     // Reset guard after React processes the state updates
     const timer = setTimeout(() => { syncingFromUrl.current = false }, 50)
