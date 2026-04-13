@@ -1554,3 +1554,20 @@
 
 /* ── Long-press drag visual feedback → CalendarView.module.css ───────────────── */
 
+/* ── View lazy-load fallback (PERF-02) ──────────────────────────────────────── */
+.view-loading-fallback {
+  flex: 1;
+  width: 100%;
+  min-height: 120px;
+  background: linear-gradient(90deg, var(--bg-2, #f3f4f6) 25%, var(--bg-3, #e5e7eb) 50%, var(--bg-2, #f3f4f6) 75%);
+  background-size: 200% 100%;
+  animation: view-loading-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  opacity: 0.6;
+}
+
+@keyframes view-loading-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
