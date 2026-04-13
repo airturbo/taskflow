@@ -12,6 +12,7 @@ import {
   canUseBrowserFilePicker, getAttachmentMetaLabel, makeId, toLocalInputValue,
 } from '../utils/workspace-helpers'
 import { StatusSelectBadge, TaskTimeSummary, EmptyState } from './shared'
+import styles from './TaskDetailPanel.module.css'
 import { TagPicker } from './TagManagementDialog'
 import { templateFromTask, saveTemplate } from '../utils/templates'
 import { TemplatePickerDialog } from './TemplatePickerDialog'
@@ -233,7 +234,7 @@ export function TaskDetailPanel({
   }
 
   return (
-    <section className="panel detail-card">
+    <section className={`panel ${styles.detailCard}`}>
       <div className="panel-header">
         <div>
           <p className="eyebrow">当前选中</p>
@@ -282,7 +283,7 @@ export function TaskDetailPanel({
         maxRows={14}
       />
 
-      <div className="detail-grid detail-grid--meta">
+      <div className={`${styles.detailGrid} ${styles.detailGridMeta}`}>
         <label className="field">
           <span>清单</span>
           <select value={task.listId} onChange={(event) => onUpdateTask(task.id, { listId: event.target.value })}>
@@ -305,10 +306,10 @@ export function TaskDetailPanel({
         </label>
       </div>
 
-      <div className="detail-grid detail-grid--people">
+      <div className={`${styles.detailGrid} ${styles.detailGridPeople}`}>
         <div className="field">
           <span>负责人</span>
-          <div className="task-detail__assignee">
+          <div className={styles.taskDetailAssignee}>
             <select
               value={task.assignee ?? ''}
               onChange={(e) => onUpdateTask(task.id, { assignee: e.target.value || null })}
@@ -325,9 +326,9 @@ export function TaskDetailPanel({
 
         <div className="field">
           <span>协作者</span>
-          <div className="task-detail__collaborators">
+          <div className={styles.taskDetailCollaborators}>
             {members.length === 0 ? (
-              <span className="task-detail__empty-hint">暂无协作者</span>
+              <span className={styles.taskDetailEmptyHint}>暂无协作者</span>
             ) : (
               members.map((member) => {
                 const isSelected = (task.collaborators ?? []).includes(member.id)
@@ -335,7 +336,7 @@ export function TaskDetailPanel({
                   <button
                     key={member.id}
                     type="button"
-                    className={`collab-chip ${isSelected ? 'is-active' : ''}`}
+                    className={`${styles.collabChip} ${isSelected ? 'is-active' : ''}`}
                     onClick={() => {
                       const current = task.collaborators ?? []
                       onUpdateTask(task.id, {
@@ -354,7 +355,7 @@ export function TaskDetailPanel({
         </div>
       </div>
 
-      <div className="detail-grid detail-grid--schedule">
+      <div className={`${styles.detailGrid} ${styles.detailGridSchedule}`}>
         <label className="field">
           <span>开始时间</span>
           <input type="datetime-local" value={toLocalInputValue(task.startAt)} onChange={(event) => onUpdateTask(task.id, { startAt: event.target.value || null })} />
@@ -368,10 +369,10 @@ export function TaskDetailPanel({
           <input type="datetime-local" value={toLocalInputValue(task.deadlineAt ?? null)} onChange={(event) => onUpdateTask(task.id, { deadlineAt: event.target.value || null })} />
         </label>
       </div>
-      <div className="detail-schedule-note">
+      <div className={styles.detailScheduleNote}>
         <TaskTimeSummary task={task} />
         <p className="muted">日历与时间线继续跟随开始时间 / 计划完成；DDL 只作为风险约束与到期判断。</p>
-        {isTaskPlannedAfterDeadline(task) && <p className="detail-schedule-warning">当前计划完成时间晚于 DDL，建议立即重排计划或调整承诺。</p>}
+        {isTaskPlannedAfterDeadline(task) && <p className={styles.detailScheduleWarning}>当前计划完成时间晚于 DDL，建议立即重排计划或调整承诺。</p>}
       </div>
 
       <div className="field">
@@ -403,8 +404,8 @@ export function TaskDetailPanel({
         )}
       </div>
 
-      <div className="detail-section detail-section--compact">
-        <div className="section-title-row">
+      <div className={`${styles.detailSection} ${styles.detailSectionCompact}`}>
+        <div className={styles.sectionTitleRow}>
           <h4>完成状态</h4>
         </div>
         <div className="action-row" data-onboarding-anchor="task-complete">
@@ -414,7 +415,7 @@ export function TaskDetailPanel({
         </div>
       </div>
 
-      <div className="detail-section detail-section--compact">
+      <div className={`${styles.detailSection} ${styles.detailSectionCompact}`}>
         <TagPicker
           title="标签"
           tags={tags}
@@ -429,8 +430,8 @@ export function TaskDetailPanel({
         />
       </div>
 
-      <div className="detail-section detail-section--reminder" data-onboarding-anchor="detail-reminder">
-        <div className="section-title-row">
+      <div className={`${styles.detailSection} ${styles.detailSectionReminder}`} data-onboarding-anchor="detail-reminder">
+        <div className={styles.sectionTitleRow}>
           <h4>提醒</h4>
           <span>{task.reminders.length} 条</span>
         </div>
@@ -525,7 +526,7 @@ export function TaskDetailPanel({
                     <span className="reminder-rule-card__anchor">{description.anchorLabel}</span>
                   </div>
                   <p>{description.triggerAtLabel}</p>
-                  {description.disabledReason && <small className="detail-inline-error">{description.disabledReason}</small>}
+                  {description.disabledReason && <small className={styles.detailInlineError}>{description.disabledReason}</small>}
                 </div>
                 <button className="ghost-button small" onClick={() => onRemoveReminder(task.id, reminder.id)}>
                   删除
@@ -536,8 +537,8 @@ export function TaskDetailPanel({
         </div>
       </div>
 
-      <div className="detail-section">
-        <div className="section-title-row">
+      <div className={styles.detailSection}>
+        <div className={styles.sectionTitleRow}>
           <h4>子任务</h4>
           <span>
             {task.subtasks.filter((item) => item.completed).length}/{task.subtasks.length}
@@ -565,8 +566,8 @@ export function TaskDetailPanel({
         </div>
       </div>
 
-      <div className="detail-section">
-        <div className="section-title-row">
+      <div className={styles.detailSection}>
+        <div className={styles.sectionTitleRow}>
           <h4>附件</h4>
           <span>{task.attachments.length} 个</span>
         </div>
@@ -618,11 +619,11 @@ export function TaskDetailPanel({
               : `网页端当前支持 ${Math.round(MAX_EMBEDDED_ATTACHMENT_BYTES / 1024 / 1024)}MB 内的小文件。`}
           </span>
         </div>
-        {attachmentError && <p className="detail-inline-error">{attachmentError}</p>}
+        {attachmentError && <p className={styles.detailInlineError}>{attachmentError}</p>}
       </div>
 
-      <div className="detail-section">
-        <div className="section-title-row">
+      <div className={styles.detailSection}>
+        <div className={styles.sectionTitleRow}>
           <h4>评论</h4>
           <span>{task.comments.length} 条</span>
         </div>
@@ -652,8 +653,8 @@ export function TaskDetailPanel({
         </div>
       </div>
 
-      <div className="detail-section">
-        <div className="section-title-row">
+      <div className={styles.detailSection}>
+        <div className={styles.sectionTitleRow}>
           <h4>活动流</h4>
           <span>{task.activity.length} 条</span>
         </div>

@@ -1,0 +1,139 @@
+/* TaskDetailPanel.module.css */
+
+.detailCard {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.detailGrid {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.detailGridMeta,
+.detailGridSchedule {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.detailGridPeople {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Assignee select */
+.taskDetailAssignee select {
+  width: 100%;
+}
+
+/* Collaborator chip strip */
+.taskDetailCollaborators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+  align-items: center;
+}
+
+.taskDetailEmptyHint {
+  font-size: 12px;
+  color: var(--text-tertiary, var(--text-secondary));
+  font-style: italic;
+}
+
+/* Collab chip */
+.collabChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms, color 120ms;
+  white-space: nowrap;
+}
+
+.collabChip:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-raised));
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  color: var(--text-primary);
+}
+
+.collabChip:global(.is-active) {
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-raised));
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.collabChip:global(.is-active):hover {
+  background: color-mix(in srgb, var(--accent) 28%, var(--surface-raised));
+}
+
+.detailScheduleNote {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius-s);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+}
+
+.detailScheduleWarning {
+  margin: 0;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.detailSectionCompact {
+  gap: 10px;
+}
+
+.detailSectionReminder {
+  gap: 12px;
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* h4 inside detailCard */
+.detailCard h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.detailInlineError {
+  margin: 0;
+  font-size: 12px;
+  color: var(--red);
+}
