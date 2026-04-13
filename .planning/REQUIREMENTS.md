@@ -60,7 +60,7 @@
 - [ ] **MINOR-01**: 附件上传限制从 1.5MB 提升到 10MB + 进度条
 - [ ] **MINOR-02**: 标签颜色选择器 hover 实时预览
 - [ ] **MINOR-03**: 时间线视图红色"今天"竖线 + 自动居中
-- [ ] **MINOR-04**: 主内容区滚动条改为 thin auto-hide 样式
+- [x] **MINOR-04**: 主内容区滚动条改为 thin auto-hide 样式
 
 ### PERF — 性能与韧性
 - [ ] **PERF-01**: TaskCard/KanbanColumn 包裹 React.memo + 自定义 comparator

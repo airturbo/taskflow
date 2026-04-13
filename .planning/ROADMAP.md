@@ -21,7 +21,7 @@
 
 ---
 
-### Phase 5: 安全网 + 速赢（~3 days）
+### Phase 5: 安全网 + 速赢（~3 days） ✅
 **Goal:** 建立错误隔离 + 离线队列防护 + 第一个用户可感知改进
 
 | REQ | Description | Est |
@@ -35,7 +35,7 @@
 
 ---
 
-### Phase 6: App.tsx 拆分（~5 days）
+### Phase 6: App.tsx 拆分（~5 days） ✅
 **Goal:** 将 App.tsx 从巨石拆分为 <400 行壳 + 5+ 状态 hooks
 
 | REQ | Description | Est |
