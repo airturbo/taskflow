@@ -310,7 +310,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
   const workspaceSummaryToolbar = !p.isToolSelection ? (
     <>
-      <input type="search" className="search-input" aria-label="\u641C\u7D22\u5F53\u524D\u5DE5\u4F5C\u533A" ref={p.searchInputRef} value={p.searchInput} onChange={(e) => p.setSearchInput(e.target.value)} placeholder="\u641C\u7D22\u5F53\u524D\u7ED3\u679C\u2026" />
+      <input type="search" className="search-input" aria-label="搜索当前工作区" ref={p.searchInputRef} value={p.searchInput} onChange={(e) => p.setSearchInput(e.target.value)} placeholder="搜索当前结果…" />
       {p.selectedTagObjects.length > 0 && <button className="ghost-button small" onClick={() => p.setSelectedTagIds([])}>{'\u6E05\u7A7A\u6807\u7B7E'}</button>}
     </>
   ) : null
@@ -333,7 +333,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
       {(!p.isNavigationDrawerMode || p.navigationDrawerOpen) && !p.isPhoneViewport && (
         <aside className={`sidebar panel ${p.isCompactSidebar ? `sidebar--compact ${p.sidebarExpanded ? 'is-expanded' : ''}` : ''} ${p.isNavigationDrawerMode ? 'sidebar--push' : ''}`}>
           {p.isCompactSidebar && <button className="sidebar-collapse-toggle" onClick={() => p.setSidebarExpanded((v: any) => !v)} title={p.sidebarExpanded ? '\u6298\u53E0\u4FA7\u8FB9\u680F' : '\u5C55\u5F00\u4FA7\u8FB9\u680F'}>{p.sidebarExpanded ? '\u2190' : '\u2192'}</button>}
-          {p.isNavigationDrawerMode && <button className="sidebar-push-close" onClick={() => p.setNavigationDrawerOpen(false)} title="\u6536\u8D77\u4FA7\u8FB9\u680F">{'\u2715'}</button>}
+          {p.isNavigationDrawerMode && <button className="sidebar-push-close" onClick={() => p.setNavigationDrawerOpen(false)} title="收起侧边栏">{'\u2715'}</button>}
           {navigationContent}
         </aside>
       )}
@@ -405,12 +405,12 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
         <section className={`${styles.composerBar} panel`} data-onboarding-anchor="quick-add">
           <div className={styles.composerBarMain}>
-            <input ref={p.quickCreateInputRef} value={p.quickEntry} onChange={(e) => p.setQuickEntry(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') createTask() }} placeholder="\u4F8B\u5982\uFF1A\u660E\u5929\u4E0B\u5348 3 \u70B9\u4EA7\u54C1\u8BC4\u5BA1" />
+            <input ref={p.quickCreateInputRef} value={p.quickEntry} onChange={(e) => p.setQuickEntry(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') createTask() }} placeholder="例如：明天下午 3 点产品评审" />
             <select value={p.quickListId} onChange={(e) => p.setQuickListId(e.target.value)}>{p.lists.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}</select>
             <select value={p.quickPriority} onChange={(e) => p.setQuickPriority(e.target.value as Priority)}>{Object.entries(priorityMeta).map(([v, m]) => <option key={v} value={v}>{m.label}</option>)}</select>
             <button className="primary-button" onClick={createTask}>{'\u7ACB\u5373\u521B\u5EFA'}</button>
           </div>
-          <TagPicker title="\u6807\u7B7E" tags={p.tags} selectedTagIds={p.quickTagIds} onToggleTag={p.toggleQuickTag} onManageTags={() => p.setTagManagerOpen(true)} manageLabel="\u7BA1\u7406\u6807\u7B7E" />
+          <TagPicker title="标签" tags={p.tags} selectedTagIds={p.quickTagIds} onToggleTag={p.toggleQuickTag} onManageTags={() => p.setTagManagerOpen(true)} manageLabel="管理标签" />
         </section>
 
         {p.createFeedback && (
@@ -549,9 +549,9 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
 
       {p.isPhoneViewport && <MobileTabBar mobileTab={p.mobileTab} onChangeTab={handleMobileTabChange} onOpenQuickCreate={() => p.setMobileQuickCreateOpen(true)} />}
 
-      {p.isPhoneViewport && p.navigationDrawerOpen && <ResponsiveDrawer title="\u5DE5\u4F5C\u533A\u5BFC\u822A" side="left" onClose={() => p.setNavigationDrawerOpen(false)}><div className="sidebar panel sidebar--drawer">{navigationContent}</div></ResponsiveDrawer>}
+      {p.isPhoneViewport && p.navigationDrawerOpen && <ResponsiveDrawer title="工作区导航" side="left" onClose={() => p.setNavigationDrawerOpen(false)}><div className="sidebar panel sidebar--drawer">{navigationContent}</div></ResponsiveDrawer>}
 
-      {p.isUtilityDrawerMode && !p.isPhoneViewport && p.utilityDrawerOpen && <ResponsiveDrawer title="\u63D0\u9192\u4E0E\u8BE6\u60C5" side="right" width={400} onClose={() => p.setUtilityDrawerOpen(false)}><div className={styles.drawerRail}>{utilityContent}</div></ResponsiveDrawer>}
+      {p.isUtilityDrawerMode && !p.isPhoneViewport && p.utilityDrawerOpen && <ResponsiveDrawer title="提醒与详情" side="right" width={400} onClose={() => p.setUtilityDrawerOpen(false)}><div className={styles.drawerRail}>{utilityContent}</div></ResponsiveDrawer>}
 
       {p.isPhoneViewport && p.taskSheetOpen && p.selectedTask && <TaskBottomSheet key={p.selectedTask.id} onClose={() => p.setTaskSheetOpen(false)}><MobileTaskDetailContent task={p.selectedTask} lists={p.lists} tags={p.tags} onUpdateTask={p.updateTask} onToggleComplete={p.mobileToggleComplete} onClose={() => p.setTaskSheetOpen(false)} /></TaskBottomSheet>}
 
@@ -562,7 +562,7 @@ export function WorkspaceShell(p: WorkspaceShellProps) {
       {p.isPhoneViewport && p.mobilePromptDialog && <MobilePromptSheet message={p.mobilePromptDialog.message} value={p.mobilePromptValue} onChange={p.setMobilePromptValue} onSubmit={() => { p.mobilePromptDialog.onSubmit(p.mobilePromptValue); p.setMobilePromptDialog(null); p.setMobilePromptValue('') }} onCancel={() => { p.mobilePromptDialog.onSubmit(null); p.setMobilePromptDialog(null); p.setMobilePromptValue('') }} />}
 
       {p.isPhoneViewport && p.mobileCompletionToast && (
-        <div className={styles.mobileCompletionToast} role="status" aria-live="polite" aria-label="\u4EFB\u52A1\u5DF2\u5B8C\u6210">
+        <div className={styles.mobileCompletionToast} role="status" aria-live="polite" aria-label="任务已完成">
           <span className={styles.mobileCompletionToastLabel}>{'\u5DF2\u5B8C\u6210\u300C'}{p.mobileCompletionToast.title}{'\u300D'}{p.mobileCompletionToast.nextDueLabel ? ` \u00B7 \u4E0B\u6B21\uFF1A${p.mobileCompletionToast.nextDueLabel}` : ''}</span>
           <div className={styles.mobileCompletionToastActions}>
             <button className={styles.mobileCompletionToastSnooze} onClick={() => { const task = p.tasks.find(t => t.id === p.mobileCompletionToast!.taskId); if (task) { const newDueAt = task.dueAt ? shiftDateTimeByDays(task.dueAt, 1) : `${addDays(getDateKey(), 1)}T09:00:00`; if (task.completed) p.toggleTaskComplete(p.mobileCompletionToast!.taskId); p.updateTask(p.mobileCompletionToast!.taskId, { dueAt: newDueAt }) }; p.setMobileCompletionToast(null); if (p.completionToastTimerRef.current) window.clearTimeout(p.completionToastTimerRef.current) }}>{'\u660E\u5929\u518D\u505A'}</button>
