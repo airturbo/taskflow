@@ -66,10 +66,20 @@
 .timelineScale {
   --timeline-columns: 7;
   display: grid; grid-template-columns: repeat(var(--timeline-columns), minmax(0, 1fr));
-  gap: 0; width: 70%; text-align: center;
+  gap: 0; width: 70%; text-align: left;
 }
 .timelineScale span { padding: 0 4px; }
 .timelineScale span:global(.is-today) { color: var(--accent); }
+
+.timelineScaleClickable {
+  cursor: pointer;
+  border-radius: var(--radius-s);
+  transition: background var(--transition), color var(--transition);
+}
+.timelineScaleClickable:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
 
 .timelineBody { display: flex; flex-direction: column; gap: 0; }
 
@@ -94,7 +104,7 @@
 
 .timelineLane {
   position: relative; width: 70%; min-height: 38px;
-  border-radius: var(--radius-s); background: var(--surface-raised); overflow: hidden;
+  border-radius: var(--radius-s); background: var(--surface-raised); overflow: visible;
 }
 
 /* ---- Now line (week view) ---- */
@@ -104,8 +114,8 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #ff3b30;
-  z-index: 4;
+  background: rgba(124, 156, 255, 0.45);
+  z-index: 2;
   pointer-events: none;
   transform: translateX(-1px);
 }
@@ -113,32 +123,81 @@
 .timelineNowLine::before {
   content: '';
   position: absolute;
-  top: -3px;
+  top: -4px;
   left: -3px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ff3b30;
+  background: rgba(124, 156, 255, 0.6);
 }
 
 /* ---- Deadline marker ---- */
 
 .timelineDeadlineMarker {
-  position: absolute; top: 4px; bottom: 4px; width: 2px; z-index: 1; pointer-events: none;
-  background: rgba(255, 107, 122, 0.72); box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.12);
+  position: absolute; top: -10px; bottom: 0; z-index: 5; pointer-events: auto;
+  width: 14px;
+  margin-left: -7px;
+  cursor: ew-resize;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+.timelineDeadlineMarker::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 0;
+  left: 6px;
+  width: 2px;
+  background: #ff3b30;
+  border-radius: 1px;
+}
+.timelineDeadlineMarkerHandle {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3b30;
+  cursor: ew-resize;
+  box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
+}
+.timelineDeadlineMarker:hover .timelineDeadlineMarkerHandle {
+  background: #ff3b30;
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.3), 0 0 8px rgba(255, 59, 48, 0.4);
+  transform: scale(1.15);
+}
+.timelineDeadlineMarker:global(.is-dragging)::after {
+  background: #ff3b30;
+  box-shadow: 0 0 6px rgba(255, 59, 48, 0.5);
+}
+.timelineDeadlineMarker:global(.is-dragging) .timelineDeadlineMarkerHandle {
+  background: #ff3b30;
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.3), 0 0 10px rgba(255, 59, 48, 0.5);
+  transform: scale(1.3);
 }
 .timelineDeadlineMarker span {
-  position: absolute; top: -2px; left: 4px; padding: 1px 6px; border-radius: 999px;
-  background: rgba(255, 107, 122, 0.12); color: var(--red); font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
+  position: absolute; top: -8px; left: 50%; transform: translateX(-50%); padding: 1px 5px; border-radius: 999px;
+  background: rgba(255, 59, 48, 0.15); color: #ff3b30; font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
+  white-space: nowrap; pointer-events: none;
 }
-.timelineDeadlineMarker:global(.is-warning) {
-  background: rgba(255, 180, 84, 0.84); box-shadow: 0 0 0 1px rgba(255, 180, 84, 0.16);
+.timelineDeadlineMarker:global(.is-warning)::after {
+  background: rgba(255, 180, 84, 0.85);
+}
+.timelineDeadlineMarker:global(.is-warning) .timelineDeadlineMarkerHandle {
+  background: rgba(255, 180, 84, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 180, 84, 0.2);
 }
 .timelineDeadlineMarker:global(.is-warning) span {
   background: rgba(255, 180, 84, 0.14); color: var(--amber);
 }
-.timelineDeadlineMarker:global(.is-danger) {
-  background: rgba(255, 107, 122, 0.92); box-shadow: 0 0 0 1px rgba(255, 107, 122, 0.22);
+.timelineDeadlineMarker:global(.is-danger)::after {
+  background: #ff3b30;
+}
+.timelineDeadlineMarker:global(.is-danger) .timelineDeadlineMarkerHandle {
+  background: #ff3b30;
+  box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.25);
 }
 
 /* ---- Grid ---- */
@@ -262,9 +321,9 @@
   position: absolute;
   left: 48px;
   right: 0;
-  height: 2px;
-  background: #ff3b30;
-  z-index: 5;
+  height: 1.5px;
+  background: rgba(124, 156, 255, 0.35);
+  z-index: 1;
   border-radius: 1px;
   pointer-events: none;
 }
@@ -273,10 +332,10 @@
   position: absolute;
   left: -4px;
   top: -3px;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #ff3b30;
+  background: rgba(124, 156, 255, 0.5);
 }
 .timelineDayEvents {
   position: absolute;

@@ -15,7 +15,7 @@ export type QuickCreateFeedback = {
   workspaceLabel: string
 }
 
-export type TimelineDragMode = 'move' | 'resize-start' | 'resize-end'
+export type TimelineDragMode = 'move' | 'resize-start' | 'resize-end' | 'deadline'
 
 export type TimelineDragState = {
   taskId: string

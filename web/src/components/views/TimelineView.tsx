@@ -12,7 +12,7 @@ import { isTaskRiskOverdue, getTaskDeadlineMarkerTone } from '@taskflow/core'
 import { addDays, getDateKey, buildWeek } from '../../utils/dates'
 import { formatTaskWindow } from '../../utils/reminder-engine'
 import { getDateTimeMs, MINUTE, DAY_MINUTES, WEEK_MINUTES } from '../../utils/workspace-helpers'
-import { EmptyState, StatusBadge, TaskDeadlineIndicators, getTaskDeadlineMarkerOffset } from '../shared'
+import { EmptyState, StatusBadge, getTaskDeadlineMarkerOffset } from '../shared'
 import styles from './TimelineView.module.css'
 
 export function TimelineView({
@@ -22,6 +22,7 @@ export function TimelineView({
   timelineScale,
   onSelectTask,
   onUpdateSchedule,
+  onUpdateDeadline,
   onOpenInlineCreate,
   onChangeAnchor,
   onChangeScale,
@@ -32,6 +33,7 @@ export function TimelineView({
   timelineScale: TimelineScale
   onSelectTask: (taskId: string) => void
   onUpdateSchedule: (taskId: string, startAt: string, dueAt: string) => void
+  onUpdateDeadline: (taskId: string, deadlineAt: string) => void
   onOpenInlineCreate: (request: InlineCreateRequest) => void
   onChangeAnchor: (value: string) => void
   onChangeScale: (value: TimelineScale) => void
@@ -45,7 +47,6 @@ export function TimelineView({
   const scaleMarks = buildTimelineScaleMarks(calendarAnchor, timelineScale)
   const createSlots = buildTimelineCreateSlots(calendarAnchor, timelineScale)
   const timelineGridStyle = { '--timeline-columns': scaleMarks.length } as CSSProperties
-  const createRowStyle = { gridTemplateColumns: `repeat(${createSlots.length}, minmax(0, 1fr))` } as CSSProperties
   const [dragState, setDragState] = useState<TimelineDragState | null>(null)
   const dragRef = useRef<TimelineDragState | null>(null)
   const dayScrollRef = useRef<HTMLDivElement | null>(null)
@@ -84,6 +85,9 @@ export function TimelineView({
         nextEnd = nextStart + duration
       } else if (current.mode === 'resize-start') {
         nextStart = current.originStart + deltaMinutes * MINUTE
+      } else if (current.mode === 'deadline') {
+        nextStart = current.originStart + deltaMinutes * MINUTE
+        nextEnd = current.originEnd
       } else {
         nextEnd = current.originEnd + deltaMinutes * MINUTE
       }
@@ -95,7 +99,11 @@ export function TimelineView({
     const finishPointerDrag = () => {
       const current = dragRef.current
       if (!current) return
-      onUpdateSchedule(current.taskId, getDateTimeValueFromMs(current.previewStart), getDateTimeValueFromMs(current.previewEnd))
+      if (current.mode === 'deadline') {
+        onUpdateDeadline(current.taskId, getDateTimeValueFromMs(current.previewStart))
+      } else {
+        onUpdateSchedule(current.taskId, getDateTimeValueFromMs(current.previewStart), getDateTimeValueFromMs(current.previewEnd))
+      }
       dragRef.current = null
       setDragState(null)
       // Swallow the next click event (fires after pointerup) to prevent detail panel from opening
@@ -113,12 +121,15 @@ export function TimelineView({
       window.removeEventListener('pointerup', finishPointerDrag)
       window.removeEventListener('pointercancel', finishPointerDrag)
     }
-  }, [dragState?.taskId, onUpdateSchedule])
+  }, [dragState?.taskId, onUpdateSchedule, onUpdateDeadline])
 
   const scheduledTasks = tasks
     .map((task) => ({ task, range: getTaskTimelineRange(task) }))
     .filter((item): item is { task: Task; range: { start: number; end: number } } => Boolean(item.range && item.range.start < windowEnd && item.range.end > windowStart))
     .sort((left, right) => left.range.start - right.range.start)
+
+  // Only show DDL label on the first task that has a visible deadline marker
+  const firstDdlTaskId = scheduledTasks.find(({ task }) => getTaskDeadlineMarkerOffset(task, windowStart, windowEnd) != null)?.task.id ?? null
 
   const startDragDirect = (task: Task, mode: TimelineDragMode, clientX: number, lane: HTMLElement) => {
     const range = getTaskTimelineRange(task)
@@ -187,6 +198,30 @@ export function TimelineView({
     didDragRef.current = false
   }
 
+  const handleDeadlinePointerDown = (e: React.PointerEvent, task: Task) => {
+    e.stopPropagation()
+    if (e.button !== 0) return
+    const lane = e.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null
+    if (!lane) return
+    const deadlineMs = getDateTimeMs(task.deadlineAt ?? null, 'end')
+    if (!deadlineMs) return
+    didDragRef.current = true
+    setDragState({
+      taskId: task.id,
+      mode: 'deadline',
+      originX: e.clientX,
+      laneWidth: Math.max(lane.getBoundingClientRect().width, 1),
+      originStart: deadlineMs,
+      originEnd: deadlineMs,
+      previewStart: deadlineMs,
+      previewEnd: deadlineMs,
+      windowStart,
+      windowEnd,
+      totalMinutes,
+      stepMinutes,
+    })
+  }
+
   const DAY_HOUR_HEIGHT = 64
   const DAY_TOTAL_HEIGHT = DAY_HOUR_HEIGHT * 24
 
@@ -221,7 +256,6 @@ export function TimelineView({
           <button className="ghost-button small" onClick={() => onChangeAnchor(addDays(calendarAnchor, isDayScale ? -1 : -7))}>‹</button>
           <button className="ghost-button small" onClick={() => onChangeAnchor(getDateKey())}>今天</button>
           <button className="ghost-button small" onClick={() => onChangeAnchor(addDays(calendarAnchor, isDayScale ? 1 : 7))}>›</button>
-          <input type="date" className="date-picker-input" value={calendarAnchor} onChange={(event) => event.target.value && onChangeAnchor(event.target.value)} />
         </div>
       </div>
 
@@ -251,7 +285,7 @@ export function TimelineView({
 
               <div className={styles.timelineDayEvents}>
                 {scheduledTasks.map(({ task, range }) => {
-                  const preview = dragState?.taskId === task.id ? { start: dragState.previewStart, end: dragState.previewEnd } : range
+                  const preview = (dragState?.taskId === task.id && dragState.mode !== 'deadline') ? { start: dragState.previewStart, end: dragState.previewEnd } : range
                   const clippedStart = Math.max(preview.start, windowStart)
                   const clippedEnd = Math.min(preview.end, windowEnd)
                   const vStyle = getVerticalStyle(clippedStart, clippedEnd)
@@ -297,43 +331,31 @@ export function TimelineView({
         </div>
       ) : (
         <>
-          <div className={styles.timelineCreateRow} style={createRowStyle}>
-            {createSlots.map((slot) => (
-              <button
-                key={slot.key}
-                className={`${styles.timelineCreateSlot} ${slot.isToday ? 'is-today' : ''}`}
-                aria-label={`在${slot.label}创建任务`}
-                title={`在${slot.label}创建任务`}
-                onClick={(event) =>
-                  onOpenInlineCreate({
-                    view: 'timeline',
-                    anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(),
-                    dateKey: slot.dateKey,
-                    guidance: slot.label,
-                    time: slot.time,
-                  })
-                }
-              >
-                <span>{slot.label}</span>
-                <small>{slot.subLabel}</small>
-              </button>
-            ))}
-          </div>
           {scheduledTasks.length === 0 ? (
-            <EmptyState title="这周时间线还没有任务条。" description="点上方日期即可排一条任务。" />
+            <EmptyState title="这周时间线还没有任务条。" description="点表头日期即可排一条任务。" />
           ) : (
             <div className={styles.timelineView}>
               <header className={styles.timelineHeader}>
                 <div>任务</div>
                 <div className={styles.timelineScale} style={timelineGridStyle}>
-                  {scaleMarks.map((mark) => (
-                    <span key={mark.key} className={mark.isToday ? 'is-today' : ''}>{mark.label}</span>
-                  ))}
+                  {scaleMarks.map((mark) => {
+                    const slot = createSlots.find((s) => s.key === mark.key)
+                    return (
+                      <span
+                        key={mark.key}
+                        className={`${mark.isToday ? 'is-today' : ''} ${slot ? styles.timelineScaleClickable : ''}`}
+                        onClick={slot ? (event) => onOpenInlineCreate({ view: 'timeline', anchorRect: (event.currentTarget as HTMLElement).getBoundingClientRect(), dateKey: slot.dateKey, guidance: slot.label, time: slot.time }) : undefined}
+                        title={slot ? `在${slot.label}创建任务` : undefined}
+                      >
+                        {mark.label}
+                      </span>
+                    )
+                  })}
                 </div>
               </header>
               <div className={styles.timelineBody}>
                 {scheduledTasks.map(({ task, range }) => {
-                  const preview = dragState?.taskId === task.id ? { start: dragState.previewStart, end: dragState.previewEnd } : range
+                  const preview = (dragState?.taskId === task.id && dragState.mode !== 'deadline') ? { start: dragState.previewStart, end: dragState.previewEnd } : range
                   const clippedStart = Math.max(preview.start, windowStart)
                   const clippedEnd = Math.min(preview.end, windowEnd)
                   const left = getTimelinePercent(clippedStart, windowStart, windowEnd)
@@ -348,7 +370,6 @@ export function TimelineView({
                         <strong>{task.title}</strong>
                         <div className={styles.timelineTitleMeta}>
                           <small>{formatTaskWindow(getDateTimeValueFromMs(preview.start), getDateTimeValueFromMs(preview.end))}</small>
-                          <TaskDeadlineIndicators task={task} compact />
                         </div>
                       </button>
                       <div className={styles.timelineLane} data-timeline-lane>
@@ -357,15 +378,22 @@ export function TimelineView({
                             <span key={mark.key} className={mark.isToday ? 'is-today' : ''} />
                           ))}
                         </div>
-                        {deadlineMarkerOffset != null && deadlineMarkerTone && (
-                          <div
-                            className={`${styles.timelineDeadlineMarker} is-${deadlineMarkerTone}`}
-                            style={{ left: `calc(${deadlineMarkerOffset}% - 1px)` }}
-                            aria-hidden="true"
-                          >
-                            <span>DDL</span>
-                          </div>
-                        )}
+                        {deadlineMarkerOffset != null && deadlineMarkerTone && (() => {
+                          const ddlPreviewOffset = (dragState?.taskId === task.id && dragState.mode === 'deadline')
+                            ? getTimelinePercent(dragState.previewStart, windowStart, windowEnd)
+                            : null
+                          return (
+                            <div
+                              className={`${styles.timelineDeadlineMarker} is-${deadlineMarkerTone} ${ddlPreviewOffset != null ? 'is-dragging' : ''}`}
+                              style={{ left: `calc(${ddlPreviewOffset ?? deadlineMarkerOffset}% - 1px)` }}
+                              onPointerDown={(e) => handleDeadlinePointerDown(e, task)}
+                              title="拖拽调整截止日期"
+                            >
+                              <div className={styles.timelineDeadlineMarkerHandle} />
+                              {task.id === firstDdlTaskId && <span>DDL</span>}
+                            </div>
+                          )
+                        })()}
                         {nowInWindow && (
                           <div
                             className={styles.timelineNowLine}

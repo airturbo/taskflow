@@ -225,6 +225,7 @@ function MobileViewSwitch(props: WorkspaceViewContentProps) {
           timelineScale={props.timelineScale}
           onSelectTask={props.onSelectTask}
           onUpdateSchedule={props.onRescheduleTask}
+          onUpdateDeadline={(id, deadlineAt) => props.onUpdateTask(id, { deadlineAt })}
           onOpenInlineCreate={props.onOpenInlineCreate}
           onChangeAnchor={props.onSetCalendarAnchor}
           onChangeScale={props.onSetTimelineScale}
@@ -372,6 +373,7 @@ function DesktopViewSwitch(props: WorkspaceViewContentProps) {
             timelineScale={props.timelineScale}
             onSelectTask={props.onSelectTask}
             onUpdateSchedule={props.onRescheduleTask}
+            onUpdateDeadline={(id, deadlineAt) => props.onUpdateTask(id, { deadlineAt })}
             onOpenInlineCreate={props.onOpenInlineCreate}
             onChangeAnchor={props.onSetCalendarAnchor}
             onChangeScale={props.onSetTimelineScale}

@@ -319,6 +319,12 @@
   .composerBar:focus-within :global(.tag-picker) { max-height: 200px; }
 }
 
+/* Phone: hide composer bar & view switcher — phone uses FAB + title-bar switcher */
+:global(.is-phone) .composerBar,
+:global(.is-phone) .viewSwitcher {
+  display: none !important;
+}
+
 /* Phone: main stage bottom padding for tab bar */
 :global(.is-phone) .mainStage {
   padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
