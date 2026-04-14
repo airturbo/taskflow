@@ -98,6 +98,11 @@ export function TimelineView({
       onUpdateSchedule(current.taskId, getDateTimeValueFromMs(current.previewStart), getDateTimeValueFromMs(current.previewEnd))
       dragRef.current = null
       setDragState(null)
+      // Swallow the next click event (fires after pointerup) to prevent detail panel from opening
+      const swallowClick = (e: MouseEvent) => { e.stopPropagation(); e.preventDefault() }
+      window.addEventListener('click', swallowClick, { capture: true, once: true })
+      // Safety cleanup in case click never fires (e.g., pointer cancelled)
+      setTimeout(() => window.removeEventListener('click', swallowClick, { capture: true }), 300)
     }
 
     window.addEventListener('pointermove', onPointerMove)
