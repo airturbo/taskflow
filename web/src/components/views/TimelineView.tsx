@@ -115,21 +115,16 @@ export function TimelineView({
     .filter((item): item is { task: Task; range: { start: number; end: number } } => Boolean(item.range && item.range.start < windowEnd && item.range.end > windowStart))
     .sort((left, right) => left.range.start - right.range.start)
 
-  const startDrag = (event: React.PointerEvent<HTMLElement>, task: Task, mode: TimelineDragMode) => {
-    if (event.button !== 0) return
-
-    const lane = (event.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null) ?? null
+  const startDragDirect = (task: Task, mode: TimelineDragMode, clientX: number, lane: HTMLElement) => {
     const range = getTaskTimelineRange(task)
-    if (!lane || !range) return
+    if (!range) return
 
-    event.preventDefault()
-    event.stopPropagation()
     onSelectTask(task.id)
 
     setDragState({
       taskId: task.id,
       mode,
-      originX: event.clientX,
+      originX: clientX,
       laneWidth: Math.max(lane.getBoundingClientRect().width, 1),
       originStart: range.start,
       originEnd: range.end,
@@ -143,7 +138,7 @@ export function TimelineView({
   }
 
   const DRAG_THRESHOLD = 6
-  const pendingDragRef = useRef<{ task: Task; mode: TimelineDragMode; startX: number; startY: number; event: React.PointerEvent<HTMLElement> } | null>(null)
+  const pendingDragRef = useRef<{ task: Task; mode: TimelineDragMode; startX: number; startY: number; clientX: number; lane: HTMLElement } | null>(null)
   const didDragRef = useRef(false)
 
   useEffect(() => {
@@ -155,7 +150,7 @@ export function TimelineView({
       if (Math.sqrt(dx * dx + dy * dy) >= DRAG_THRESHOLD) {
         didDragRef.current = true
         pendingDragRef.current = null
-        startDrag(pending.event, pending.task, pending.mode)
+        startDragDirect(pending.task, pending.mode, pending.clientX, pending.lane)
       }
     }
     const onUp = () => {
@@ -173,8 +168,10 @@ export function TimelineView({
 
   const handleTimelineBarPointerDown = (event: React.PointerEvent<HTMLElement>, task: Task, mode: TimelineDragMode) => {
     if (event.button !== 0) return
+    const lane = (event.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null)
+    if (!lane) return
     didDragRef.current = false
-    pendingDragRef.current = { task, mode, startX: event.clientX, startY: event.clientY, event }
+    pendingDragRef.current = { task, mode, startX: event.clientX, startY: event.clientY, clientX: event.clientX, lane }
   }
 
   const handleTimelineBarClick = (event: React.MouseEvent, task: Task) => {
@@ -261,12 +258,12 @@ export function TimelineView({
                       style={vStyle}
                       onClick={() => onSelectTask(task.id)}
                     >
-                      <span className={`${styles.timelineDayEventGrip} is-top`} onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-start') }} />
+                      <span className={`${styles.timelineDayEventGrip} is-top`} onPointerDown={(e) => { e.stopPropagation(); const lane = (e.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null); if (lane) startDragDirect(task, 'resize-start', e.clientX, lane) }} />
                       <div className={styles.timelineDayEventContent}>
                         <strong>{task.title}</strong>
                         <small>{formatTimelineBarLabel(preview.start, preview.end)}</small>
                       </div>
-                      <span className={`${styles.timelineDayEventGrip} is-bottom`} onPointerDown={(e) => { e.stopPropagation(); startDrag(e, task, 'resize-end') }} />
+                      <span className={`${styles.timelineDayEventGrip} is-bottom`} onPointerDown={(e) => { e.stopPropagation(); const lane = (e.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null); if (lane) startDragDirect(task, 'resize-end', e.clientX, lane) }} />
                     </button>
                   )
                 })}
@@ -377,13 +374,13 @@ export function TimelineView({
                           onPointerDown={(event) => handleTimelineBarPointerDown(event, task, 'move')}
                           onClick={(event) => handleTimelineBarClick(event, task)}
                         >
-                          <span className={`${styles.timelineBarGrip} is-start`} onPointerDown={(event) => { event.stopPropagation(); startDrag(event, task, 'resize-start') }} />
+                          <span className={`${styles.timelineBarGrip} is-start`} onPointerDown={(event) => { event.stopPropagation(); const lane = (event.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null); if (lane) startDragDirect(task, 'resize-start', event.clientX, lane) }} />
                           <span className={styles.timelineBarContent}>
                             <StatusBadge status={task.status} compact />
                             <strong>{task.title}</strong>
                             <small>{formatTimelineBarLabel(preview.start, preview.end)}</small>
                           </span>
-                          <span className={`${styles.timelineBarGrip} is-end`} onPointerDown={(event) => startDrag(event, task, 'resize-end')} />
+                          <span className={`${styles.timelineBarGrip} is-end`} onPointerDown={(event) => { event.stopPropagation(); const lane = (event.currentTarget.closest('[data-timeline-lane]') as HTMLElement | null); if (lane) startDragDirect(task, 'resize-end', event.clientX, lane) }} />
                         </button>
                       </div>
                     </div>
