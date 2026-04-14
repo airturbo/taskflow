@@ -1,0 +1,19 @@
+{
+  "envId": "taskflow-7gxjr4s56c9587d2",
+  "region": "ap-shanghai",
+  "$schema": "https://framework-1258016615.tcloudbaseapp.com/cloudbaserc.schema.json",
+  "framework": {
+    "name": "taskflow-web",
+    "plugins": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "outputPath": "web/dist",
+          "installCommand": "",
+          "buildCommand": "cd web && npx vite build",
+          "cloudPath": "/"
+        }
+      }
+    }
+  }
+}
