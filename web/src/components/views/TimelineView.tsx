@@ -119,7 +119,7 @@ export function TimelineView({
     const range = getTaskTimelineRange(task)
     if (!range) return
 
-    onSelectTask(task.id)
+    didDragRef.current = true
 
     setDragState({
       taskId: task.id,
