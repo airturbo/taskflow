@@ -142,27 +142,47 @@ export function TimelineView({
     })
   }
 
-  const longPressTimerRef = useRef<number | null>(null)
-  const longPressTriggeredRef = useRef(false)
+  const DRAG_THRESHOLD = 6
+  const pendingDragRef = useRef<{ task: Task; mode: TimelineDragMode; startX: number; startY: number; event: React.PointerEvent<HTMLElement> } | null>(null)
+  const didDragRef = useRef(false)
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const pending = pendingDragRef.current
+      if (!pending) return
+      const dx = e.clientX - pending.startX
+      const dy = e.clientY - pending.startY
+      if (Math.sqrt(dx * dx + dy * dy) >= DRAG_THRESHOLD) {
+        didDragRef.current = true
+        pendingDragRef.current = null
+        startDrag(pending.event, pending.task, pending.mode)
+      }
+    }
+    const onUp = () => {
+      pendingDragRef.current = null
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+    }
+  }, [])
 
   const handleTimelineBarPointerDown = (event: React.PointerEvent<HTMLElement>, task: Task, mode: TimelineDragMode) => {
-    longPressTriggeredRef.current = false
-    longPressTimerRef.current = window.setTimeout(() => {
-      longPressTriggeredRef.current = true
-      startDrag(event, task, mode)
-    }, 400)
+    if (event.button !== 0) return
+    didDragRef.current = false
+    pendingDragRef.current = { task, mode, startX: event.clientX, startY: event.clientY, event }
   }
 
-  const handleTimelineBarPointerUp = () => {
-    if (longPressTimerRef.current) {
-      window.clearTimeout(longPressTimerRef.current)
-      longPressTimerRef.current = null
-    }
-  }
-
-  const handleTimelineBarClick = (event: React.MouseEvent) => {
+  const handleTimelineBarClick = (event: React.MouseEvent, task: Task) => {
     event.stopPropagation()
-    longPressTriggeredRef.current = false
+    if (!didDragRef.current) {
+      onSelectTask(task.id)
+    }
+    didDragRef.current = false
   }
 
   const DAY_HOUR_HEIGHT = 64
@@ -355,9 +375,7 @@ export function TimelineView({
                           className={`${styles.timelineBar} priority-${task.priority} status-${task.status} ${overdue ? 'is-overdue' : ''} ${selectedTaskId === task.id ? 'is-selected' : ''} ${dragState?.taskId === task.id ? 'is-dragging' : ''}`}
                           style={{ left: `${left}%`, width: `${width}%` }}
                           onPointerDown={(event) => handleTimelineBarPointerDown(event, task, 'move')}
-                          onPointerUp={handleTimelineBarPointerUp}
-                          onPointerCancel={handleTimelineBarPointerUp}
-                          onClick={handleTimelineBarClick}
+                          onClick={(event) => handleTimelineBarClick(event, task)}
                         >
                           <span className={`${styles.timelineBarGrip} is-start`} onPointerDown={(event) => { event.stopPropagation(); startDrag(event, task, 'resize-start') }} />
                           <span className={styles.timelineBarContent}>
