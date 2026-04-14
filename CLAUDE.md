@@ -743,4 +743,19 @@ interface PersistedState {
 
 ## 🧪 Testing Notes
 
-目前代码库中**没有任何测试文件**。
+目前代码库中**没有单元测试文件**。
+
+### 验收测试规则（强制）
+
+1. **所有涉及 UI 交互的功能必须通过真实浏览器测试验证**，不能仅靠 `vite build` 通过或代码 review
+2. **测试工具**：Playwright（`npm install --save-dev playwright`），使用 chromium headless 或 headed 模式
+3. **测试必须覆盖的场景**：
+   - 页面加载无报错（console.error 为空）
+   - 视图切换正常（所有 6 个视图可达）
+   - 拖拽交互（drag 不触发 click，resize 不触发详情面板）
+   - 路由状态恢复（刷新后 URL params 还原视图状态）
+   - 表单提交（创建/编辑任务）
+   - 响应式布局（桌面/移动端断点）
+4. **测试脚本位置**：`web/e2e/` 目录
+5. **验收标准**：测试脚本输出 PASS/FAIL，FAIL 必须附带截图和错误日志
+6. **context 不足 30% 时**：自动执行 compact 压缩后继续未完成的任务，不需要用户确认
