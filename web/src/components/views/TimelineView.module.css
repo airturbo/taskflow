@@ -94,7 +94,7 @@
 
 .timelineLane {
   position: relative; width: 70%; min-height: 38px;
-  border-radius: 8px; background: var(--surface-raised); overflow: hidden;
+  border-radius: var(--radius-s); background: var(--surface-raised); overflow: hidden;
 }
 
 /* ---- Now line (week view) ---- */
@@ -154,7 +154,7 @@
 /* ---- Bar ---- */
 
 .timelineBar {
-  position: absolute; top: 4px; bottom: 4px; border-radius: 8px;
+  position: absolute; top: 4px; bottom: 4px; border-radius: var(--radius-s);
   color: #fff; display: flex; align-items: stretch; overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 8px 16px rgba(15, 23, 42, 0.16);
   min-width: 40px; cursor: grab;
@@ -289,7 +289,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   padding: 0;
   display: flex;
   flex-direction: column;

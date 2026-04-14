@@ -47,7 +47,7 @@
   gap: 10px;
   padding: 14px;
   margin-bottom: 4px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   background: var(--surface-raised, var(--bg-subtle));
   border: 1px solid var(--border);
   cursor: pointer;
@@ -98,7 +98,7 @@
 .mobileProjectsCreateBtn {
   flex: 1;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-m);
   border: 1px dashed var(--border);
   background: transparent;
   color: var(--text-secondary);
@@ -157,7 +157,7 @@
   right: 0;
   z-index: 260;
   background: var(--bg-subtle);
-  border-radius: 20px 20px 0 0;
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
   padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
   animation: sheet-slide-up-task-spring 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -257,6 +257,6 @@
   .mobileProjectsListItem {
     min-height: 44px;
     min-width: 44px;
-    border-radius: 14px;
+    border-radius: var(--radius-l);
   }
 }

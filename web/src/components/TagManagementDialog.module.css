@@ -39,7 +39,7 @@
   max-height: min(78vh, 820px);
   overflow: auto;
   padding: 18px;
-  border-radius: 18px;
+  border-radius: var(--radius-l);
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow-l);
@@ -112,7 +112,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 14px 16px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   border: 1px solid var(--border);
   background: var(--surface-raised);
 }

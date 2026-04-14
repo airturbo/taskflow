@@ -68,7 +68,7 @@
   font-size: 13px;
   color: var(--text-secondary);
   border: 1.5px solid;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   padding: 3px 4px 3px 8px;
   min-width: 0;
 }
@@ -101,14 +101,14 @@
   font-size: 12px;
   color: var(--text-secondary);
   border: 1px solid;
-  border-radius: 6px;
+  border-radius: var(--radius-s);
   padding: 2px 8px;
 }
 
 .mobileTaskDetailStatus {
   font-size: 12px;
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-s);
   background: var(--surface-hover);
   color: var(--text-secondary);
 }
@@ -126,7 +126,7 @@
   font-size: 12px;
   font-weight: 500;
   padding: 5px 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: 1.5px solid var(--border);
   background: var(--surface-hover);
   color: var(--text-secondary);
@@ -181,7 +181,7 @@
   font-size: 12px;
   font-weight: 500;
   padding: 6px 4px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-secondary);
@@ -220,7 +220,7 @@
   flex: 1;
   font-size: 13px;
   padding: 6px 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -269,7 +269,7 @@
   width: 100%;
   font-size: 14px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -312,7 +312,7 @@
   flex: 1;
   font-size: 14px;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -370,7 +370,7 @@
   width: 64px;
   height: 64px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: 1px solid var(--border);
 }
 
@@ -431,7 +431,7 @@
 .mobileTaskDetailFooterBtn {
   flex: 1;
   padding: 10px 6px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: none;
   font-size: 13px;
   font-weight: 600;

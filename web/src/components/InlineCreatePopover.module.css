@@ -16,7 +16,7 @@
   display: flex;
   flex-direction: column;
   padding: 18px 18px 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-l);
   border: 1px solid rgba(136, 150, 171, 0.18);
   background: color-mix(in srgb, var(--surface) 92%, rgba(124, 156, 255, 0.08) 8%);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
@@ -130,7 +130,7 @@
   color: var(--text-tertiary);
   background: none;
   border: 1px dashed var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   padding: 4px 12px;
   cursor: pointer;
   transition: color var(--transition), border-color var(--transition);
@@ -146,7 +146,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   background: rgba(248, 113, 113, 0.06);
   border: 1px solid rgba(248, 113, 113, 0.18);
 }

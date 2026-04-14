@@ -85,7 +85,7 @@
 
 .segmentedControl button,
 .calendarModes button {
-  border-radius: 4px; padding: 5px 14px; font-size: 12px; font-weight: 500;
+  border-radius: var(--radius-s); padding: 5px 14px; font-size: 12px; font-weight: 500;
   background: transparent; color: var(--text-secondary);
   border: none; transition: background var(--transition), color var(--transition);
 }
@@ -177,7 +177,7 @@
   background: var(--text);
   color: var(--bg);
   padding: 10px 16px;
-  border-radius: 22px;
+  border-radius: var(--radius-l);
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -307,11 +307,11 @@
     grid-template-columns: 1fr auto;
     gap: 8px;
   }
-  .composerBarMain input { font-size: 15px; padding: 10px 14px; border-radius: 22px; }
+  .composerBarMain input { font-size: 15px; padding: 10px 14px; border-radius: var(--radius-l); }
   .composerBarMain select { display: none; }
   .composerBar :global(.primary-button) {
     grid-column: auto;
-    border-radius: 22px;
+    border-radius: var(--radius-l);
     padding: 10px 18px;
     font-size: 14px;
   }

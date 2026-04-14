@@ -19,7 +19,7 @@
 .ctxMenu {
   background: var(--bg-elevated, var(--bg-secondary));
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   padding: 5px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   min-width: 170px;
@@ -35,7 +35,7 @@
   font-size: 13px;
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-s);
   color: var(--text-secondary);
   cursor: pointer;
   transition: background var(--transition), color var(--transition);

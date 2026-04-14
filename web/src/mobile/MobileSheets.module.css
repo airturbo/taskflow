@@ -41,7 +41,7 @@
   width: 100%;
   font-size: 16px;
   padding: 12px 16px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   border: 1px solid var(--border);
   background: var(--bg-subtle);
   color: var(--text);
@@ -54,7 +54,7 @@
 }
 
 .mobileQuickCreateSubmit {
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   padding: 12px;
   font-size: 15px;
 }
@@ -92,7 +92,7 @@
 .mobilePromptActions button {
   flex: 1;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   font-size: 15px;
 }
 
@@ -100,7 +100,7 @@
   width: 100%;
   font-size: 15px;
   padding: 12px 16px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   border: 1px solid var(--border);
   background: var(--bg-subtle);
   color: var(--text);
@@ -130,7 +130,7 @@
   width: 100%;
   font-size: 14px;
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -148,7 +148,7 @@
 .mobileQuickCreateDateChip {
   font-size: 13px;
   padding: 6px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-secondary);
@@ -172,7 +172,7 @@
   font-size: 12px;
   font-weight: 600;
   padding: 6px 4px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-secondary);
@@ -270,7 +270,7 @@
   font-size: 16px !important;
   flex: 1;
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -379,7 +379,7 @@
   flex: 1;
   height: 38px;
   border: 1.5px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   padding: 0 12px;
   background: var(--bg);
   color: var(--text);
@@ -398,7 +398,7 @@
   background: var(--accent, #007aff);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -452,7 +452,7 @@
 
 .mobileTagItem {
   background: var(--surface-raised, var(--bg-subtle));
-  border-radius: 12px;
+  border-radius: var(--radius-m);
   overflow: hidden;
 }
 
@@ -487,7 +487,7 @@
   padding: 2px 7px;
   background: var(--accent-muted, rgba(0,122,255,0.12));
   color: var(--accent, #007aff);
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -502,7 +502,7 @@
 .mobileTagItemDeleteBtn {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   border: none;
   display: flex;
   align-items: center;
@@ -527,7 +527,7 @@
   background: var(--accent, #007aff);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -539,7 +539,7 @@
   height: 32px;
   background: var(--bg-subtle);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   color: var(--text-secondary);
   font-size: 14px;
   cursor: pointer;
@@ -554,7 +554,7 @@
 .mobileQuickCreateSheet,
 .mobileConfirmSheet,
 .mobilePromptSheet {
-  border-radius: 22px 22px 0 0;
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
 }
 
 @supports (padding: env(safe-area-inset-bottom)) {

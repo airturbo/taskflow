@@ -30,7 +30,7 @@
 .mobileMeStat {
   background: var(--surface-raised, var(--bg-subtle));
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   padding: 14px;
   text-align: center;
   display: flex;
@@ -83,7 +83,7 @@
 .mobileMeCard {
   background: var(--surface-raised, var(--bg-subtle));
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   overflow: hidden;
 }
 
@@ -99,7 +99,7 @@
   justify-content: space-between;
   padding: 14px;
   margin-bottom: 4px;
-  border-radius: 14px;
+  border-radius: var(--radius-l);
   background: var(--surface-raised, var(--bg-subtle));
   border: 1px solid var(--border);
   cursor: pointer;
@@ -137,7 +137,7 @@
 .mobileMeRowIcon {
   width: 28px;
   height: 28px;
-  border-radius: 7px;
+  border-radius: var(--radius-s);
   background: var(--accent, #007aff);
   display: flex;
   align-items: center;
@@ -290,9 +290,9 @@
   .mobileMeRow {
     min-height: 44px;
     min-width: 44px;
-    border-radius: 14px;
+    border-radius: var(--radius-l);
   }
   .mobileMeStat {
-    border-radius: 14px;
+    border-radius: var(--radius-l);
   }
 }

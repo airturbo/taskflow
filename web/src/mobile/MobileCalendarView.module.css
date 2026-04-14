@@ -29,7 +29,7 @@
 .mobileCalendarModeDot {
   background: none;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-l);
   padding: 4px 14px;
   font-size: 12px;
   font-weight: 500;
@@ -60,7 +60,7 @@
   color: var(--text-primary);
   padding: 4px 10px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   line-height: 1;
 }
 
@@ -74,7 +74,7 @@
   color: var(--text-primary);
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
 }
 
 .mobileMonthNavTitle:active { background: var(--hover); }
@@ -113,7 +113,7 @@
   gap: 3px;
   background: none;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   padding: 6px 2px 5px;
   cursor: pointer;
   min-height: 44px;
@@ -214,7 +214,7 @@
   color: var(--accent, #007aff);
   background: rgba(0,122,255,0.12);
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
 }
 
 .mobileDayPanelCount {
@@ -233,7 +233,7 @@
   font-size: 13px;
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   transition: background 0.12s;
   min-height: 32px;
 }

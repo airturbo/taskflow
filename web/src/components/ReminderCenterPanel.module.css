@@ -53,7 +53,7 @@
   justify-content: center;
   width: 18px;
   height: 18px;
-  border-radius: 9px;
+  border-radius: var(--radius-m);
   background: var(--accent, #007aff);
   color: #fff;
   font-size: 11px;
@@ -87,7 +87,7 @@
 }
 
 .group {
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   overflow: hidden;
   border: 1px solid var(--border);
   margin-bottom: 6px;
@@ -132,7 +132,7 @@
 .groupBadge {
   background: var(--accent, #007aff);
   color: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-s);
   padding: 1px 5px;
   font-size: 11px;
   font-weight: 600;
