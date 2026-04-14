@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import type { Task, TodoList, Tag, TaskStatus, Priority } from '../../types/domain'
 import type { InlineCreateRequest } from '../../types/workspace'
 import {
@@ -14,7 +14,7 @@ import styles from './KanbanView.module.css'
 
 // ---- Droppable Column ----
 
-function KanbanDroppableColumn({
+const KanbanDroppableColumn = memo(function KanbanDroppableColumn({
   status,
   children,
   onOpenInlineCreate,
@@ -125,11 +125,47 @@ function KanbanDroppableColumn({
       </div>
     </section>
   )
-}
+})
 
 // ---- Draggable Card ----
 
-function KanbanDraggableCard({
+/** Custom comparator: only re-render when displayed data changes.
+ *  Skips lists/tags array identity (passed via stable parent state). */
+function kanbanCardPropsEqual(
+  prev: Readonly<{
+    task: Task
+    lists: TodoList[]
+    tags: Tag[]
+    selectedTaskId: string | null
+    onSelectTask: (taskId: string) => void
+    onChangeStatus: (taskId: string, status: TaskStatus) => void
+    onChangePriority: (taskId: string, priority: Priority) => void
+  }>,
+  next: Readonly<{
+    task: Task
+    lists: TodoList[]
+    tags: Tag[]
+    selectedTaskId: string | null
+    onSelectTask: (taskId: string) => void
+    onChangeStatus: (taskId: string, status: TaskStatus) => void
+    onChangePriority: (taskId: string, priority: Priority) => void
+  }>,
+): boolean {
+  if (prev.task.id !== next.task.id) return false
+  if (prev.task.updatedAt !== next.task.updatedAt) return false
+  if (prev.task.title !== next.task.title) return false
+  if (prev.task.status !== next.task.status) return false
+  if (prev.task.priority !== next.task.priority) return false
+  if (prev.task.completed !== next.task.completed) return false
+  if (prev.task.note !== next.task.note) return false
+  if (prev.task.subtasks.length !== next.task.subtasks.length) return false
+  if (prev.task.tagIds.length !== next.task.tagIds.length) return false
+  if (prev.task.listId !== next.task.listId) return false
+  if ((prev.selectedTaskId === prev.task.id) !== (next.selectedTaskId === next.task.id)) return false
+  return true
+}
+
+const KanbanDraggableCard = memo(function KanbanDraggableCard({
   task,
   lists,
   tags,
@@ -215,7 +251,7 @@ function KanbanDraggableCard({
       </footer>
     </article>
   )
-}
+}, kanbanCardPropsEqual)
 
 // ---- Drag Overlay Card (preview while dragging) — exported for WorkspaceShell ----
 
